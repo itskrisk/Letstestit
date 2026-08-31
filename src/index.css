@@ -1,0 +1,133 @@
+/* Premium Modern Typography: Outfit (Headings) & Plus Jakarta Sans (Body) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Premium Typography */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --color-cyan: #00BCD4;
+  --color-blue: #0277BD;
+  --color-dark: #111827;
+  /* gray-900 */
+
+  /* THIKA Branding */
+  --primary: var(--color-blue);
+  --accent: var(--color-orange);
+
+  /* Backgrounds */
+  --bg-page: #F9FAFB;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+
+  /* Text */
+  --text-main: #1F2937;
+  --text-muted: #4B5563;
+
+  /* Marquee/Demo Vars */
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-800 antialiased;
+    font-family: var(--font-body);
+    letter-spacing: -0.005em;
+    font-weight: 400;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading text-gray-900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  h1 {
+    @apply text-5xl md:text-7xl;
+    font-weight: 800;
+  }
+
+  h2 {
+    @apply text-4xl md:text-6xl;
+    font-weight: 700;
+  }
+
+  h3 {
+    @apply text-3xl md:text-4xl;
+    font-weight: 600;
+  }
+}
+
+@layer components {
+  .section {
+    @apply py-20 lg:py-32;
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-6;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-medium transition-all duration-300 transform active:scale-95;
+  }
+
+  .btn-primary {
+    @apply bg-[var(--primary)] text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-1 hover:bg-[#026aa7];
+  }
+
+  .btn-secondary {
+    @apply bg-white text-gray-900 border border-gray-200 shadow-sm hover:border-[var(--primary)] hover:text-[var(--primary)];
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border-b border-white/20;
+  }
+
+  .bg-dot-pattern {
+    background-image: radial-gradient(#9ca3af 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Custom Scrollbar Utilities */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-black\/20::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.scrollbar-thumb-black\/20:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
