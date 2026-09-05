@@ -1011,3 +1011,21 @@ public.is_admin() was referenced in RLS policies for merchants and iders around
 
 ### Status:
 - Multi-service ercel.json is live on GitHub.
+
+
+---
+
+## [2026-09-05] Fixed Vercel Backend Service Entrypoint in ercel.json
+
+### Prompt / Request:
+> "Error: Service "backend" detected framework "express" in "backend" and must specify an "entrypoint" for runtime "node"."
+
+### Root Cause:
+Vercel CLI multi-service build detected the Express framework inside ackend/ directory but required explicit "entrypoint": "src/server.js" specified in ercel.json under services.backend.
+
+### Actions Taken:
+1. Updated [vercel.json](file:///c:/Users/Admin/Desktop/kris/vercel.json) to set "entrypoint": "src/server.js" inside services.backend.
+2. Committed and pushed to https://github.com/itskrisk/Letstestit.git (main branch).
+
+### Status:
+- Fixed and pushed to GitHub.
