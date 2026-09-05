@@ -7,6 +7,7 @@ import {
     ArrowRight,
     Menu,
     X,
+    LogOut,
 } from 'lucide-react';
 import LocationModal from '../../components/marketing/LocationModal';
 import ProfileModal from '../../components/ui/shared/ProfileModal';
@@ -84,7 +85,7 @@ const MOOD_MAP: Record<string, { name: string; tagline: string; image: string; c
 
 export default function StoreListing() {
     const navigate = useNavigate();
-    const { profile } = useAuth();
+    const { user, profile, signOut } = useAuth();
     const [searchParams] = useSearchParams();
     const activeView = searchParams.get('v') || 'general';
     const activeTag = searchParams.get('tag'); // Get the deep-link tag
@@ -379,24 +380,54 @@ export default function StoreListing() {
                                     ))}
                                 </div>
 
-                                <div className="mt-auto pt-8 border-t border-black/5">
-                                    <div className="flex items-center gap-4 mb-4 px-4">
-                                        <div className="w-10 h-10 bg-[#4A90E2]/10 rounded-full flex items-center justify-center border border-[#4A90E2]/20">
-                                            {profile?.full_name ? (
-                                                <span className="text-xs font-black text-[#4A90E2]">{profile.full_name.charAt(0).toUpperCase()}</span>
-                                            ) : (
-                                                <User size={18} className="text-[#4A90E2]" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <div className="text-[10px] font-black uppercase tracking-widest text-black/80">
-                                                {profile?.full_name || 'Adventurer'}
+                                <div className="mt-auto pt-6 border-t border-black/10">
+                                    {user ? (
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-3 px-2">
+                                                <div className="w-10 h-10 bg-[#4A90E2]/10 rounded-full flex items-center justify-center border border-[#4A90E2]/20 shrink-0">
+                                                    {profile?.full_name ? (
+                                                        <span className="text-xs font-black text-[#4A90E2]">{profile.full_name.charAt(0).toUpperCase()}</span>
+                                                    ) : (
+                                                        <User size={18} className="text-[#4A90E2]" />
+                                                    )}
+                                                </div>
+                                                <div className="overflow-hidden">
+                                                    <div className="text-xs font-black uppercase tracking-wider text-black truncate">
+                                                        {profile?.full_name || user.email?.split('@')[0]}
+                                                    </div>
+                                                    <div className="text-[10px] font-bold text-[#4A90E2] uppercase tracking-widest">
+                                                        {profile?.loyalty_tier || 'Member'}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="text-[9px] font-bold text-[#4A90E2] uppercase tracking-widest">
-                                                {profile?.loyalty_tier || 'Standard'} Tier
-                                            </div>
+                                            <button
+                                                onClick={async () => {
+                                                    try { await signOut(); } catch (e) {}
+                                                    setIsMenuOpen(false);
+                                                    window.location.href = '/login';
+                                                }}
+                                                className="w-full py-3 px-4 bg-red-50 text-red-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                                            >
+                                                <LogOut size={14} />
+                                                Sign Out
+                                            </button>
                                         </div>
-                                    </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <button
+                                                onClick={() => { setIsMenuOpen(false); navigate('/login'); }}
+                                                className="w-full py-3 px-4 bg-black text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors text-center"
+                                            >
+                                                Log In
+                                            </button>
+                                            <button
+                                                onClick={() => { setIsMenuOpen(false); navigate('/signup'); }}
+                                                className="w-full py-3 px-4 border border-gray-200 text-gray-800 rounded-xl text-xs font-bold uppercase tracking-widest hover:border-black transition-colors text-center"
+                                            >
+                                                Create Account
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </motion.div>
                         </>

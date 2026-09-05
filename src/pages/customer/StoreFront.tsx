@@ -15,7 +15,8 @@ import {
     AlertTriangle,
     Zap,
     Menu,
-    User
+    User,
+    LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
@@ -30,7 +31,7 @@ import { publicApi } from '../../lib/api';
 export default function StoreFront() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { profile } = useAuth();
+    const { user, profile, signOut } = useAuth();
     const { items: cartItems, addItem, updateQuantity, removeItem, merchantId: cartMerchantId, clearCart, total, itemCount } = useCart();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,71 +48,82 @@ export default function StoreFront() {
 
     const loadStore = async () => {
         if (!id) return;
-        const storeResult = await publicApi.getStore(id);
-        if (storeResult.data) {
-            setMerchant(storeResult.data);
+        setLoading(true);
+        try {
+            const storeResult = await publicApi.getStore(id);
+            if (storeResult.data) {
+                setMerchant(storeResult.data);
+            }
             const productsResult = await publicApi.getStoreProducts(id);
             if (productsResult.data) {
                 setMerchantProducts(productsResult.data);
             }
+        } catch (err) {
+            console.error('Error loading store:', err);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
-
-    // 🛡️ REVALIDATION ON MOUNT
-    useEffect(() => {
-        if (!merchant) return;
-        const isBlocked = !merchant.is_active || !merchant.mpesa_till;
-        if (isBlocked && cartMerchantId === merchant.id && cartItems.length > 0) {
-            clearCart();
-            alert("This store is no longer accepting orders. Your cart has been cleared.");
-        }
-    }, [merchant, cartMerchantId, cartItems.length, clearCart]);
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div>
+            <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
 
     if (!merchant) {
         return (
-            <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-6 text-center">
-                <AlertTriangle size={48} className="text-[#D4AF37] mb-4" />
-                <h1 className="text-4xl font-heading font-black tracking-tighter mb-2">Merchant Not Found</h1>
-                <p className="text-gray-500 mb-6 font-medium">The store you are looking for doesn't exist or has been removed.</p>
-                <button
-                    onClick={() => navigate('/c/stores')}
-                    className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-[#D4AF37] transition-all"
-                >
+            <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-8 text-center text-white">
+                <h1 className="text-2xl font-bold mb-4">Store Not Found</h1>
+                <button onClick={() => navigate('/stores')} className="px-6 py-3 bg-[#D4AF37] text-black font-bold rounded-xl">
                     Back to Stores
                 </button>
             </div>
         );
     }
 
-    const isClosed = !merchant.is_active;
-    const isIncomplete = !merchant.mpesa_till;
-    const isBlocked = isClosed || isIncomplete;
+    // Delegate rendering to store-type-specific design system if appropriate
+    const storeType = merchant.type?.toLowerCase() || 'restaurant';
 
-    // Route to specialized layouts
-    if (merchant.type === 'Restaurant') {
+    if (storeType === 'supermarket') {
+        return <SupermarketStore merchant={merchant} products={merchantProducts} />;
+    }
+    if (storeType === 'pharmacy') {
+        return <PharmacyStore merchant={merchant} products={merchantProducts} />;
+    }
+    if (storeType === 'restaurant' || storeType === 'kitchen') {
         return <KitchenStore merchant={merchant} products={merchantProducts} />;
     }
 
-    if (merchant.type === 'Pharmacy') {
-        return <PharmacyStore merchant={merchant} products={merchantProducts} />;
-    }
+    // Default Fallback Store View
+    const handleAddToCart = (product: any) => {
+        if (cartMerchantId && cartMerchantId !== merchant.id && cartItems.length > 0) {
+            setShowConflictModal({ product });
+            return;
+        }
+        addItem(product);
+    };
 
-    if (merchant.type === 'Supermarket') {
-        return <SupermarketStore merchant={merchant} products={merchantProducts} />;
-    }
+    const confirmConflictResolution = () => {
+        if (showConflictModal) {
+            clearCart();
+            addItem(showConflictModal.product);
+            setShowConflictModal(null);
+        }
+    };
+
+    const isClosed = !merchant.is_active;
+    const isBlocked = isClosed || merchant.status !== 'APPROVED';
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] text-gray-900 font-sans pb-32 relative overflow-hidden">
-            {/* 🟡 LAYER 1: BRAND ATMOSPHERE (Grid Pattern) */}
+        <div className="min-h-screen bg-[#0A0A0A] text-white font-sans selection:bg-[#D4AF37] selection:text-black relative overflow-x-hidden">
+            {/* Ambient Lighting FX */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-[128px] pointer-events-none" />
+            <div className="absolute top-1/3 right-10 w-80 h-80 bg-blue-600/5 rounded-full blur-[128px] pointer-events-none" />
+
+            {/* Subtle Grid Lines Background */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(#D4AF37 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
             {/* MOBILE MENU DRAWER (US-STYLE UNIVERSAL) */}
@@ -159,24 +171,54 @@ export default function StoreFront() {
                                 ))}
                             </div>
 
-                            <div className="mt-auto pt-8 border-t border-black/5">
-                                <div className="flex items-center gap-4 mb-4 px-4">
-                                    <div className="w-10 h-10 bg-[#4A90E2]/10 rounded-full flex items-center justify-center border border-[#4A90E2]/20">
-                                        {profile?.full_name ? (
-                                            <span className="text-xs font-black text-[#4A90E2]">{profile.full_name.charAt(0).toUpperCase()}</span>
-                                        ) : (
-                                            <User size={18} className="text-[#4A90E2]" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <div className="text-[10px] font-black uppercase tracking-widest text-black/80">
-                                            {profile?.full_name || 'Adventurer'}
+                            <div className="mt-auto pt-6 border-t border-black/10">
+                                {user ? (
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 px-2">
+                                            <div className="w-10 h-10 bg-[#4A90E2]/10 rounded-full flex items-center justify-center border border-[#4A90E2]/20 shrink-0">
+                                                {profile?.full_name ? (
+                                                    <span className="text-xs font-black text-[#4A90E2]">{profile.full_name.charAt(0).toUpperCase()}</span>
+                                                ) : (
+                                                    <User size={18} className="text-[#4A90E2]" />
+                                                )}
+                                            </div>
+                                            <div className="overflow-hidden">
+                                                <div className="text-xs font-black uppercase tracking-wider text-black truncate">
+                                                    {profile?.full_name || user.email?.split('@')[0]}
+                                                </div>
+                                                <div className="text-[10px] font-bold text-[#4A90E2] uppercase tracking-widest">
+                                                    {profile?.loyalty_tier || 'Member'}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="text-[9px] font-bold text-[#4A90E2] uppercase tracking-widest">
-                                            {profile?.loyalty_tier || 'Standard'} Tier
-                                        </div>
+                                        <button
+                                            onClick={async () => {
+                                                try { await signOut(); } catch (e) {}
+                                                setIsMenuOpen(false);
+                                                window.location.href = '/login';
+                                            }}
+                                            className="w-full py-3 px-4 bg-red-50 text-red-600 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <LogOut size={14} />
+                                            Sign Out
+                                        </button>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <button
+                                            onClick={() => { setIsMenuOpen(false); navigate('/login'); }}
+                                            className="w-full py-3 px-4 bg-black text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors text-center"
+                                        >
+                                            Log In
+                                        </button>
+                                        <button
+                                            onClick={() => { setIsMenuOpen(false); navigate('/signup'); }}
+                                            className="w-full py-3 px-4 border border-gray-200 text-gray-800 rounded-xl text-xs font-bold uppercase tracking-widest hover:border-black transition-colors text-center"
+                                        >
+                                            Create Account
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     </>

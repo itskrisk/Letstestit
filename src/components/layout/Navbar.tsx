@@ -24,11 +24,11 @@ export default function Navbar() {
         const targetPath = isCustomer ? '/stores' : '/login';
 
         const baseClasses = mobile
-            ? 'py-6 text-center text-[10px] font-bold uppercase tracking-[0.5em] rounded-full'
-            : 'hidden md:flex items-center justify-center px-10 py-3.5 rounded-full text-[10px] font-bold uppercase tracking-[0.4em] transition-all duration-500 ';
+            ? 'w-full py-3.5 text-center text-xs font-bold uppercase tracking-widest rounded-xl transition-all'
+            : 'hidden md:flex items-center justify-center px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-300 ';
 
         const activeStyles = mobile
-            ? (user ? 'bg-[#4A90E2] text-white' : 'bg-white text-black')
+            ? (user ? 'bg-[#4A90E2] text-white' : 'bg-white text-black font-extrabold')
             : (scrolled
                 ? 'bg-white text-black hover:bg-[#4A90E2] hover:text-white shadow-lg'
                 : 'bg-white/5 text-white hover:bg-white hover:text-black border border-white/10 hover:border-transparent');
@@ -39,7 +39,7 @@ export default function Navbar() {
                 onClick={() => mobile && setMobileMenuOpen(false)}
                 className={`${baseClasses} ${activeStyles} group`}
             >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center justify-center gap-2">
                     {buttonText}
                     {user && !mobile && (
                         <ArrowRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
@@ -132,7 +132,7 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                        className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-3xl pt-40 px-12 flex flex-col justify-between pb-32"
+                        className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-3xl pt-28 px-8 flex flex-col justify-between pb-12"
                     >
                         {/* Mobile Menu Logo */}
                         <Link
@@ -148,11 +148,11 @@ export default function Navbar() {
                         {/* Close Button */}
                         <button
                             onClick={() => setMobileMenuOpen(false)}
-                            className="absolute top-8 right-8 p-4 text-white/50 hover:text-white transition-colors"
+                            className="absolute top-8 right-8 p-3 text-white/50 hover:text-white transition-colors"
                         >
-                            <X size={32} strokeWidth={1} />
+                            <X size={28} strokeWidth={1.5} />
                         </button>
-                        <div className="flex flex-col gap-8">
+                        <div className="flex flex-col gap-6 mt-6">
                             {[
                                 { name: 'Our Offering', href: '/#about' },
                                 { name: 'Selection', href: '/#categories' },
@@ -165,30 +165,30 @@ export default function Navbar() {
                                     key={item.name}
                                     initial={{ x: -20, opacity: 0 }}
                                     animate={{ x: 0, opacity: 1 }}
-                                    transition={{ delay: 0.1 + (i * 0.05) }}
+                                    transition={{ delay: 0.1 + (i * 0.04) }}
                                     href={item.href}
                                     className="flex items-center gap-4 group"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
-                                    <span className="text-[#4A90E2]/50 font-mono text-[10px] group-hover:text-[#4A90E2] transition-colors pt-1">
+                                    <span className="text-[#4A90E2]/60 font-mono text-xs group-hover:text-[#4A90E2] transition-colors pt-0.5">
                                         0{i + 1}
                                     </span>
-                                    <span className="text-xl font-heading font-light tracking-wide text-white group-hover:text-[#4A90E2] transition-colors">
+                                    <span className="text-lg font-heading font-light tracking-wide text-white group-hover:text-[#4A90E2] transition-colors">
                                         {item.name}
                                     </span>
                                 </motion.a>
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4">
+                        <div className="flex flex-col gap-3 mt-8">
                             <AuthButton mobile />
                             {!user && (
                                 <Link
                                     to="/signup"
-                                    className="py-6 text-center text-[10px] font-bold uppercase tracking-[0.5em] border border-white/10 text-white rounded-full"
+                                    className="w-full py-3.5 text-center text-xs font-bold uppercase tracking-widest border border-white/20 text-white rounded-xl hover:bg-white/10 transition-all"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
-                                    Join the Fam
+                                    Create Account
                                 </Link>
                             )}
                         </div>

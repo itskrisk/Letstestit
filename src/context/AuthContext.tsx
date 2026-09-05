@@ -51,7 +51,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Fetch profile from Supabase
         const { data: profileData } = await profileService.getProfile(authUser.id);
 
-        const isAdminUser = authUser.email === 'admin@muncheez.co.ke' || authUser.user_metadata?.role === 'admin';
+        const isAdminUser = authUser.email === 'admin@muncheez.co.ke' ||
+                            authUser.email?.endsWith('@muncheez.co.ke') ||
+                            authUser.user_metadata?.role === 'admin' ||
+                            (profileData?.roles && profileData.roles.includes('admin'));
         const defaultRole = isAdminUser ? 'admin' : (authUser.user_metadata?.role || 'customer');
         const roles = isAdminUser
           ? ['admin']
@@ -140,7 +143,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const { data: profileData } = await profileService.getProfile(authUser.id);
-      const isAdminUser = authUser.email === 'admin@muncheez.co.ke' || authUser.user_metadata?.role === 'admin';
+      const isAdminUser = authUser.email === 'admin@muncheez.co.ke' ||
+                          authUser.email?.endsWith('@muncheez.co.ke') ||
+                          authUser.user_metadata?.role === 'admin' ||
+                          (profileData?.roles && profileData.roles.includes('admin'));
       const defaultRole = isAdminUser ? 'admin' : (authUser.user_metadata?.role || 'customer');
       const roles = isAdminUser
         ? ['admin']
@@ -192,7 +198,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Safely record active session if available
       try {
-        const primaryRole = data.user.user_metadata?.role || 'customer';
+        const isAdminUser = data.user.email === 'admin@muncheez.co.ke' ||
+                            data.user.email?.endsWith('@muncheez.co.ke') ||
+                            data.user.user_metadata?.role === 'admin';
+        const primaryRole = isAdminUser ? 'admin' : (data.user.user_metadata?.role || 'customer');
         await supabase
           .from('active_sessions')
           .upsert({
@@ -208,7 +217,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Get profile
       const { data: profileData } = await profileService.getProfile(data.user.id);
-      const defaultRole = data.user.user_metadata?.role || 'customer';
+      const isAdminUser = data.user.email === 'admin@muncheez.co.ke' ||
+                          data.user.email?.endsWith('@muncheez.co.ke') ||
+                          data.user.user_metadata?.role === 'admin' ||
+                          (profileData?.roles && profileData.roles.includes('admin'));
+      const defaultRole = isAdminUser ? 'admin' : (data.user.user_metadata?.role || 'customer');
+      const roles = isAdminUser
+        ? ['admin']
+        : (profileData?.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]);
 
       const normalizedUser: User = {
         id: data.user.id,
@@ -219,10 +235,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loyaltyTier: 'bronze',
         profile: profileData ? {
           ...profileData,
-          roles: profileData.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]
+          roles
         } : {
           id: data.user.id,
-          roles: [defaultRole],
+          roles,
           status: 'ACTIVE'
         }
       };
@@ -249,9 +265,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error: 'This email is already registered. Please log in instead, or use a different email for a new account.' };
       }
 
+      const cleanPhone = metadata?.phone?.trim() ? metadata.phone.trim() : undefined;
       const { data, error } = await authService.signUp(email, password, {
         full_name: metadata?.name || email.split('@')[0],
-        phone: metadata?.phone,
+        phone: cleanPhone,
         role: role,
         merchant_type: metadata?.merchantType || 'Restaurant',
         vehicle_type: metadata?.vehicleType || 'Motorbike'
@@ -272,6 +289,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Get profile
       const { data: profileData } = await profileService.getProfile(data.user.id);
+      const isAdminUser = email === 'admin@muncheez.co.ke' || role === 'admin';
+      const roles = isAdminUser ? ['admin'] : (profileData?.roles || [role]);
 
       const normalizedUser: User = {
         id: data.user.id,
@@ -282,10 +301,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loyaltyTier: 'bronze',
         profile: profileData ? {
           ...profileData,
-          roles: profileData.roles || [role]
+          roles
         } : {
           id: data.user.id,
-          roles: [role],
+          roles,
           status: 'ACTIVE'
         }
       };

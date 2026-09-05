@@ -18,6 +18,17 @@ export default function CustomerLayout() {
     const isCustomer = roles.includes('customer');
     const primaryRole = roles[0] || profile?.role || 'user';
 
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (e) {
+            console.error('Sign out error:', e);
+        } finally {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+    };
+
     // If user is logged in but NOT a customer — show a hard wall
     if (user && profile && !isCustomer) {
         const portal = PORTAL_LINKS[primaryRole];
@@ -43,7 +54,7 @@ export default function CustomerLayout() {
                         </Link>
                     )}
                     <button
-                        onClick={() => signOut()}
+                        onClick={handleSignOut}
                         className="px-6 py-3 border border-gray-200 text-gray-500 text-xs font-bold uppercase tracking-widest rounded-xl hover:border-gray-400 hover:text-gray-800 transition-all flex items-center gap-2 justify-center"
                     >
                         <LogOut size={14} />

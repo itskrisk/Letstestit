@@ -176,15 +176,16 @@ export default function RiderDashboard() {
     }, [currentRider, supabaseRider]);
 
     // Show pending / verification approval overlay if rider is not APPROVED
-    const riderStatus = activeRider?.status || 'PENDING';
-    if (activeRider && riderStatus !== 'APPROVED') {
-        const overlayStatus = (riderStatus === 'VERIFICATION_PENDING' ? 'PENDING' : riderStatus) as 'PENDING' | 'UNDER_REVIEW' | 'REJECTED' | 'SUSPENDED';
+    const rawRiderStatus = supabaseRider?.status || profile?.status || currentRider?.status || 'PENDING';
+    const riderStatus = rawRiderStatus === 'VERIFICATION_PENDING' ? 'PENDING' : rawRiderStatus;
+    if (riderStatus !== 'APPROVED') {
+        const overlayStatus = (riderStatus === 'PENDING' || riderStatus === 'UNDER_REVIEW' || riderStatus === 'REJECTED' || riderStatus === 'SUSPENDED') ? riderStatus : 'PENDING';
         return (
             <VerificationOverlay
                 status={overlayStatus}
-                name={profile?.full_name || activeRider.name || user?.email?.split('@')[0]}
+                name={profile?.full_name || currentRider?.name || user?.email?.split('@')[0]}
                 email={user?.email}
-                phone={profile?.phone || activeRider.phone}
+                phone={profile?.phone || currentRider?.phone}
                 onContactSupport={() => window.location.href = 'mailto:partners@muncheez.co.ke'}
             />
         );

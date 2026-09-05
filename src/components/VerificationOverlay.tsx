@@ -1,5 +1,6 @@
-import { Clock, CheckCircle, XCircle, Mail, Phone, Shield } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Mail, Phone, Shield, LogOut, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 type VerificationStatus = 'PENDING' | 'UNDER_REVIEW' | 'REJECTED' | 'SUSPENDED';
 
@@ -63,7 +64,19 @@ export default function VerificationOverlay({
     name,
     onContactSupport,
 }: VerificationOverlayProps) {
+    const { signOut } = useAuth();
     const config = statusConfig[status];
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (e) {
+            console.error('Sign out error:', e);
+        } finally {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+    };
 
     return (
         <div className={`fixed inset-0 z-50 bg-gradient-to-br ${config.gradientFrom} ${config.gradientTo} flex items-center justify-center p-6`}>
@@ -128,13 +141,31 @@ export default function VerificationOverlay({
                         </a>
                     </div>
 
-                    {/* CTA */}
-                    <button
-                        onClick={onContactSupport}
-                        className="w-full py-3.5 bg-black text-white rounded-2xl text-sm font-bold hover:bg-gray-800 transition-colors"
-                    >
-                        Contact Support
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="flex-1 py-3.5 border border-gray-200 text-gray-700 rounded-2xl text-xs font-bold uppercase tracking-widest hover:border-gray-400 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <RefreshCw size={14} />
+                                Refresh Status
+                            </button>
+                            <button
+                                onClick={handleSignOut}
+                                className="flex-1 py-3.5 border border-red-200 text-red-600 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <LogOut size={14} />
+                                Sign Out
+                            </button>
+                        </div>
+                        <button
+                            onClick={onContactSupport}
+                            className="w-full py-3.5 bg-black text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors"
+                        >
+                            Contact Support
+                        </button>
+                    </div>
 
                     <p className="text-xs text-gray-300 mt-4">
                         Muncheez Partner Portal · All rights reserved © {new Date().getFullYear()}

@@ -381,14 +381,14 @@ BEGIN
 
     primary_role := user_roles_arr[1];
     user_full_name := COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email);
-    user_phone := NEW.raw_user_meta_data->>'phone';
+    user_phone := NULLIF(TRIM(NEW.raw_user_meta_data->>'phone'), '');
 
     -- Upsert Profile — ONE ROLE ONLY (replace, don't append)
     INSERT INTO public.profiles (id, full_name, phone, roles, status)
     VALUES (NEW.id, user_full_name, user_phone, user_roles_arr, 'ACTIVE')
     ON CONFLICT (id) DO UPDATE
     SET full_name = EXCLUDED.full_name,
-        phone = COALESCE(EXCLUDED.phone, public.profiles.phone),
+        phone = CASE WHEN EXCLUDED.phone IS NOT NULL AND EXCLUDED.phone <> '' THEN EXCLUDED.phone ELSE public.profiles.phone END,
         roles = EXCLUDED.roles;
 
     -- If Merchant: auto-create row

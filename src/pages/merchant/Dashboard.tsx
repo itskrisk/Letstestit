@@ -90,11 +90,18 @@ export default function MerchantDashboard() {
         if (supabaseMerchant) {
             return supabaseMerchant;
         }
-        if (profile?.roles?.includes('merchant')) {
-            return merchants.find(m => m.id === profile.id) || merchants[0] || null;
+        if (user && profile?.roles?.includes('merchant')) {
+            const found = merchants.find(m => m.id === profile.id);
+            if (found) return found;
+            return {
+                id: profile.id,
+                businessName: profile.full_name || 'My Merchant Store',
+                status: profile.status || 'PENDING',
+                type: (profile as any)?.merchant_type || 'Restaurant'
+            };
         }
         return merchants.find(m => m.id === activeMerchantId) || merchants[0] || null;
-    }, [merchants, activeMerchantId, profile, supabaseMerchant]);
+    }, [merchants, activeMerchantId, profile, user, supabaseMerchant]);
 
     // Filtered data for this merchant
     const merchantOrders = useMemo(() =>
@@ -112,7 +119,8 @@ export default function MerchantDashboard() {
     const merchantType = activeBusiness?.type || 'Merchant';
 
     // Block non-approved merchants from dashboard operations
-    const merchantStatus = activeBusiness?.status || 'PENDING';
+    const rawStatus = supabaseMerchant?.status || profile?.status || activeBusiness?.status || 'PENDING';
+    const merchantStatus = rawStatus === 'VERIFICATION_PENDING' ? 'PENDING' : rawStatus;
     const isApproved = merchantStatus === 'APPROVED';
 
     // Polymorphic Labels based on Merchant Type

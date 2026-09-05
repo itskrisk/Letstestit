@@ -1088,3 +1088,43 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - All critical bugs fixed. Build ran for verification.
 
+---
+
+## [2026-09-05] Cleanup: Complete RSVP Removal
+
+### Prompt / Request:
+> "remove anything to do with rsvp. completely by completely deleting it"
+
+### Actions Taken:
+1. **Searched entire codebase** for all RSVP references across `.ts`, `.tsx`, `.sql`, `.html`, `.md` files.
+2. **Confirmed no RSVP code exists in `src/`** — the RSVP route/page had already been removed from `App.tsx`.
+3. **Deleted the following files completely:**
+   - `supabase/migrations/20260831_rsvps_table.sql`
+   - `supabase/functions/send-rsvp-email/index.ts`
+   - `emailtemp/rsvp_confirmed.html`
+   - `emailtemp/rsvp_declined.html`
+4. **Renamed local git branch** from `rsvp-standalone` to `main`.
+5. **Committed and force-pushed** to `itskrisk/Letstestit.git main` (commit `1cade81`).
+
+### Status:
+- All RSVP artifacts permanently removed from codebase and GitHub.
+- Branch is now cleanly named `main`.
+
+---
+
+## [2026-09-05] Implementation Planning: Auth Fixes, Waiting for Approval, Role Sign Out, Hamburger Consistency & Admin Login
+
+### Prompt / Request:
+> "Okay, so essentially, not much has been done. The front end now tells me, Error recording. Error saving new user. Also when it comes to merchant and rider, I don't see... I am not able to see the waiting for admin approval component. It's not there... sign out button doesn't work... hamburger menu on home page... admin login..."
+
+### Actions Taken:
+1. **Investigated "Error saving new user" root cause**: Found `profiles.phone` UNIQUE constraint error when empty string `""` is passed to `handle_new_user()` SQL trigger. Planned `NULLIF(..., '')` SQL fix and frontend string trimming.
+2. **Investigated missing "Waiting for Admin Approval" component**: Discovered mock data fallback (`merchants[0]` / mock riders) had status `APPROVED`, bypassing `VerificationOverlay`. Planned strict profile/database status checks for merchant and rider dashboards.
+3. **Investigated broken "Sign Out" button on role blocking walls**: Discovered `signOut()` was called without `await` and without router/window navigation. Planned `handleSignOut` with immediate redirection across `CustomerLayout`, `CourierLayout`, `MerchantLayout`, and `VerificationOverlay`.
+4. **Investigated Hamburger Menus**: Identified inconsistent drawer layouts and bloated padding (`py-6`) around Login text. Planned unified drawer styling across `Navbar.tsx` and all store pages.
+5. **Investigated Admin Login**: Identified missing `admin` role normalization in `AuthContext` `signIn()` fallback. Planned role enforcement for `admin@muncheez.co.ke`.
+6. **Created Implementation Plan**: Generated `implementation_plan.md` artifact.
+
+### Status:
+- Implementation plan created and submitted for user review.
+

@@ -22,6 +22,17 @@ export default function CourierLayout({ children }: { children: React.ReactNode 
     const isCourier = roles.includes('courier');
     const primaryRole = roles[0] || profile?.role || 'user';
 
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (e) {
+            console.error('Sign out error:', e);
+        } finally {
+            localStorage.clear();
+            window.location.href = '/courier/login';
+        }
+    };
+
     // If user is logged in but NOT a courier — show a hard wall
     if (user && profile && !isCourier) {
         const portal = PORTAL_LINKS[primaryRole];
@@ -50,7 +61,7 @@ export default function CourierLayout({ children }: { children: React.ReactNode 
                         </Link>
                     )}
                     <button
-                        onClick={() => signOut()}
+                        onClick={handleSignOut}
                         className="px-6 py-3 border border-white/10 text-gray-400 text-xs font-black uppercase tracking-widest rounded-xl hover:border-white/30 hover:text-white transition-all flex items-center gap-2 justify-center"
                     >
                         <LogOut size={14} />
