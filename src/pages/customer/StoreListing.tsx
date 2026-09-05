@@ -419,7 +419,10 @@ export default function StoreListing() {
 
                     {/* 2. Integrated Horizontal Switcher - Only visible on segmented views */}
                     {activeView !== 'general' && activeView !== '' && (
-                        <div className="flex items-center gap-8 mt-12 py-4 border-b border-white/5 overflow-x-auto no-scrollbar">
+                        <div
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
+                            className="flex items-center gap-8 mt-12 py-4 border-b border-white/5 overflow-x-auto no-scrollbar touch-pan-x"
+                        >
                             {['general', 'kitchen', 'market', 'bakes', 'apothecary'].map(id => {
                                 const segment = SEGMENT_MAP[id];
                                 const isActive = activeView === id || (id === 'general' && activeView === '');
@@ -427,13 +430,14 @@ export default function StoreListing() {
                                     <button
                                         key={id}
                                         onClick={() => navigate(id === 'general' ? '/c/stores' : `/c/stores?v=${id}`)}
-                                        className={`text-[9px] font-black uppercase tracking-[0.4em] transition-all whitespace-nowrap relative py-2 ${isActive ? 'text-[#D4AF37]' : 'text-white/20 hover:text-white/60'}`}
+                                        style={{ WebkitTapHighlightColor: 'transparent' }}
+                                        className={`text-[9px] font-black uppercase tracking-[0.4em] transition-all whitespace-nowrap relative py-2 outline-none ${isActive ? 'text-[#D4AF37]' : 'text-white/20 hover:text-white/60'}`}
                                     >
                                         {id === 'general' ? 'The Collective' : segment.title}
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activePillar"
-                                                className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-[#D4AF37]"
+                                                className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-[#D4AF37]"
                                             />
                                         )}
                                     </button>

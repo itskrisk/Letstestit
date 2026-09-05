@@ -1,11 +1,12 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, Lock } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AdminLogin() {
     const navigate = useNavigate();
-    const { user, profile, loading: authLoading, signIn, signUp } = useAuth();
+    const { user, profile, loading: authLoading, signIn } = useAuth();
     const [email, setEmail] = useState('admin@muncheez.co.ke');
     const [password, setPassword] = useState('admin123');
     const [isLoading, setIsLoading] = useState(false);
@@ -24,12 +25,41 @@ export default function AdminLogin() {
         setError('');
 
         try {
+            // 1. Try to sign in first
             let result = await signIn(email, password);
 
-            // If user doesn't exist yet on this Supabase project, auto-provision admin user
-            if (result.error && (result.error.toLowerCase().includes('invalid') || result.error.toLowerCase().includes('credentials'))) {
-                const signUpResult = await signUp(email, password, { full_name: 'Admin User', role: 'admin' });
-                if (!signUpResult.error) {
+            // 2. If login fails (user doesn't exist yet), auto-provision the admin user via Supabase Admin
+            if (result.error && (result.error.toLowerCase().includes('invalid') || result.error.toLowerCase().includes('credentials') || result.error.toLowerCase().includes('email not confirmed'))) {
+                // Directly create the user via supabase signUp (bypassing the AuthContext signUp which checks existing sessions)
+                const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: 'Admin User',
+                            role: 'admin'
+                        }
+                    }
+                });
+
+                if (signUpError) {
+                    // If user already exists but password wrong, show clearer message
+                    if (signUpError.message.toLowerCase().includes('already registered') || signUpError.message.toLowerCase().includes('user already registered')) {
+                        setError('Invalid credentials. If you just created your Supabase project, please check your email to confirm the admin account first, then try logging in again.');
+                    } else {
+                        setError(signUpError.message);
+                    }
+                    return;
+                }
+
+                if (signUpData?.user && !signUpData?.session) {
+                    // Email confirmation required
+                    setError('Admin account created! Please check your email to confirm the account, then return here to log in.');
+                    return;
+                }
+
+                // If session is immediate (email confirmation disabled), try sign-in
+                if (signUpData?.session) {
                     result = await signIn(email, password);
                 }
             }
@@ -46,6 +76,14 @@ export default function AdminLogin() {
             setIsLoading(false);
         }
     };
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-gray-900">
@@ -103,6 +141,10 @@ export default function AdminLogin() {
                         {!isLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                     </button>
                 </form>
+
+                <p className="text-center text-xs text-gray-400 mt-6">
+                    Default credentials: <strong>admin@muncheez.co.ke</strong> / <strong>admin123</strong>
+                </p>
             </div>
         </div>
     );

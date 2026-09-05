@@ -141,7 +141,7 @@ export default function OurStory() {
                     <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
                         <div className="lg:w-1/2">
                             <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#0A192F] mb-6 block font-mono">
-                                Muncheez Technologies Inc.
+                                Muncheez Technologies Ltd.
                             </span>
                             <h2 className="text-5xl md:text-7xl font-heading font-light tracking-tight text-white mb-8 leading-[0.95]">
                                 Powering Last-Mile <br />
@@ -182,7 +182,7 @@ export default function OurStory() {
                     <div className="mt-28 flex flex-col items-center justify-center gap-6 text-center">
                         <div className="h-16 w-[1px] bg-white/30"></div>
                         <p className="font-heading font-bold text-2xl tracking-widest uppercase text-white">
-                            Muncheez Technologies Inc.
+                            Muncheez Technologies Ltd.
                         </p>
                         <span className="text-xs font-mono tracking-widest text-white/70 uppercase">
                             Nairobi, Kenya &bull; Urban Logistics Infrastructure

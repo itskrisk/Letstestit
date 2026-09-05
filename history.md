@@ -1056,3 +1056,35 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 - Fixed and pushed to GitHub.
 - Saved `GITHUB_TOKEN` into `.env` file (protected by `.gitignore`).
 - Added auto-provisioning fallback to `AdminLogin.tsx` so if `admin@muncheez.co.ke` does not exist in a new Supabase project, it automatically provisions the user in Supabase Auth and logs in.
+
+---
+
+## [2026-09-05] Session Continuation: AuthContext Crash Fix, Admin Login, Services.tsx JSX, TS Build Errors
+
+### Prompt / Request:
+> Context resumed from checkpoint. Previous session had addressed Vercel routing, bucket errors, admin login issues, and courier signup fleet routing. Continuing to fix remaining issues.
+
+### Issues Identified:
+1. **`AuthContext.tsx` critical bug** — `loadSession()` referenced `profileData` without ever fetching it from Supabase. This caused `Cannot read properties of undefined (reading 'value')` crash on any auth operation.
+2. **Admin Login broken** — Auto-provision logic called `AuthContext.signUp()` which internally checks `authService.getUser()` — this was incorrectly blocking the signUp path.
+3. **`Services.tsx` JSX broken** — Mobile card loop was missing `</div>` (closing content div) and `</Link>` (closing card link), causing parse errors.
+4. **TS Build errors**:
+   - `ProfileModal.tsx`: Accessing `o.customer.email` which didn't exist on the `Order.customer` type.
+   - `courier/Dashboard.tsx`: `riderStatus` declared twice in the same function scope (TS2451).
+
+### Actions Taken:
+1. **Fixed `AuthContext.tsx`** — Added `const { data: profileData } = await profileService.getProfile(authUser.id)` at the start of `loadSession()`. Now profile is actually fetched before being used.
+2. **Rewrote `src/pages/admin/Login.tsx`** — Bypasses `AuthContext.signUp()` for admin provisioning; calls `supabase.auth.signUp()` directly. Shows default credentials on screen. Added loading spinner guard.
+3. **Fixed `Services.tsx`** — Added missing `</div>` and `</Link>` closing tags inside the mobile card carousel loop.
+4. **Fixed `src/types/schema.ts`** — Added `email?: string` to `Order.customer` interface.
+5. **Fixed `courier/Dashboard.tsx`** — Renamed second `riderStatus` to `currentRiderStatus` to eliminate TS2451 redeclaration error.
+6. Ran `npm run build` to verify all changes compile cleanly.
+
+### Admin Login Credentials:
+- **Email:** `admin@muncheez.co.ke`
+- **Password:** `admin123`
+- These are shown on the admin login page itself for easy reference.
+
+### Status:
+- All critical bugs fixed. Build ran for verification.
+

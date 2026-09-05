@@ -61,7 +61,7 @@ export default function OurTeam() {
             marginBottom: '32px',
           }}
         >
-          Muncheez Technologies Inc.
+          Muncheez Technologies Ltd.
         </motion.p>
 
         {/* Big heading */}

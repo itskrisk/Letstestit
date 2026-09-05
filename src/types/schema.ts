@@ -132,6 +132,7 @@ export interface Order {
         id?: string;
         name: string;
         phone: string;
+        email?: string; // optional email for ProfileModal filter
         orders_count?: number; // Added for CRM support
     };
     items: Array<{

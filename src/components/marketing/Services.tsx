@@ -154,13 +154,21 @@ export default function Services() {
                 {/* Mobile: Horizontal Snap Scroll (Preserved) */}
                 <div className="lg:hidden -mx-6">
                     <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory px-6 pb-12 scrollbar-hide">
-                        {offerings.map((item) => (
-                            <Link
-                                key={item.id}
-                                to="/coming-soon"
-                                state={{ name: item.category, status: 'coming soon' }}
-                                className="relative shrink-0 w-[85vw] aspect-[4/5] rounded-[2rem] overflow-hidden snap-center group block"
-                            >
+                        {offerings.map((item) => {
+                            const targetPath = item.title === 'The Kitchens'
+                                ? '/c/stores?v=kitchen'
+                                : item.title === 'The Market'
+                                    ? '/c/stores?v=market'
+                                    : item.title === 'Bakes & Blooms'
+                                        ? '/c/stores?v=bakes'
+                                        : '/c/stores?v=apothecary';
+
+                            return (
+                                <Link
+                                    key={item.id}
+                                    to={targetPath}
+                                    className="relative shrink-0 w-[85vw] aspect-[4/5] rounded-[2rem] overflow-hidden snap-center group block"
+                                >
                                 <img
                                     src={item.image}
                                     alt={item.title}
@@ -179,8 +187,9 @@ export default function Services() {
                                         {item.description}
                                     </p>
                                 </div>
-                            </Link>
-                        ))}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
 

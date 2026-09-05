@@ -175,18 +175,18 @@ export default function RiderDashboard() {
         }
     }, [currentRider, supabaseRider]);
 
-    // Show pending approval state
-    if (activeRider && activeRider.status === 'PENDING') {
+    // Show pending / verification approval overlay if rider is not APPROVED
+    const riderStatus = activeRider?.status || 'PENDING';
+    if (activeRider && riderStatus !== 'APPROVED') {
+        const overlayStatus = (riderStatus === 'VERIFICATION_PENDING' ? 'PENDING' : riderStatus) as 'PENDING' | 'UNDER_REVIEW' | 'REJECTED' | 'SUSPENDED';
         return (
-            <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-                <div className="text-center max-w-md mx-auto px-6">
-                    <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto mb-6 text-[#D4AF37]">
-                        <Clock size={32} />
-                    </div>
-                    <h2 className="text-2xl font-black mb-2 uppercase tracking-tight">Application Under Review</h2>
-                    <p className="text-sm text-gray-500">Our team will review your documents and get back to you within 2-3 business days.</p>
-                </div>
-            </div>
+            <VerificationOverlay
+                status={overlayStatus}
+                name={profile?.full_name || activeRider.name || user?.email?.split('@')[0]}
+                email={user?.email}
+                phone={profile?.phone || activeRider.phone}
+                onContactSupport={() => window.location.href = 'mailto:partners@muncheez.co.ke'}
+            />
         );
     }
 
@@ -344,8 +344,8 @@ export default function RiderDashboard() {
     ============================================================= */
 
     // Verification check - block unapproved riders
-    const riderStatus = currentRider.status || 'PENDING';
-    const isApproved = riderStatus === 'APPROVED';
+    const currentRiderStatus = currentRider.status || 'PENDING';
+    const isApproved = currentRiderStatus === 'APPROVED';
 
     const menuItems = [
         { icon: Bike, label: 'Home', tab: 'HOME' as Tab },

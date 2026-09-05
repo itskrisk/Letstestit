@@ -48,8 +48,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const loadSession = async (authUser: any) => {
       try {
+        // Fetch profile from Supabase
         const { data: profileData } = await profileService.getProfile(authUser.id);
-        const defaultRole = authUser.user_metadata?.role || 'customer';
+
+        const isAdminUser = authUser.email === 'admin@muncheez.co.ke' || authUser.user_metadata?.role === 'admin';
+        const defaultRole = isAdminUser ? 'admin' : (authUser.user_metadata?.role || 'customer');
+        const roles = isAdminUser
+          ? ['admin']
+          : (profileData?.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]);
         
         const normalizedUser: User = {
           id: authUser.id,
@@ -60,10 +66,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           loyaltyTier: 'bronze',
           profile: profileData ? {
             ...profileData,
-            roles: profileData.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]
+            roles
           } : {
             id: authUser.id,
-            roles: [defaultRole],
+            roles,
             status: 'ACTIVE'
           }
         };
@@ -133,9 +139,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      // Get profile
       const { data: profileData } = await profileService.getProfile(authUser.id);
-      const defaultRole = authUser.user_metadata?.role || 'customer';
+      const isAdminUser = authUser.email === 'admin@muncheez.co.ke' || authUser.user_metadata?.role === 'admin';
+      const defaultRole = isAdminUser ? 'admin' : (authUser.user_metadata?.role || 'customer');
+      const roles = isAdminUser
+        ? ['admin']
+        : (profileData?.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]);
 
       const normalizedUser: User = {
         id: authUser.id,
@@ -146,10 +155,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loyaltyTier: 'bronze',
         profile: profileData ? {
           ...profileData,
-          roles: profileData.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]
+          roles
         } : {
           id: authUser.id,
-          roles: [defaultRole],
+          roles,
           status: 'ACTIVE'
         }
       };
