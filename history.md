@@ -1054,3 +1054,5 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 
 ### Status:
 - Fixed and pushed to GitHub.
+- Saved `GITHUB_TOKEN` into `.env` file (protected by `.gitignore`).
+- Added auto-provisioning fallback to `AdminLogin.tsx` so if `admin@muncheez.co.ke` does not exist in a new Supabase project, it automatically provisions the user in Supabase Auth and logs in.
