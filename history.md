@@ -1195,5 +1195,47 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED & VERIFIED ON GITHUB MAIN**. All requirements delivered.
 
+---
+
+## [2026-09-05] Customer Profile Modal Upgrade (14 Sub-Views) & Universal Mobile Hamburger Drawer Redesign
+
+### Prompt / Request:
+> "no emojis proceed. also redesign the hamburger menu in stores and everywhere else, to match the one in home. not in content but design. we just need some levelof consistency"
+> "continue fromwhereyou left off"
+
+### Actions Taken:
+1. **Upgraded Customer Profile Modal (`ProfileModal.tsx`)**:
+   - Built a production-grade 14 sub-view Customer Profile system with ZERO raw emojis (using clean Lucide icons throughout).
+   - **Overview & Header Card**: User name, email, loyalty tier badge, avatar preset picker.
+   - **4 Top Quick Access Cards**: My Orders, Saved Addresses, Payment Methods, Favorites.
+   - **14 Sub-Views Implemented**:
+     - `My Profile`: Edit Name, Phone, Email, Avatar color gradient.
+     - `My Orders`: Filtered user order history, status badges, totals, and one-tap **Reorder** (adding items back to cart via `useCart`).
+     - `Saved Addresses`: Full CRUD for Home, Work, Other addresses, default selection, and delivery notes.
+     - `Payment Methods`: M-Pesa phone number manager, default payment option selector (M-Pesa STK, Cash, Card).
+     - `Favorites`: Saved store/product list with direct navigation & removal.
+     - `Notifications`: Real-time toggle switches for Order Status, Rider Location Alerts, Promos, Marketing (persisted in `localStorage`).
+     - `Security`: Password Reset trigger, Active login sessions list, Sign Out Other Devices.
+     - `Privacy & Data Control`: JSON data export generator (`muncheez_account_data.json`) and personalization toggles.
+     - `Location Preferences`: Default neighborhood selector (Lavington, Kilimani, Westlands, Kileleshwa, Karen, CBD) & delivery instructions.
+     - `Cookie Settings`: Full integration with `CookieModal.tsx`.
+     - `Help & Support`: Support ticket reporting form with submission toast.
+     - `Terms & Policies`: Tabbed policy reader for Terms of Service, Privacy Policy, Refund Policy, and Delivery Policy.
+     - `Delete Account`: Danger zone drawer requiring typing `"DELETE"` before account deactivation & session clearance.
+
+2. **Unified Mobile Hamburger Menu Drawer Across All Stores**:
+   - Redesigned mobile drawers in `StoreListing.tsx`, `StoreFront.tsx`, `SupermarketStore.tsx`, `PharmacyStore.tsx`, and `KitchenStore.tsx`.
+   - Applied the high-end dark backdrop overlay aesthetic from `Navbar.tsx` (`bg-black/90 backdrop-blur-3xl pt-28 px-8 flex flex-col justify-between pb-12`).
+   - Replaced raw emojis with sleek monospaced numbers (`01`, `02`, `03`, `04`) in `text-[#4A90E2]/60 font-mono text-xs`.
+   - Added brand header `Muncheez.` with accent blue dot and top-right close button `X size={28}` in `text-white/50 hover:text-white`.
+
+3. **Verification & Production Build**:
+   - Ran `npm run build` (`tsc -b && vite build`) and verified **0 TypeScript compilation errors** and successful bundle generation.
+   - Pushed commit `45d0616` live to GitHub remote repository `https://github.com/itskrisk/Letstestit.git` on `main`.
+
+### Status:
+- **COMPLETED & VERIFIED ON GITHUB MAIN**.
+
+
 
 
