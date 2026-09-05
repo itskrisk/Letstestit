@@ -993,3 +993,21 @@ public.is_admin() was referenced in RLS policies for merchants and iders around
 1. ercel.json is already created and present at the root of the project with SPA wildcard rewrite rules (/(.*) -> /index.html).
 2. This handles client-side routing on Vercel so all Vite React routes (/our-team, /customer/login, /auth/callback, etc.) resolve properly without 404 errors.
 3. ercel.json is committed and pushed to the main branch of https://github.com/itskrisk/Letstestit.git.
+
+
+---
+
+## [2026-09-05] Updated ercel.json with Multi-Service Routing
+
+### Prompt / Request:
+> Added ercel.json multi-service configuration for frontend (Vite at root .) and backend (/backend) with /api/* service rewrites.
+
+### Actions Taken:
+1. Updated [vercel.json](file:///c:/Users/Admin/Desktop/kris/vercel.json) with multi-service definition:
+   - rontend: root ., framework ite
+   - ackend: root ackend
+   - Rewrites: /api/* -> ackend, /* -> rontend
+2. Staged, committed, and pushed changes to main branch of https://github.com/itskrisk/Letstestit.git.
+
+### Status:
+- Multi-service ercel.json is live on GitHub.
