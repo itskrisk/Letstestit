@@ -962,3 +962,34 @@ public.is_admin() was referenced in RLS policies for merchants and iders around
 
 ### Status:
 - schema.sql fixed and ready to be re-run in Supabase SQL Editor.
+
+
+---
+
+## [2026-09-05] Pushed Complete Frontend Codebase to GitHub Repo
+
+### Prompt / Request:
+> "all successful, now I want to push our frontend to github,let megive you the repo you will push to.. https://github.com/itskrisk/Letstestit.git"
+
+### Actions Taken:
+1. Updated .gitignore to ensure .env and local temporary build directories are excluded.
+2. Staged all project files and created git commit eat: complete Muncheez web app codebase & Supabase integration.
+3. Pushed current working state to main branch of target GitHub repository (https://github.com/itskrisk/Letstestit.git).
+4. Sanitized local git remote URL to remove token string.
+
+### Status:
+- Successfully pushed to https://github.com/itskrisk/Letstestit.git (main branch).
+- Ready for Vercel deployment!
+
+
+---
+
+## [2026-09-05] Verified ercel.json SPA Configuration for Vercel Deployment
+
+### Prompt / Request:
+> "vercel.json requredto launch into vercelforprojectswith multiple services"
+
+### Audit & Status:
+1. ercel.json is already created and present at the root of the project with SPA wildcard rewrite rules (/(.*) -> /index.html).
+2. This handles client-side routing on Vercel so all Vite React routes (/our-team, /customer/login, /auth/callback, etc.) resolve properly without 404 errors.
+3. ercel.json is committed and pushed to the main branch of https://github.com/itskrisk/Letstestit.git.
