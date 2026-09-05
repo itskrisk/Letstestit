@@ -1,0 +1,136 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in,top=1in,bottom=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Minimal Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{SlateGray}{HTML}{4A5568}
+\definecolor{BorderGray}{HTML}{E2E8F0}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+\pagestyle{empty}
+
+\setstretch{1.2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+% --- HEADER ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    {\fontsize{36}{42}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}} & 
+    \textsf{\small\bfseries\color{LinkBlue} RSVP CONFIRMATION} \\
+    {\textsf{\scriptsize\bfseries\color{SolidBlack} SOFTWARE MARKETPLACE \& LOGISTICS INFRASTRUCTURE}} & 
+    \textsf{\scriptsize\color{SlateGray} REF: MCH-2026-CONF-8902} \\
+\end{tabularx}
+
+\vspace{0.6cm}
+\color{BorderGray}\hrule height 0.5pt
+\vspace{1cm}
+
+% --- SALUTATION & TITLE ---
+\textsf{\scriptsize\bfseries\color{LinkBlue}\uppercase{Registration Approved}}
+
+\vspace{0.2cm}
+{\fontsize{28}{34}\sffamily\bfseries\color{CorporateNavy} Welcome, [ATTENDEE\_NAME]}
+
+\vspace{0.4cm}
+\textsf{\small\color{SlateGray} Your access to the Muncheez Platform Launch has been confirmed. Please present this document or your registration reference code upon arrival for entrance clearance.}
+
+\vspace{1.2cm}
+
+% --- DETAILS & QR CODE (MINIMAL UNBOXED LAYOUT) ---
+\begin{tabularx}{\textwidth}{@{} X p{4cm} @{}}
+    % LEFT: EVENT METADATA
+    \begin{raggedright}
+        \textsf{\tiny\bfseries\color{SlateGray}\uppercase{Date \& Time}} \\[0.1cm]
+        {\fontsize{13}{16}\sffamily\bfseries\color{CorporateNavy} Thursday, September 24, 2026} \\
+        \textsf{\small\color{SlateGray} 09:00 AM -- 04:00 PM EAT} \\[0.6cm]
+        
+        \textsf{\tiny\bfseries\color{SlateGray}\uppercase{Venue \& Location}} \\[0.1cm]
+        {\fontsize{13}{16}\sffamily\bfseries\color{CorporateNavy} Main Auditorium, Hackhouse Africa} \\
+        \textsf{\small\color{SlateGray} Westlands, Nairobi, Kenya} \\[0.6cm]
+        
+        \textsf{\tiny\bfseries\color{SlateGray}\uppercase{Access Level}} \\[0.1cm]
+        {\fontsize{13}{16}\sffamily\bfseries\color{CorporateNavy} [ATTENDEE\_CATEGORY]} \\
+        \textsf{\small\color{LinkBlue}\bfseries All-Access Pass}
+    \end{raggedright}
+    & 
+    % RIGHT: BARE UNBOXED QR CODE
+    \begin{raggedleft}
+        \textsf{\tiny\bfseries\color{SlateGray}\uppercase{Gate Verification Code}} \\[0.3cm]
+        
+        \begin{tikzpicture}[x=1.3mm, y=1.3mm]
+            \foreach \x in {0,...,23} {
+                \foreach \y in {0,...,23} {
+                    \pgfmathparse{mod(\x*\y + \x*5 + \y*3, 7) < 3 ? 1 : 0}
+                    \ifnum\pgfmathresult=1
+                        \draw[fill=CorporateNavy, draw=none] (\x,\y) rectangle (\x+1,\y+1);
+                    \fi
+                }
+            }
+            
+            % Minimal Corner Markers
+            \draw[fill=PureWhite, draw=none] (0,17) rectangle (7,24);
+            \draw[fill=CorporateNavy, draw=none] (0,17) rectangle (7,24);
+            \draw[fill=PureWhite, draw=none] (1,18) rectangle (6,23);
+            \draw[fill=CorporateNavy, draw=none] (2,19) rectangle (5,22);
+
+            \draw[fill=PureWhite, draw=none] (17,17) rectangle (24,24);
+            \draw[fill=CorporateNavy, draw=none] (17,17) rectangle (24,24);
+            \draw[fill=PureWhite, draw=none] (18,18) rectangle (23,23);
+            \draw[fill=CorporateNavy, draw=none] (19,19) rectangle (22,22);
+
+            \draw[fill=PureWhite, draw=none] (0,0) rectangle (7,7);
+            \draw[fill=CorporateNavy, draw=none] (0,0) rectangle (7,7);
+            \draw[fill=PureWhite, draw=none] (1,1) rectangle (6,6);
+            \draw[fill=CorporateNavy, draw=none] (2,2) rectangle (5,5);
+        \end{tikzpicture} \\[0.3cm]
+        
+        \textsf{\tiny\ttfamily\color{SlateGray} MCH-[ATTENDEE\_ID]-2026}
+    \end{raggedleft} \\
+\end{tabularx}
+
+\vspace{1.2cm}
+\color{BorderGray}\hrule height 0.5pt
+\vspace{1cm}
+
+% --- SCHEDULE HIGHLIGHTS ---
+\textsf{\tiny\bfseries\color{SlateGray}\uppercase{Programme Schedule}}
+
+\vspace{0.4cm}
+
+\begin{tabularx}{\textwidth}{@{} p{2.5cm} X @{}}
+    \textsf{\small\bfseries\color{LinkBlue} 08:15 AM} & \textsf{\small\bfseries\color{CorporateNavy} Guest Registration \& Breakfast} \\[0.3cm]
+    \textsf{\small\bfseries\color{LinkBlue} 09:30 AM} & \textsf{\small\bfseries\color{CorporateNavy} Keynote: Re-engineering Logistics Infrastructure} \\[0.3cm]
+    \textsf{\small\bfseries\color{LinkBlue} 11:00 AM} & \textsf{\small\bfseries\color{CorporateNavy} Muncheez Platform Architecture Demo} \\[0.3cm]
+    \textsf{\small\bfseries\color{LinkBlue} 01:00 PM} & \textsf{\small\bfseries\color{CorporateNavy} Executive Luncheon \& Partner Panel} \\
+\end{tabularx}
+
+\vfill
+
+% --- FOOTER ---
+\color{BorderGray}\hrule height 0.5pt
+\vspace{0.4cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SlateGray} Nairobi, Kenya \textperiodcentered\ events@muncheez.com} &
+    \textsf{\small\bfseries\color{LinkBlue} www.muncheez.com} \newline
+    \textsf{\scriptsize\color{SlateGray} REF: MCH-[ATTENDEE\_ID]} \\
+\end{tabularx}
+
+\end{document}

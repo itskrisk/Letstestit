@@ -1,0 +1,123 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in,top=1in,bottom=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- High-Contrast Corporate Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{DeepCharcoal}{HTML}{2D3748}
+\definecolor{RuleNavy}{HTML}{1E293B}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+\pagestyle{empty}
+
+\setstretch{1.2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+% --- BRAND HEADER ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    {\fontsize{38}{44}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}} & 
+    \begin{raggedleft}
+        {\fontsize{11}{14}\sffamily\bfseries\color{CorporateNavy} PRIVATE PREVIEW INVITATION} \\[0.05cm]
+        {\fontsize{9}{12}\sffamily\bfseries\color{LinkBlue}\uppercase{Online Launch \& Platform Demo}}
+    \end{raggedleft} \\
+\end{tabularx}
+
+\vspace{0.4cm}
+
+% Asymmetric Dual-Tone Line
+\begin{tikzpicture}
+    \draw[line width=2pt, color=CorporateNavy] (0,0) -- (\textwidth-2.5cm, 0);
+    \draw[line width=2pt, color=LinkBlue] (\textwidth-2.5cm,0) -- (\textwidth, 0);
+\end{tikzpicture}
+
+\vspace{0.8cm}
+
+% --- TITLE & SALUTATION ---
+{\fontsize{24}{30}\sffamily\bfseries\color{CorporateNavy} Online Launch \& Product Demonstration}
+
+\vspace{0.4cm}
+\textsf{\small\bfseries\color{CorporateNavy} Dear Friend,}
+
+\vspace{0.3cm}
+\textsf{\small\color{DeepCharcoal} You are cordially invited to the official private preview and platform demonstration of Muncheez, a tech-enabled logistics ecosystem engineered to empower small businesses with reliable, affordable, and seamless last-mile fulfillment.}
+
+\vspace{0.25cm}
+\textsf{\small\color{DeepCharcoal} Muncheez directly connects commercial merchants with trusted logistics partners through intelligent routing software, simplifying urban delivery so businesses can scale efficiently.}
+
+\vspace{0.8cm}
+
+% --- EVENT ACCESS DETAILS ---
+{\fontsize{13}{16}\sffamily\bfseries\color{CorporateNavy} EVENT DETAILS \& VIRTUAL ACCESS}
+
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1pt
+\vspace{0.6cm}
+
+\begin{tabularx}{\textwidth}{@{} p{4.5cm} X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} DATE \& TIME} & 
+    \textsf{\small\color{DeepCharcoal} Confirmed upon RSVP confirmation} \\[0.5cm]
+    
+    \textsf{\small\bfseries\color{CorporateNavy} VIRTUAL PLATFORM} & 
+    \textsf{\small\color{DeepCharcoal} Google Meet (Calendar link sent to confirmed guests)} \\[0.5cm]
+    
+    \textsf{\small\bfseries\color{CorporateNavy} RSVP REGISTRATION} & 
+    \textsf{\small\bfseries\color{LinkBlue}\href{https://muncheez-mu.vercel.app/}{click here to rsvp}} \\
+\end{tabularx}
+
+\vspace{0.4cm}
+\color{RuleNavy}\hrule height 1pt
+\vspace{0.8cm}
+
+% --- WHY YOUR PRESENCE MATTERS ---
+{\fontsize{13}{16}\sffamily\bfseries\color{CorporateNavy} WHY YOUR PRESENCE MATTERS}
+
+\vspace{0.2cm}
+\textsf{\small\color{DeepCharcoal} We are bringing together a select circle of advisors, industry partners, and early supporters to experience our core platform features before public deployment. Your presence and feedback as we demonstrate our live routing architecture will be invaluable to our launch roadmap.}
+
+\vspace{0.8cm}
+
+% --- CLOSING SIGN-OFF ---
+\textsf{\small\color{DeepCharcoal} Looking forward to hosting you,}
+
+\vspace{0.6cm}
+
+\begin{tabularx}{\textwidth}{@{} X X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Dean Ndere} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} CEO \& Founder} \newline
+    \textsf{\scriptsize\color{DeepCharcoal} Muncheez Technologies Inc.} &
+    
+    \textsf{\small\bfseries\color{CorporateNavy} Kris Kamau} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} CTO \& Co-founder} \newline
+    \textsf{\scriptsize\color{DeepCharcoal} Muncheez Technologies Inc.} \\
+\end{tabularx}
+
+\vfill
+
+% --- FOOTER ---
+\color{RuleNavy}\hrule height 1pt
+\vspace{0.4cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\bfseries\color{DeepCharcoal} Nairobi, Kenya} &
+    \textsf{\small\bfseries\color{CorporateNavy} INVITATION SECRETARIAT} \newline
+    \textsf{\scriptsize\bfseries\color{DeepCharcoal} REF: MCH-2026-VIP-RSVP} \\
+\end{tabularx}
+
+\end{document}

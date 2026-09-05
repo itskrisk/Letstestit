@@ -1,0 +1,95 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in,top=0.8in,bottom=0.8in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+\pagestyle{empty}
+
+\setstretch{1.18}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+\begin{document}
+
+% --- BRAND HEADER ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    {\fontsize{30}{36}\sffamily\bfseries\color{SolidBlack} Muncheez\color{LinkBlue}{\textbf{.}}} & \textsf{\small\bfseries\color{LinkBlue} FLEET ONBOARDING} \\
+    {\textsf{\scriptsize\bfseries\color{SolidBlack} DIGITAL SOFTWARE MARKETPLACE \& LOGISTICS INFRASTRUCTURE}} & \textsf{\scriptsize\color{SolidBlack} CONFIDENTIAL} \\
+\end{tabularx}
+
+\vspace{0.2cm}
+\hrule height 0.5pt
+\vspace{0.5cm}
+
+% --- RECIPIENT METADATA ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{SolidBlack} PREPARED FOR:} & \textsf{\small\bfseries\color{SolidBlack} DATE:} \\
+    \textsf{\small\color{SolidBlack} \textbf{[Partner Full Name]}} & \textsf{\small\color{SolidBlack} \underline{\hspace{3.0cm}}, 2026} \\[0.05cm]
+    \textsf{\small\color{SolidBlack} Asset Class: \textbf{[Rider / Driver / Walker / Scooter]}} & \\
+    \textsf{\small\color{SolidBlack} Operating Zone: \textbf{[Nairobi Central / Westlands / Zone]}} & \textsf{\small\bfseries\color{LinkBlue} RID-ID: MCH-DRV-2026-XXXX} \\
+\end{tabularx}
+
+\vspace{0.5cm}
+
+% --- SUBJECT ---
+{\fontsize{13}{16}\sffamily\bfseries\color{SolidBlack} WELCOME TO MUNCHEEZ: OFFICIAL LOGISTICS PARTNER ONBOARDING}
+
+\vspace{0.4cm}
+
+% --- LETTER BODY ---
+Dear \textbf{[Partner Name]},
+
+Welcome to the Muncheez logistics network. We are excited to officially onboard you as a verified delivery partner. Whether operating on foot, bicycle, scooter, motorcycle, or vehicle, your role is central to driving our high-efficiency fulfillment network across the city.
+
+Your profile has been successfully verified, giving you direct access to the Muncheez Courier Platform for dispatch operations, batch routing, and automated earnings payouts.
+
+\vspace{0.2cm}
+
+% --- ONBOARDING CHECKLIST / ROADMAP CARD ---
+\color{SolidBlack}\hrule height 0.5pt
+\vspace{0.25cm}
+\textsf{\scriptsize\bfseries\color{LinkBlue}\uppercase{Activation \& Safety Checklist}} \\[0.2cm]
+
+\begin{tabularx}{\textwidth}{@{} p{3.2cm} !{\color{LinkBlue}\vrule width 1.5pt} X @{}}
+    \textsf{\small\bfseries\color{SolidBlack} 1. APP ACTIVATION} & \textsf{\small\color{SolidBlack} Download the \textbf{Muncheez Driver} app and complete identity verification.} \\[0.15cm]
+    \textsf{\small\bfseries\color{SolidBlack} 2. GEAR \& SAFETY} & \textsf{\small\color{SolidBlack} Collect your insulated delivery bag, branded high-visibility gear, and ID badge.} \\[0.15cm]
+    \textsf{\small\bfseries\color{SolidBlack} 3. PAYOUT SETUP} & \textsf{\small\color{SolidBlack} Confirm your registered M-PESA or bank account details for instant trip settlements.} \\[0.15cm]
+    \textsf{\small\bfseries\color{SolidBlack} 4. FIRST DISPATCH} & \textsf{\small\color{SolidBlack} Toggle your status to \textbf{Online} during your scheduled shift to accept your first batch.} \\
+\end{tabularx}
+
+\vspace{0.25cm}
+\color{SolidBlack}\hrule height 0.5pt
+\vspace{0.3cm}
+
+% --- SUPPORT & DISPATCH DESK ---
+\textsf{\small\bfseries\color{SolidBlack} Fleet Support \& Safety First} \newline
+\textsf{\small\color{SolidBlack} Your safety and success on the road are our top priorities. Always adhere to local traffic regulations and food handling standards. If you encounter order issues, navigation bugs, or road emergencies, contact our 24/7 Fleet Dispatch Support immediately through your app.}
+
+\vspace{0.6cm}
+
+% --- SIGN-OFF BLOCK ---
+Sincerely,
+
+\vspace{0.6cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{SolidBlack} Fleet Operations \& Logistics Team} & \textsf{\small\bfseries\color{SolidBlack} Dispatch Support Desk} \\
+    \textsf{\small\color{SolidBlack} Muncheez Technologies Inc.} & \textsf{\small\color{LinkBlue} fleet@muncheez.com} \\
+    \textsf{\scriptsize\color{LinkBlue} www.muncheez.com} & \textsf{\small\color{SolidBlack} +254 (0) 700 000 000} \\
+\end{tabularx}
+
+\end{document}

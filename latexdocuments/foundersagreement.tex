@@ -1,0 +1,238 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.1in,top=1.1in,bottom=1.1in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+% --- Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- High-Contrast Corporate Palette (Zero Grey) ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{RuleNavy}{HTML}{1E293B}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+
+\setstretch{1.2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+
+\begin{document}
+
+% ==========================================================
+% COVER PAGE (Minimalist Corporate Style)
+% ==========================================================
+\pagestyle{empty}
+\begin{titlepage}
+    \vspace*{2.5cm}
+    
+    % Brand Header
+    {\fontsize{44}{52}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}}
+    
+    \vspace{0.8cm}
+    
+    % Asymmetric Dual-Tone Accent Line
+    \begin{tikzpicture}
+        \draw[line width=3pt, color=CorporateNavy] (0,0) -- (\textwidth-3.5cm, 0);
+        \draw[line width=3pt, color=LinkBlue] (\textwidth-3.5cm,0) -- (\textwidth, 0);
+    \end{tikzpicture}
+    
+    \vspace{2.5cm}
+    
+    {\fontsize{11}{14}\sffamily\bfseries\color{LinkBlue}\uppercase{Confidential \textperiodcentered\ Founding Framework}}
+    
+    \vspace{0.5cm}
+    
+    {\fontsize{28}{34}\sffamily\bfseries\color{CorporateNavy} Executive Founding Architecture \& Shareholders' Agreement}
+    
+    \vspace{1.0cm}
+    
+    {\fontsize{11}{16}\sffamily\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    {\fontsize{10}{14}\sffamily\color{SolidBlack} Republic of Kenya (Companies Act, 2015)}
+    
+    \vfill
+    
+    \color{RuleNavy}\hrule height 1.5pt
+    \vspace{0.5cm}
+    
+    \begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+        \textsf{\small\bfseries\color{CorporateNavy} RESTRICTED DISTRIBUTION} \newline
+        \textsf{\scriptsize\color{SolidBlack} Corporate Legal Record} &
+        \textsf{\small\bfseries\color{CorporateNavy} DYNAMIC REVISION} \newline
+        \textsf{\scriptsize\color{SolidBlack} 2026 Baseline Edition} \\
+    \end{tabularx}
+\end{titlepage}
+
+% ==========================================================
+% BODY SETUP
+% ==========================================================
+\newpage
+\pagestyle{plain}
+\pagenumbering{arabic}
+
+% --- SECTION 1 ---
+{\fontsize{18}{22}\sffamily\bfseries\color{CorporateNavy} DOCUMENT SECTION 1: SHAREHOLDERS' AGREEMENT}
+
+\vspace{0.1cm}
+\textsf{\small\bfseries\color{LinkBlue} Capitalization Structures and Governance Rules}
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.4cm}
+
+\textbf{\color{CorporateNavy} 1. Parties and Context}
+
+This Shareholders' Agreement (the "Agreement") is entered into by and among:
+\begin{enumerate}
+    \item \textbf{Dean Ndere}, an individual of Kenyan identity, residing in the Republic of Kenya, acting as Founder and Chief Executive Officer (CEO).
+    \item \textbf{Kris Kamau}, an individual of Kenyan identity, residing across the Republic of Kenya and Türkiye, acting as Co-Founder and Chief Technology Officer (CTO).
+    \item \textbf{Muncheez Technologies Inc.}, a private company limited by shares, incorporated under the laws of the Republic of Kenya pursuant to the Companies Act, 2015 (the "Company").
+\end{enumerate}
+
+\vspace{0.2cm}
+\textbf{\color{CorporateNavy} 2. Capitalization Ledger}
+
+The authorized share capital of Muncheez Technologies Inc. at formal baseline incorporation is divided according to the execution ledger below. Dean Ndere holds a exact 10.00\% equity spread above Kris Kamau, with 5.00\% reserved for the option pool:
+
+\vspace{0.3cm}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{} X p{4.5cm} >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X @{}}
+    \toprule
+    \textbf{\color{CorporateNavy} Shareholder / Pool} & \textbf{\color{CorporateNavy} Executive Role} & \textbf{\color{CorporateNavy} Class} & \textbf{\color{CorporateNavy} Allocation} \\
+    \midrule
+    \textbf{Dean Ndere} & Founder \& CEO & Class B Ordinary & \textbf{52.50\%} \\
+    \textbf{Kris Kamau} & Co-Founder \& CTO & Class B Ordinary & \textbf{42.50\%} \\
+    \textbf{Unallocated ESOP} & Reserved Option Pool & Common Option & \textbf{5.00\%} \\
+    \midrule
+    \textbf{\color{CorporateNavy} TOTAL} & & & \textbf{\color{CorporateNavy} 100.00\%} \\
+    \bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{2.1 Platform Scope:} The platform encompasses the Customer, Merchant, and Courier networks, alongside any future B2B modules, logistics APIs, and core routing frameworks built under the corporate banner.
+
+\textbf{2.2 Technical Floor Safeguard:} Through any sequence of downstream financing rounds, the equity holding of the Chief Technology Officer, \textbf{Kris Kamau}, shall never be compressed below an absolute minimum floor of \textbf{10.00\%} on a Fully Diluted Basis. Any capitalization adjustment violating this boundary shall be \textit{void ab initio} without an explicit written waiver signed by Kris Kamau.
+
+\textbf{2.3 Dual-Class Share Shield:} When aggregate third-party investor holdings reach 40.00\%, Class B shares held by the Founders automatically convert to Class A Founder Shares carrying ten (10) votes per share.
+
+\textbf{2.4 Aggregate Founder Floor:} An Aggregate Lifetime Founder Floor of \textbf{51.00\%} is enacted. The combined equity ownership of the founding team cannot be compressed below 51.00\% during any qualified financing round.
+
+\vspace{0.2cm}
+\textbf{\color{CorporateNavy} 3. Engineering Veto and Board Governance}
+
+\textbf{3.1 Technical Veto:} The entire software stack has been engineered solely by \textbf{Kris Kamau}. As CTO, Kris Kamau retains an absolute, exclusive veto right over database schema changes, cloud architecture selections, API security tokens, feature release sequencing, and engineering hires.
+
+\textbf{3.2 Board Configuration:} The corporate board comprises two permanent directors: \textbf{Dean Ndere} (Board Chairperson \& CEO) and \textbf{Kris Kamau} (Executive Technical Director \& CTO). Executive positions held by Founders are unassailable tenures immune from simple-majority boardroom dismissal.
+
+\newpage
+
+% --- SECTION 2 ---
+{\fontsize{18}{22}\sffamily\bfseries\color{CorporateNavy} DOCUMENT SECTION 2: INTELLECTUAL PROPERTY ASSIGNMENT}
+
+\vspace{0.1cm}
+\textsf{\small\bfseries\color{LinkBlue} System Software Isolation and Conditional System Transfer}
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.4cm}
+
+\textbf{\color{CorporateNavy} 1. Conditional Software Transfer}
+
+Kris Kamau (the "Developer") assigns to Muncheez Technologies Inc. all right, title, and interest in and to the platform source code, architecture, design assets, and routing algorithms. This assignment is strictly conditional.
+
+\vspace{0.2cm}
+\textbf{\color{CorporateNavy} 2. Automatic IP Reversion Trigger}
+
+\textbf{2.1 Title Condition:} The transfer of IP is explicitly dependent upon the continuous, un-diluted maintenance of Kris Kamau's status as active Executive CTO, holding no less than 10.00\% equity on a Fully Diluted Basis.
+
+\textbf{2.2 Reversion Execution:} If external forces or board resolutions attempt to terminate, demote, or diminish the executive authority, repository access keys, or equity allocation of Kris Kamau without his written signature, the assignment of Intellectual Property shall \textbf{instantly, automatically, and without notice terminate}.
+
+\textbf{2.3 Licensing Consequence:} Upon reversion, full legal title and software copyright revert completely to Kris Kamau. The Company shall hold only a non-exclusive, month-to-month license subject to a mandatory fee equal to \textbf{15.00\% of gross monthly revenues}.
+
+\vspace{1.2cm}
+
+% --- SECTION 3 ---
+{\fontsize{18}{22}\sffamily\bfseries\color{CorporateNavy} DOCUMENT SECTION 3: EXECUTIVE EMPLOYMENT AGREEMENT}
+
+\vspace{0.1cm}
+\textsf{\small\bfseries\color{LinkBlue} Reverse Vesting Schedule and Leaver Matrix}
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.4cm}
+
+\textbf{\color{CorporateNavy} 1. Founder Reverse Vesting}
+
+All founder shares are subject to a four-year reverse vesting schedule:
+\begin{itemize}
+    \item \textbf{25.00\%} vests on the first anniversary of incorporation (12-month cliff).
+    \item \textbf{75.00\%} vests incrementally in equal monthly installments over the following 36 months of continuous service.
+\end{itemize}
+
+\textbf{\color{CorporateNavy} 2. Leaver Classifications}
+\begin{itemize}
+    \item \textbf{Good Leaver:} A founder departing due to redundancy, health factors, or board departure without criminal fault retains 100\% of all vested shares past the 12-month cliff. Vested equity cannot be touched or clawed back.
+    \item \textbf{Bad Leaver:} A founder terminated for Cause (final felony conviction in a Kenyan court, proven embezzlement, or verified sabotage) forfeits all unvested and vested but unexercised options.
+\end{itemize}
+
+\newpage
+
+% --- SECTION 4 ---
+{\fontsize{18}{22}\sffamily\bfseries\color{CorporateNavy} DOCUMENT SECTION 4: MUTUAL NON-DISCLOSURE AGREEMENT}
+
+\vspace{0.1cm}
+\textsf{\small\bfseries\color{LinkBlue} Proprietary Algorithm and Data Protection}
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.4cm}
+
+All parties agree to maintain absolute security over source code files, database schemas, API keys, merchant analytics, and fundraising documentation. Non-disclosure obligations remain enforceable for five (5) years post-separation.
+
+\vspace{2.5cm}
+
+% ==========================================================
+% EXECUTION RATIFICATION
+% ==========================================================
+{\fontsize{14}{18}\sffamily\bfseries\color{CorporateNavy} EXECUTIVE RATIFICATION}
+
+\vspace{0.2cm}
+\textsf{\small\color{SolidBlack} Executed as distinct legal deeds under the laws of the Republic of Kenya by the founding partners of Muncheez Technologies Inc.}
+
+\vspace{2.0cm}
+
+\begin{tabularx}{\textwidth}{@{} X X @{}}
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Dean Ndere} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} Founder \& Chief Executive Officer} \newline
+    \textsf{\scriptsize\color{SolidBlack} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Date: \rule{3cm}{0.5pt}, 2026} &
+    
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Kris Kamau} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} Co-Founder \& Chief Technology Officer} \newline
+    \textsf{\scriptsize\color{SolidBlack} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Date: \rule{3cm}{0.5pt}, 2026} \\
+\end{tabularx}
+
+\vfill
+
+% --- FOOTER ---
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Nairobi, Kenya} &
+    \textsf{\small\bfseries\color{CorporateNavy} EXECUTIVE SECRETARIAT} \newline
+    \textsf{\scriptsize\color{SolidBlack} REF: MCH-2026-FOUNDING-AGREEMENT} \\
+\end{tabularx}
+
+\end{document}

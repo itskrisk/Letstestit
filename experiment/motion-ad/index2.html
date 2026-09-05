@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muncheez | Trailer (Coming Soon)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4A90E2;
+            --gold: #D4AF37;
+            --green: #00A082;
+            --black: #000000;
+            --white: #ffffff;
+            --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background: var(--black); 
+            font-family: 'Outfit', sans-serif;
+            color: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #ad-canvas {
+            width: 100vw; height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            will-change: transform, opacity, filter, clip-path;
+        }
+
+        .text-hero {
+            font-size: clamp(3rem, 15vmin, 12rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.85;
+            text-align: center;
+            text-transform: uppercase;
+            position: absolute;
+        }
+
+        .text-sub {
+            font-size: clamp(1rem, 3vmin, 2rem);
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.8;
+            text-align: center;
+            position: absolute;
+        }
+
+        /* ─── Scene Specifics ─── */
+        
+        /* Scene 1: The Spark */
+        #the-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--white);
+            border-radius: 50%;
+            box-shadow: 0 0 20px 5px rgba(255,255,255,0.5);
+            position: absolute;
+        }
+
+        /* Scene 2: Flashes */
+        .color-flash {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+        }
+        .flash-text {
+            color: var(--white);
+            z-index: 10;
+        }
+
+        /* Scene 3: The Mask */
+        #mask-image {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            clip-path: circle(0% at 50% 50%);
+            filter: brightness(0.6) contrast(1.2);
+        }
+
+        /* Scene Final */
+        .logo-main {
+            font-size: clamp(4rem, 15vw, 12rem);
+            font-weight: 900;
+            letter-spacing: -0.06em;
+            background: linear-gradient(135deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-dot { color: var(--blue); -webkit-text-fill-color: var(--blue); }
+
+        /* ─── Utilities ─── */
+        .grain {
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1000;
+            background: url("https://grainy-gradients.vercel.app/noise.svg");
+            opacity: 0.05; mix-blend-mode: overlay;
+        }
+        .vignette {
+            position: fixed; inset: 0; z-index: 999; pointer-events: none;
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.6) 100%);
+        }
+
+        /* ─── Controls (100% Stealth as requested) ─── */
+        #controls-hot-zone {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 40vw;
+            height: 30vh;
+            z-index: 4000;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        #controls {
+            display: flex;
+            gap: 15px;
+            opacity: 0; /* TRULY INVISIBLE */
+            transform: translateY(20px);
+            transition: all 0.4s var(--ease-apple);
+            pointer-events: none;
+        }
+        
+        #controls-hot-zone:hover #controls { 
+            opacity: 1; 
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover { background: white; color: black; }
+
+        #start-prompt {
+            position: fixed; inset: 0; z-index: 2000;
+            background: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+        }
+        #start-prompt.hide { opacity: 0; pointer-events: none; visibility: hidden; }
+        .prompt-text { font-size: 0.8rem; letter-spacing: 0.6em; font-weight: 600; text-transform: uppercase; color: #888; }
+        .play-icon { font-size: 2.5rem; margin-bottom: 2rem; color: #fff; }
+
+        /* Record Mode Overrides */
+        body.recording { cursor: none !important; }
+        body.recording #controls-hot-zone { display: none !important; }
+        body.recording #progress-bar { display: none !important; }
+    </style>
+</head>
+<body id="main-body">
+
+    <div id="start-prompt" class="hide" onclick="handleStartTrigger()">
+        <div class="play-icon" id="play-icon">▶</div>
+        <div class="prompt-text" id="prompt-label">Initiate Sequence</div>
+        <div style="margin-top: 1.5rem; font-size: 0.55rem; opacity: 0.3; letter-spacing: 0.2em;">PRESS SPACEBAR TO BEGIN</div>
+    </div>
+
+    <div class="grain"></div>
+    <div class="vignette"></div>
+
+    <div id="ad-canvas">
+        
+        <!-- Scene 1: The Spark (0-6s) -->
+        <div class="layer" id="scene-spark">
+            <div id="the-dot"></div>
+            <div class="text-sub" id="s1-t1" style="margin-top: -10vh;">The wait</div>
+            <div class="text-sub" id="s1-t2" style="margin-top: 10vh;">is almost over.</div>
+        </div>
+
+        <!-- Scene 2: Morphing Energy (6-14s) -->
+        <div class="layer" id="scene-morph">
+            <div class="color-flash" id="flash-bg" style="background: var(--blue);"></div>
+            <h1 class="text-hero flash-text" id="m-text-1">REDEFINING</h1>
+            <h1 class="text-hero flash-text" id="m-text-2">SPEED</h1>
+            <h1 class="text-hero flash-text" id="m-text-3">TASTE</h1>
+            <h1 class="text-hero flash-text" id="m-text-4">PERFECTION</h1>
+        </div>
+
+        <!-- Scene 3: The Reveal (14-22s) -->
+        <div class="layer" id="scene-reveal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1600" id="mask-image">
+            <h1 class="text-hero" id="r-text-1" style="color: white; text-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 2;">Nairobi's</h1>
+            <h1 class="text-hero" id="r-text-2" style="color: var(--gold); text-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 2; margin-top: 20vh;">Ultimate</h1>
+        </div>
+
+        <!-- Scene 4: The Tease (22-26s) -->
+        <div class="layer" id="scene-tease">
+            <h1 class="text-hero" id="t-text" style="font-size: 8vmin;">Prepare Your Senses.</h1>
+            <div id="tease-line" style="width: 0%; height: 2px; background: var(--blue); position: absolute; margin-top: 15vh;"></div>
+        </div>
+
+        <!-- Scene 5: Climax (26-30s) -->
+        <div class="layer" id="scene-final">
+            <div style="text-align: center;">
+                <h1 class="logo-main" id="final-logo">Muncheez<span class="logo-dot">.</span></h1>
+                <p class="text-sub" id="final-sub" style="position: relative; margin-top: 2rem; color: var(--green);">Coming Soon</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="controls-hot-zone">
+        <div id="controls">
+            <button class="control-btn" onclick="tl.restart()">↺ Replay</button>
+            <button class="control-btn" onclick="downloadSource()">💾 Save</button>
+            <button class="control-btn" id="record-btn" onclick="prepareCinematicRecord()">🎥 Record</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecordMode = false;
+        
+        const tl = gsap.timeline({ 
+            paused: true,
+            onComplete: () => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    setTimeout(() => stopRecording(), 1000); 
+                }
+            }
+        });
+
+        function handleStartTrigger() {
+            if (isRecordMode) {
+                document.getElementById('main-body').classList.add('recording');
+                if (mediaRecorder) mediaRecorder.start();
+                setTimeout(() => {
+                    document.getElementById('start-prompt').classList.add('hide');
+                    tl.restart();
+                }, 400);
+            } else {
+                document.getElementById('start-prompt').classList.add('hide');
+                tl.play();
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                const promptVisible = !document.getElementById('start-prompt').classList.contains('hide');
+                if (promptVisible) { e.preventDefault(); handleStartTrigger(); }
+            }
+        });
+
+        function init() {
+            const easeApple = "power4.inOut";
+            const easeOut = "expo.out";
+            const easeIn = "expo.in";
+
+            // Total duration is exactly 30 seconds.
+            // ─── Scene 1: The Spark (0s - 6s) ───
+            tl.set("#scene-spark", { opacity: 1, visibility: "visible" }, 0);
+            tl.fromTo("#the-dot", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: easeOut }, 0.5);
+            tl.to("#the-dot", { scale: 1.5, boxShadow: "0 0 40px 10px rgba(74, 144, 226, 0.8)", backgroundColor: "var(--blue)", duration: 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2);
+            
+            tl.fromTo("#s1-t1", { opacity: 0, y: 20, letterSpacing: "1em" }, { opacity: 1, y: 0, letterSpacing: "0.3em", duration: 2, ease: easeOut }, 1.5);
+            tl.fromTo("#s1-t2", { opacity: 0, y: -20, letterSpacing: "1em" }, { opacity: 1, y: 0, letterSpacing: "0.3em", duration: 2, ease: easeOut }, 3.5);
+            
+            tl.to(["#s1-t1", "#s1-t2"], { opacity: 0, filter: "blur(10px)", scale: 1.1, duration: 1 }, 5.5);
+            tl.to("#the-dot", { scaleX: 100, scaleY: 0.1, duration: 0.6, ease: easeIn }, 5.8);
+            tl.to("#scene-spark", { opacity: 0, duration: 0.2 }, 6.4);
+
+            // ─── Scene 2: Morphing Energy Flashes (6.4s - 14s) ───
+            tl.set("#scene-morph", { opacity: 1, visibility: "visible" }, 6.4);
+            
+            // "REDEFINING" - Morph from the line
+            tl.to("#flash-bg", { opacity: 1, duration: 0.1 }, 6.4);
+            tl.fromTo("#m-text-1", { opacity: 0, scale: 0.8, filter: "blur(40px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.5, ease: easeOut }, 6.5);
+            tl.to("#m-text-1", { opacity: 0, scale: 1.2, filter: "blur(20px)", duration: 0.5, ease: easeIn }, 8.5);
+
+            // Rapid Flashes (Speed, Taste, Perfection)
+            const words = ["#m-text-2", "#m-text-3", "#m-text-4"];
+            const colors = ["var(--gold)", "var(--green)", "var(--black)"];
+            words.forEach((id, i) => {
+                const t = 9 + (i * 1.5);
+                tl.to("#flash-bg", { backgroundColor: colors[i], duration: 0.1 }, t);
+                tl.fromTo(id, { opacity: 0, scale: 2, filter: "blur(20px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "back.out(2)" }, t);
+                tl.to(id, { opacity: 0, scale: 0.5, filter: "blur(10px)", duration: 0.4, ease: easeIn }, t + 1.2);
+            });
+            tl.to("#scene-morph", { opacity: 0, duration: 0.5 }, 13.8);
+
+            // ─── Scene 3: The Reveal (14s - 22s) ───
+            tl.set("#scene-reveal", { opacity: 1, visibility: "visible" }, 14);
+            // Circle mask expands to reveal image
+            tl.to("#mask-image", { clipPath: "circle(150% at 50% 50%)", duration: 3, ease: easeApple }, 14.2);
+            tl.fromTo("#mask-image", { scale: 1.2 }, { scale: 1, duration: 8, ease: "none" }, 14);
+            
+            tl.fromTo("#r-text-1", { opacity: 0, y: 100, clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }, { opacity: 1, y: 0, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1.5, ease: easeOut }, 15.5);
+            tl.fromTo("#r-text-2", { opacity: 0, y: 100, clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }, { opacity: 1, y: 0, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 1.5, ease: easeOut }, 16.5);
+            
+            tl.to(["#r-text-1", "#r-text-2"], { opacity: 0, y: -50, filter: "blur(10px)", duration: 1, stagger: 0.2, ease: easeIn }, 20.5);
+            tl.to("#mask-image", { filter: "brightness(0) blur(20px)", duration: 1.5 }, 20.5);
+            tl.to("#scene-reveal", { opacity: 0, duration: 0.5 }, 22);
+
+            // ─── Scene 4: The Tease (22s - 26s) ───
+            tl.set("#scene-tease", { opacity: 1, visibility: "visible" }, 22);
+            tl.fromTo("#t-text", { opacity: 0, letterSpacing: "0.5em", scale: 0.9 }, { opacity: 1, letterSpacing: "-0.02em", scale: 1, duration: 2, ease: easeOut }, 22.2);
+            tl.to("#tease-line", { width: "40%", duration: 1.5, ease: easeApple }, 22.8);
+            
+            tl.to(["#t-text", "#tease-line"], { opacity: 0, scale: 1.5, filter: "blur(30px)", duration: 1, ease: easeIn }, 25);
+            tl.to("#scene-tease", { opacity: 0, duration: 0.2 }, 26);
+
+            // ─── Scene 5: Climax (26s - 30s) ───
+            tl.set("#scene-final", { opacity: 1, visibility: "visible" }, 26.2);
+            tl.fromTo("#final-logo", { opacity: 0, filter: "blur(50px)", scale: 2 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 2.5, ease: "expo.out" }, 26.2);
+            tl.fromTo("#final-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 2, ease: easeOut }, 27.5);
+            tl.to(".logo-dot", { opacity: 0.5, scale: 1.2, duration: 0.6, repeat: -1, yoyo: true, ease: "sine.inOut" }, 28.5);
+            tl.play();
+        }
+
+        function downloadSource() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'muncheez-trailer.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function prepareCinematicRecord() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { frameRate: 60, cursor: 'never' },
+                    audio: false
+                });
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+                recordedChunks = [];
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'muncheez-trailer.webm';
+                    a.click();
+                    
+                    isRecordMode = false;
+                    document.getElementById('main-body').classList.remove('recording');
+                    document.getElementById('start-prompt').classList.remove('hide');
+                    document.getElementById('prompt-label').innerText = 'Initiate Sequence';
+                    document.getElementById('play-icon').innerText = '▶';
+                    tl.progress(0).pause();
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                isRecordMode = true;
+                document.getElementById('start-prompt').classList.remove('hide');
+                document.getElementById('prompt-label').innerText = 'RECORDING READY: PRESS SPACE';
+                document.getElementById('play-icon').innerText = '⏺';
+            } catch (err) { alert("Recording preparation cancelled."); }
+        }
+
+        function stopRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }
+        window.onload = init;
+    </script>
+</body>
+</html>

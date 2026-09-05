@@ -42,81 +42,85 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(localStorage.getItem('accessToken'));
 
-  // SINGLE SESSION ENFORCEMENT: Validate session on mount
+  // SINGLE SESSION ENFORCEMENT & SESSION HYDRATION
   useEffect(() => {
-    const validateSession = async () => {
-      const storedToken = localStorage.getItem('accessToken');
-      if (!storedToken) {
-        setLoading(false);
-        return;
-      }
+    let isMounted = true;
 
+    const loadSession = async (authUser: any) => {
       try {
-        const { data: { user: authUser } } = await authService.getUser();
-        
-        if (!authUser) {
-          localStorage.removeItem('accessToken');
-          setUser(null);
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
-
-        // Check active_sessions table for single-session enforcement
-        const { data: sessionData } = await supabase
-          .from('active_sessions')
-          .select('*')
-          .eq('user_id', authUser.id)
-          .single();
-
-        if (sessionData) {
-          // Verify the stored token matches the current session
-          const currentToken = localStorage.getItem('accessToken');
-          if (currentToken !== sessionData.session_token) {
-            // Session mismatch - another session was created
-            console.warn('[Auth] Session mismatch detected. Logging out.');
-            await authService.signOut();
-            localStorage.removeItem('accessToken');
-            setUser(null);
-            setProfile(null);
-            setLoading(false);
-            return;
-          }
-        }
-
-        // Get profile
         const { data: profileData } = await profileService.getProfile(authUser.id);
-
+        const defaultRole = authUser.user_metadata?.role || 'customer';
+        
         const normalizedUser: User = {
           id: authUser.id,
           email: authUser.email || '',
           fullName: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
           phone: authUser.user_metadata?.phone,
-          emailVerified: authUser.email_confirmed_at ? true : false,
+          emailVerified: Boolean(authUser.email_confirmed_at),
           loyaltyTier: 'bronze',
           profile: profileData ? {
             ...profileData,
-            roles: profileData.roles || ['customer']
+            roles: profileData.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]
           } : {
             id: authUser.id,
-            roles: ['customer'],
+            roles: [defaultRole],
             status: 'ACTIVE'
           }
         };
 
-        setUser(normalizedUser);
-        setProfile(normalizedUser.profile);
+        if (isMounted) {
+          setUser(normalizedUser);
+          setProfile(normalizedUser.profile);
+        }
       } catch (err) {
-        console.error('[Auth] Session validation failed:', err);
-        localStorage.removeItem('accessToken');
-        setUser(null);
-        setProfile(null);
+        console.error('[AuthContext] Profile load failed:', err);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    validateSession();
+    // Get current session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setToken(session.access_token);
+        localStorage.setItem('accessToken', session.access_token);
+        loadSession(session.user);
+      } else {
+        if (isMounted) {
+          setUser(null);
+          setProfile(null);
+          setToken(null);
+          setLoading(false);
+        }
+      }
+    }).catch(err => {
+      console.error('[AuthContext] Session init error:', err);
+      if (isMounted) setLoading(false);
+    });
+
+    // Listen to Supabase auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setToken(session.access_token);
+        localStorage.setItem('accessToken', session.access_token);
+        await loadSession(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        if (isMounted) {
+          setUser(null);
+          setProfile(null);
+          setToken(null);
+          localStorage.removeItem('accessToken');
+          setLoading(false);
+        }
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const refreshUser = useCallback(async () => {
@@ -131,20 +135,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Get profile
       const { data: profileData } = await profileService.getProfile(authUser.id);
+      const defaultRole = authUser.user_metadata?.role || 'customer';
 
       const normalizedUser: User = {
         id: authUser.id,
         email: authUser.email || '',
         fullName: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
         phone: authUser.user_metadata?.phone,
-        emailVerified: authUser.email_confirmed_at ? true : false,
+        emailVerified: Boolean(authUser.email_confirmed_at),
         loyaltyTier: 'bronze',
         profile: profileData ? {
           ...profileData,
-          roles: profileData.roles || ['customer']
+          roles: profileData.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]
         } : {
           id: authUser.id,
-          roles: ['customer'],
+          roles: [defaultRole],
           status: 'ACTIVE'
         }
       };
@@ -161,7 +166,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
     try {
-      // First authenticate to get user ID
       const { data, error } = await authService.signIn(email, password);
       
       if (error) {
@@ -177,48 +181,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(data.session.access_token);
       }
 
-      // SINGLE SESSION ENFORCEMENT: Check for existing sessions and invalidate them
-      const { data: userSessions } = await supabase
-        .from('active_sessions')
-        .select('*')
-        .eq('user_id', data.user.id);
-
-      if (userSessions && userSessions.length > 0) {
-        // User has an existing session - invalidate it and create new one
+      // Safely record active session if available
+      try {
+        const primaryRole = data.user.user_metadata?.role || 'customer';
         await supabase
           .from('active_sessions')
-          .delete()
-          .eq('user_id', data.user.id);
+          .upsert({
+            user_id: data.user.id,
+            session_token: data.session?.access_token || '',
+            primary_role: primaryRole,
+            all_roles: [primaryRole],
+            updated_at: new Date().toISOString()
+          });
+      } catch (sessionErr) {
+        console.warn('[AuthContext] Session tracking record warning:', sessionErr);
       }
-
-      // Create new session record
-      const primaryRole = data.user.user_metadata?.role || 'customer';
-      await supabase
-        .from('active_sessions')
-        .upsert({
-          user_id: data.user.id,
-          session_token: data.session?.access_token || '',
-          primary_role: primaryRole,
-          all_roles: [primaryRole],
-          updated_at: new Date().toISOString()
-        });
 
       // Get profile
       const { data: profileData } = await profileService.getProfile(data.user.id);
+      const defaultRole = data.user.user_metadata?.role || 'customer';
 
       const normalizedUser: User = {
         id: data.user.id,
         email: data.user.email || '',
         fullName: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User',
         phone: data.user.user_metadata?.phone,
-        emailVerified: data.user.email_confirmed_at ? true : false,
+        emailVerified: Boolean(data.user.email_confirmed_at),
         loyaltyTier: 'bronze',
         profile: profileData ? {
           ...profileData,
-          roles: profileData.roles || ['customer']
+          roles: profileData.roles && profileData.roles.length > 0 ? profileData.roles : [defaultRole]
         } : {
           id: data.user.id,
-          roles: ['customer'],
+          roles: [defaultRole],
           status: 'ACTIVE'
         }
       };

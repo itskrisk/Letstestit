@@ -1,0 +1,231 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in,top=0.9in,bottom=0.9in]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Strict Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC} % Restricted to tiny accents & full stop
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+
+% --- Layout Configurations ---
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.0pt}
+\setlength{\headheight}{20pt}
+
+% Running Header / Footer (Fixed to Page X of 4)
+\fancyhead[L]{\textsf{\scriptsize\textbf{MUNCHEEZ} \hspace{0.1cm}{\color{LinkBlue}\vrule width 1.5pt height 9pt depth 1pt}\hspace{0.1cm} EMPLOYMENT AGREEMENT \& NDA}}
+\fancyhead[R]{\textsf{\scriptsize CONFIDENTIAL \& PROPRIETARY}}
+\fancyfoot[C]{\textsf{\footnotesize Page \thepage\ of 4}}
+
+% --- Section Styling ---
+\titleformat{\section}{\sffamily\normalsize\bfseries\color{SolidBlack}\uppercase}{}{0em}{}[\nopagebreak\vspace{0.15em}\color{SolidBlack}\hrule height 0.5pt]
+\titlespacing*{\section}{0pt}{1.3em}{0.4em}
+
+\titleformat{\subsection}{\sffamily\small\bfseries\color{SolidBlack}}{}{0em}{}
+\titlespacing*{\subsection}{0pt}{0.9em}{0.2em}
+
+\setlist[itemize]{leftmargin=1.2em, itemsep=0.15em, topsep=0.15em}
+\setstretch{1.22}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+\begin{document}
+
+% ==============================================================================
+%                               PAGE 1: COVER
+% ==============================================================================
+\thispagestyle{empty}
+
+\vspace*{1.5cm}
+
+% Brand Header
+\begin{raggedright}
+    {\fontsize{36}{42}\sffamily\bfseries\color{SolidBlack} Muncheez\color{LinkBlue}{\textbf{.}}} \\[0.3cm]
+    {\textsf{\small\bfseries\color{SolidBlack} DIGITAL SOFTWARE MARKETPLACE \& LOGISTICS INFRASTRUCTURE}}
+\end{raggedright}
+
+\vspace{3.5cm}
+
+% Document Title Block
+\begin{raggedright}
+    {\fontsize{24}{28}\sffamily\bfseries\color{SolidBlack} INDIVIDUAL EMPLOYMENT CONTRACT}\\[0.2cm]
+    {\fontsize{12}{15}\sffamily\color{SolidBlack} Schedule A: Proprietary Non-Disclosure Agreement Included}\\[0.4cm]
+    {\color{LinkBlue}\hrule height 2pt width 50pt}
+\end{raggedright}
+
+\vfill
+
+% Cover Metadata Block
+\begin{raggedright}
+    \color{SolidBlack}\hrule height 0.5pt
+    \vspace{0.4cm}
+    \textsf{\scriptsize\color{SolidBlack}\textbf{DOCUMENT CONTROL METADATA}}\\[0.3cm]
+    \begin{tabular}{@{}p{3.8cm} p{8.5cm}@{}}
+        \textsf{\small\bfseries\color{SolidBlack} PREPARED FOR:} & \textsf{\small\color{SolidBlack} Fiona Njaga} \\[0.15cm]
+        \textsf{\small\bfseries\color{SolidBlack} POSITION TITLE:} & \textsf{\small\color{SolidBlack} Executive Assistant} \\[0.15cm]
+        \textsf{\small\bfseries\color{SolidBlack} ISSUING ENTITY:} & \textsf{\small\color{SolidBlack} Muncheez Technologies Inc.} \\[0.15cm]
+        \textsf{\small\bfseries\color{SolidBlack} COMMENCEMENT DATE:} & \textsf{\small\color{SolidBlack} \underline{\hspace{3.0cm}}, 2026} \\[0.15cm]
+        \textsf{\small\bfseries\color{SolidBlack} GOVERNING LAW:} & \textsf{\small\color{SolidBlack} Laws of the Republic of Kenya} \\[0.15cm]
+        \textsf{\small\bfseries\color{SolidBlack} STATUS:} & \textsf{\small\color{SolidBlack}\textbf{CONFIDENTIAL // STAGE 1 EXECUTION}} \\
+    \end{tabular}
+\end{raggedright}
+
+\newpage
+
+% ==============================================================================
+%                           PAGE 2: CONTRACT PART 1
+% ==============================================================================
+
+\section{Agreement Overview}
+
+This Individual Employment Contract and Non-Disclosure Agreement (the ``Agreement'') is entered into and made effective as of the execution date, by and between \textbf{MUNCHEEZ} (the ``Employer'') and the undersigned individual (the ``Employee'').
+
+\vspace{0.2cm}
+
+\begin{tabularx}{\textwidth}{@{} X !{\color{LinkBlue}\vrule width 1.5pt} X @{}}
+\textbf{\textsf{\small EMPLOYER DETAILS}} & \textbf{\textsf{\small EMPLOYEE DETAILS}} \\[0.1cm]
+\textsf{\small \textbf{Entity:} Muncheez Technologies Inc.} & \textsf{\small \textbf{Full Name:} Fiona Njaga} \\
+\textsf{\small \textbf{Scope:} Software Marketplace \& Logistics} & \textsf{\small \textbf{ID / Passport No.:} \underline{\hspace{3.5cm}}} \\
+\textsf{\small \textbf{Model:} Remote-First} & \textsf{\small \textbf{Phone:} \underline{\hspace{3.5cm}}} \\
+\textsf{\small \textbf{Reporting:} Executive Leadership (CEO/COO)} & \textsf{\small \textbf{Email:} \underline{\hspace{3.5cm}}} \\
+\end{tabularx}
+
+\vspace{0.3cm}
+
+% --- SECTION 1 ---
+\section{1. Scope of Role \& Core Responsibilities}
+
+\subsection{1.1 Role Purpose}
+The primary mission of the Executive Assistant is to serve as the operational backbone for leadership, driving execution clarity, tracking deliverables, and maintaining team accountability through platform launch.
+
+\subsection{1.2 Essential Duties}
+\begin{itemize}
+    \item \textbf{Action Item Tracking:} Synthesizing executive notes into structured operational tasks; tracking cross-departmental deadlines.
+    \item \textbf{Schedule Optimization:} Managing calendar syncs, leadership availability, and internal administrative workflows.
+    \item \textbf{Launch Preparation:} Tracking pre-launch milestones, highlighting operational blockers, and ensuring timeline adherence.
+    \item \textbf{Documentation Anchor:} Maintaining core tracking sheets, executive records, and administrative internal assets.
+\end{itemize}
+
+% --- SECTION 2 ---
+\section{2. Work Arrangement \& Operating Hours}
+
+\subsection{2.1 Work Environment}
+This position is structured as a **Remote-First** role. The Employee shall perform primary duties using electronic productivity and communication tools designated by the Company.
+
+\subsection{2.2 Schedule \& Availability}
+The Employee is expected to maintain regular async availability during core operational hours (9:00 AM -- 5:00 PM EAT, Monday through Friday) with standard response windows for urgent leadership communications.
+
+\subsection{2.3 Physical Coordination}
+If in-person strategic planning sessions are required, the Employer will provide advance notice and cover pre-approved travel and logistics costs.
+
+\newpage
+
+% ==============================================================================
+%                       PAGE 3: CONTRACT PART 2 & SIGNATURE 1
+% ==============================================================================
+
+% --- SECTION 3 ---
+\section{3. Probation, Remuneration \& Growth Path}
+
+\subsection{3.1 Probationary Evaluation}
+The position commences with a **three (3) week probationary period** to evaluate workflow integration, communication efficiency, and task accountability.
+
+\subsection{3.2 Compensation Structure}
+\begin{itemize}
+    \item \textbf{Post-Probation Stipend:} Upon successful probation, a monthly baseline stipend of **KES 5,000** will be disbursed via agreed digital channels on or before the 1st of each calendar month.
+    \item \textbf{Escalation Milestones:} Compensation and job titles will be re-evaluated and scaled dynamically upon:
+    \begin{enumerate}
+        \item Formal corporate incorporation alignment.
+        \item Seed investment or institutional funding rounds.
+        \item Commercial platform market launch and revenue scaling.
+    \end{enumerate}
+\end{itemize}
+
+% --- SECTION 4 ---
+\section{4. Termination, Notice \& Separation}
+
+\begin{itemize}
+    \item \textbf{Probation Phase:} Either party may terminate the engagement during probation with **48 hours written notice**.
+    \item \textbf{Post-Probation:} Requires **seven (7) days written notice** or stipend payment in lieu of notice.
+    \item \textbf{Immediate Termination:} Reserved for gross misconduct, willful breach of duties, or breach of Confidentiality obligations.
+\end{itemize}
+
+\vspace{1.5cm}
+
+% --- PRIMARY EXECUTION BLOCK ---
+\textbf{\textsf{\small SECTION 1--4 ACCEPTANCE \& SIGNATURES}}
+
+By signing below, the parties agree to the employment terms set out in Sections 1 through 4 above.
+
+\vspace{1.0cm}
+
+\begin{tabularx}{\textwidth}{@{}X p{1.2cm} X@{}}
+    \textbf{FOR MUNCHEEZ LEADERSHIP} & & \textbf{THE EMPLOYEE} \\[1.0cm]
+    \cline{1-1} \cline{3-3}
+    \vspace{0.1cm}
+    \textsf{\small Authorized Signature} & & \textsf{\small Fiona Njaga} \\
+    \textsf{\scriptsize Role: Executive / Founding Partner} & & \textsf{\scriptsize ID/Passport: \underline{\hspace{3.0cm}}} \\
+    \textsf{\scriptsize Date: \underline{\hspace{3.0cm}}} & & \textsf{\scriptsize Date: \underline{\hspace{3.0cm}}}
+\end{tabularx}
+
+\newpage
+
+% ==============================================================================
+%                    PAGE 4: SCHEDULE A (NDA) & SIGNATURE 2
+% ==============================================================================
+
+\section{Schedule A: Proprietary Non-Disclosure Agreement}
+
+\textit{This Schedule forms an independent, legally binding covenant between Muncheez and the Employee.}
+
+\subsection*{A.1 Definition of Confidential Information}
+Confidential Information encompasses all non-public operational data, tech assets, and business plans, including:
+\begin{itemize}
+    \item \textbf{Technology \& Architecture:} System design, API integrations, database structures, and platform features.
+    \item \textbf{Strategy \& Commercials:} Launch roadmaps, merchant databases, marketing formulas, and expansion plans.
+    \item \textbf{Financials \& Operations:} Valuation metrics, budget allocations, meeting recordings, and leadership comms.
+\end{itemize}
+
+\subsection*{A.2 Restrictions \& Covenants}
+The Employee covenants that she shall not export, share, or publish Confidential Information to any third party, nor use proprietary assets for personal commercial ventures outside of official duties.
+
+\subsection*{A.3 Intellectual Property Ownership}
+All processes, schedules, tracker systems, and operational documents authored or developed by the Employee in performance of her duties are the sole, exclusive property of Muncheez from creation.
+
+\subsection*{A.4 Governing Law \& Survival}
+This Agreement is governed by the laws of the Republic of Kenya. Non-disclosure obligations survive termination of the employment relationship for a period of **two (2) years**.
+
+\vspace{2.0cm}
+
+% --- STANDALONE NDA EXECUTION BLOCK ---
+\textbf{\textsf{\small SCHEDULE A ACKNOWLEDGMENT \& STANDALONE EXECUTION}}
+
+By signing below, the Employee explicitly acknowledges and accepts the independent, legally binding confidentiality and intellectual property obligations set forth in Schedule A.
+
+\vspace{1.2cm}
+
+\begin{tabularx}{\textwidth}{@{}X p{1.2cm} X@{}}
+    \textbf{FOR MUNCHEEZ LEADERSHIP} & & \textbf{THE EMPLOYEE (CONFIRMING NDA)} \\[1.0cm]
+    \cline{1-1} \cline{3-3}
+    \vspace{0.1cm}
+    \textsf{\small Authorized Signature} & & \textsf{\small Fiona Njaga} \\
+    \textsf{\scriptsize Role: Executive / Founding Partner} & & \textsf{\scriptsize Signature: \underline{\hspace{3.5cm}}} \\
+    \textsf{\scriptsize Date: \underline{\hspace{3.0cm}}} & & \textsf{\scriptsize Date: \underline{\hspace{3.0cm}}}
+\end{tabularx}
+
+\end{document}

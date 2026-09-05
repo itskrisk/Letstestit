@@ -45,22 +45,20 @@ export default function Footer() {
                         </p>
                         <div className="flex gap-3">
                             {[
-                                { Icon: Instagram, name: 'Instagram', status: 'unavailable' },
-                                { Icon: Facebook, name: 'Facebook', status: 'unavailable' },
-                                { Icon: Twitter, name: 'Twitter', status: 'unavailable' },
-                                { Icon: Linkedin, name: 'LinkedIn', status: 'unavailable' }
+                                { Icon: Instagram, name: 'Instagram', href: 'https://instagram.com' },
+                                { Icon: Facebook, name: 'Facebook', href: 'https://facebook.com' },
+                                { Icon: Twitter, name: 'Twitter', href: 'https://twitter.com' },
+                                { Icon: Linkedin, name: 'LinkedIn', href: 'https://linkedin.com' }
                             ].map((social, i) => (
-                                <Link
+                                <a
                                     key={i}
-                                    to="/coming-soon"
-                                    state={{
-                                        name: `Our ${social.name}`,
-                                        status: social.status
-                                    }}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-white hover:text-black transition-all border border-white/10"
                                 >
                                     <social.Icon size={14} />
-                                </Link>
+                                </a>
                             ))}
                         </div>
                     </div>
@@ -69,14 +67,19 @@ export default function Footer() {
                     <div>
                         <h4 className="text-[9px] font-bold text-white/20 uppercase tracking-[0.3em] mb-6">Selection</h4>
                         <ul className="space-y-3">
-                            {['The Kitchens', 'The Pantry', '254 Gems', 'The Oven', 'Home Favs'].map((item) => (
-                                <li key={item}>
+                            {[
+                                { name: 'The Kitchens', href: '/stores' },
+                                { name: 'The Pantry', href: '/stores' },
+                                { name: '254 Gems', href: '/stores' },
+                                { name: 'The Oven', href: '/stores' },
+                                { name: 'Home Favs', href: '/stores' }
+                            ].map((item) => (
+                                <li key={item.name}>
                                     <Link
-                                        to="/coming-soon"
-                                        state={{ name: item, status: 'coming soon' }}
+                                        to={item.href}
                                         className="text-xs text-white/40 hover:text-white transition-colors font-light tracking-wide"
                                     >
-                                        {item}
+                                        {item.name}
                                     </Link>
                                 </li>
                             ))}
@@ -89,15 +92,12 @@ export default function Footer() {
                         <ul className="space-y-3">
                             {[
                                 { name: 'About Us', href: '/our-story' },
-                                { name: 'Our Team', slug: 'our-team' },
-                                { name: 'Join Rider', href: '/courier/login' }
+                                { name: 'Our Team', href: '/our-team' },
+                                { name: 'Partner With Us', href: '/partner/login' },
+                                { name: 'Join as Rider', href: '/courier/login' }
                             ].map((item) => (
                                 <li key={item.name}>
-                                    {item.slug ? (
-                                        <Link to={`/legal/${item.slug}`} className="text-xs text-white/40 hover:text-white transition-colors font-light tracking-wide">{item.name}</Link>
-                                    ) : (
-                                        <Link to={item.href || '#'} className="text-xs text-white/40 hover:text-white transition-colors font-light tracking-wide">{item.name}</Link>
-                                    )}
+                                    <Link to={item.href} className="text-xs text-white/40 hover:text-white transition-colors font-light tracking-wide">{item.name}</Link>
                                 </li>
                             ))}
                         </ul>
@@ -127,25 +127,25 @@ export default function Footer() {
                     <div className="col-span-1 lg:col-span-1">
                         <h4 className="text-[9px] font-bold text-white/20 uppercase tracking-[0.3em] mb-6">Get App</h4>
                         <div className="flex flex-col gap-3">
-                            <Link to="/coming-soon" state={{ name: "The iOS App" }} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3 rounded-xl hover:bg-[#4A90E2] hover:border-[#4A90E2] transition-all group overflow-hidden">
+                            <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3 rounded-xl hover:bg-[#4A90E2] hover:border-[#4A90E2] transition-all group overflow-hidden">
                                 <img src={appStoreIcon} alt="App Store" className="w-6 h-6 rounded-lg shrink-0 object-contain invert opacity-30 group-hover:opacity-100 transition-opacity" />
                                 <div className="flex flex-col">
                                     <span className="text-[7px] font-bold uppercase tracking-widest text-white/20 group-hover:text-white transition-colors">App Store</span>
                                 </div>
-                            </Link>
-                            <Link to="/coming-soon" state={{ name: "The Android App" }} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3 rounded-xl hover:bg-[#00A082] hover:border-[#00A082] transition-all group overflow-hidden">
+                            </a>
+                            <a href="https://play.google.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3 rounded-xl hover:bg-[#00A082] hover:border-[#00A082] transition-all group overflow-hidden">
                                 <img src={googlePlayIcon} alt="Google Play" className="w-6 h-6 rounded-lg shrink-0 object-contain opacity-30 group-hover:opacity-100 transition-opacity" />
                                 <div className="flex flex-col">
                                     <span className="text-[7px] font-bold uppercase tracking-widest text-white/20 group-hover:text-white transition-colors">Play Store</span>
                                 </div>
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] uppercase tracking-[0.2em] text-white/20">
-                    <p>© 2026 Muncheez. Built for Nairobi.</p>
+                    <p>© 2026 Muncheez Technologies Ltd. Built for Nairobi.</p>
                     <div className="flex flex-wrap justify-center gap-8">
                         <Link to="/legal/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link to="/legal/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>

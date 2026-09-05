@@ -1,0 +1,208 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.1in,top=1.1in,bottom=1.1in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+% --- Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- High-Contrast Corporate Palette (Zero Grey) ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{RuleNavy}{HTML}{1E293B}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+
+\setstretch{1.2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+
+\begin{document}
+
+% ==========================================================
+% COVER PAGE (Minimalist Corporate Style)
+% ==========================================================
+\pagestyle{empty}
+\begin{titlepage}
+    \vspace*{2.5cm}
+    
+    % Brand Header
+    {\fontsize{44}{52}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}}
+    
+    \vspace{0.8cm}
+    
+    % Asymmetric Dual-Tone Accent Line
+    \begin{tikzpicture}
+        \draw[line width=3pt, color=CorporateNavy] (0,0) -- (\textwidth-3.5cm, 0);
+        \draw[line width=3pt, color=LinkBlue] (\textwidth-3.5cm,0) -- (\textwidth, 0);
+    \end{tikzpicture}
+    
+    \vspace{2.5cm}
+    
+    {\fontsize{11}{14}\sffamily\bfseries\color{LinkBlue}\uppercase{Statutory Filing \textperiodcentered\ Form CR2 Adoption}}
+    
+    \vspace{0.5cm}
+    
+    {\fontsize{28}{34}\sffamily\bfseries\color{CorporateNavy} Articles of Association}
+    
+    \vspace{1.0cm}
+    
+    {\fontsize{11}{16}\sffamily\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    {\fontsize{10}{14}\sffamily\color{SolidBlack} Incorporated under the Companies Act, 2015 (Republic of Kenya)}
+    
+    \vfill
+    
+    \color{RuleNavy}\hrule height 1.5pt
+    \vspace{0.5cm}
+    
+    \begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+        \textsf{\small\bfseries\color{CorporateNavy} REGISTRAR OF COMPANIES} \newline
+        \textsf{\scriptsize\color{SolidBlack} Business Registration Service (BRS)} &
+        \textsf{\small\bfseries\color{CorporateNavy} OFFICIAL STATUTORY RECORD} \newline
+        \textsf{\scriptsize\color{SolidBlack} Custom Governance Articles} \\
+    \end{tabularx}
+\end{titlepage}
+
+% ==========================================================
+% BODY SETUP
+% ==========================================================
+\newpage
+\pagestyle{plain}
+\pagenumbering{arabic}
+
+{\fontsize{18}{22}\sffamily\bfseries\color{CorporateNavy} REPUBLIC OF KENYA} \newline
+{\fontsize{14}{18}\sffamily\bfseries\color{LinkBlue} THE COMPANIES ACT, 2015}
+
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.4cm}
+
+{\fontsize{16}{20}\sffamily\bfseries\color{CorporateNavy} ARTICLES OF ASSOCIATION OF MUNCHEEZ TECHNOLOGIES INC.}
+
+\vspace{0.4cm}
+\textbf{\color{CorporateNavy} PRELIMINARY AND INTERPRETATION}
+
+1. The provisions of Model Articles for Private Companies Limited by Shares prescribed under the Companies Regulations made pursuant to the Companies Act, 2015 shall apply to the Company, save in so far as they are excluded, varied, or inconsistent with the express provisions set out in these Articles.
+
+2. In these Articles, unless the context otherwise requires:
+\begin{itemize}
+    \item \textbf{"Act"} means the Companies Act, 2015 of the laws of Kenya.
+    \item \textbf{"Company"} means Muncheez Technologies Inc.
+    \item \textbf{"Founders"} means Dean Ndere and Kris Kamau jointly.
+    \item \textbf{"Fully Diluted Basis"} means the calculation of share percentages assuming the conversion of all issued, unissued, options, and convertible instruments.
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{\color{CorporateNavy} PART I: CAPITAL STRUCTURE, SHARE CLASSES AND CAPITALIZATION}
+
+3. \textbf{Authorized Share Capital:} The baseline share capital of the Company at incorporation is allocated across Class B Ordinary Shares and Common Option Pools as follows:
+
+\vspace{0.2cm}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{} X p{4.5cm} >{\raggedleft\arraybackslash}X >{\raggedleft\arraybackslash}X @{}}
+    \toprule
+    \textbf{\color{CorporateNavy} Subscriber / Pool} & \textbf{\color{CorporateNavy} Executive Title} & \textbf{\color{CorporateNavy} Share Class} & \textbf{\color{CorporateNavy} Ownership \%} \\
+    \midrule
+    \textbf{Dean Ndere} & Founder \& CEO & Class B Ordinary & \textbf{52.50\%} \\
+    \textbf{Kris Kamau} & Co-Founder \& CTO & Class B Ordinary & \textbf{42.50\%} \\
+    \textbf{Unallocated ESOP} & Reserved Option Pool & Common Option & \textbf{5.00\%} \\
+    \midrule
+    \textbf{\color{CorporateNavy} TOTAL} & & & \textbf{\color{CorporateNavy} 100.00\%} \\
+    \bottomrule
+\end{tabularx}
+\end{table}
+
+4. \textbf{CTO Structural Equity Floor:} Notwithstanding any future equity issuances, investment rounds, or option grants, the shareholding of the Chief Technology Officer, Kris Kamau, shall not be compressed below an absolute minimum floor of \textbf{10.00\%} on a Fully Diluted Basis without his express written consent. Any corporate action violating this clause shall be void \textit{ab initio}.
+
+5. \textbf{Dual-Class Voting Mechanism:} Upon the aggregate equity holding of third-party investors reaching or exceeding 40.00\% on a Fully Diluted Basis, Class B Shares held by the Founders shall automatically convert into Class A Founder Shares carrying ten (10) votes per share. All other shares shall carry one (1) vote per share.
+
+6. \textbf{Aggregate Lifetime Founder Floor:} The combined aggregate equity holding of the original Founding team shall not be diluted below \textbf{51.00\%} on a Fully Diluted Basis in any financing round without unanimous written consent of both Founders.
+
+\vspace{0.4cm}
+\textbf{\color{CorporateNavy} PART II: EXECUTIVE GOVERNANCE AND TECHNICAL VETO}
+
+7. \textbf{Board Composition:} The Board of Directors shall initially consist of two (2) permanent executive directors: \textbf{Dean Ndere} (Managing Director \& CEO) and \textbf{Kris Kamau} (Executive Technical Director \& CTO). 
+
+8. \textbf{Tenure Protection:} Executive directorships held by the Founders are permanent tenure rights linked to their founding status and cannot be altered, suspended, or terminated by a simple majority vote of the Board or Shareholders.
+
+9. \textbf{CTO Technical Veto Authority:} As the sole architect of the platform, the Chief Technology Officer, Kris Kamau, holds an absolute, exclusive veto over:
+\begin{itemize}
+    \item System architecture, programming language migrations, and database schema alterations.
+    \item Access control, encryption key management, and cloud server deployment credentials.
+    \item Deployment schedules, features, engineering hiring, and technical compensation models.
+\end{itemize}
+
+\newpage
+
+\textbf{\color{CorporateNavy} PART III: INTELLECTUAL PROPERTY AND AUTOMATIC REVERSION}
+
+10. \textbf{Conditional Intellectual Property Assignment:} The assignment of technological source code, algorithms, database designs, and system architectures from the CTO to the Company is strictly conditional upon the continuous maintenance of Kris Kamau's executive authority and shareholding protection under Article 4.
+
+11. \textbf{Automatic IP Reversion Trigger:} If any action is taken to demote, terminate, or diminish the executive role, repository access, or equity threshold of Kris Kamau without his explicit written consent, legal title to all system software code and architecture shall \textbf{instantly revert to Kris Kamau}. Upon reversion, the Company shall hold only a non-exclusive license subject to a monthly fee equal to \textbf{15.00\% of gross revenues}.
+
+\vspace{0.4cm}
+\textbf{\color{CorporateNavy} PART IV: TRANSFER RESTRICTIONS AND PRE-EMPTION}
+
+12. \textbf{Right of First Refusal (ROFR):} No Shareholder shall transfer, pledge, or encumber shares to a non-shareholder without first offering such shares to the Company and existing Founders at Fair Market Value.
+
+13. \textbf{Deferred Settlement Option:} Pay-outs for bought-back shares under ROFR may be settled in equal quarterly installments over a 12 to 24 month period at the discretion of the Board to protect operational cash flow.
+
+14. \textbf{Tag-Along and Drag-Along Rights:} Minority holders possess tag-along rights on third-party sales. A drag-along execution requires a minimum Supermajority Vote of 75.00\% of voting shares.
+
+\vspace{0.4cm}
+\textbf{\color{CorporateNavy} PART V: DISPUTE RESOLUTION}
+
+15. Any conflict or deadlock arising under these Articles shall be resolved through mandatory 14-day direct consultation, followed by confidential mediation under the Chartered Institute of Arbitrators (Kenya Branch), and finally binding arbitration in Nairobi under the Arbitration Act (Cap. 49 of the Laws of Kenya).
+
+\vspace{2.5cm}
+\newpage
+
+% ==========================================================
+% ADOPTION AND EXECUTION
+% ==========================================================
+{\fontsize{14}{18}\sffamily\bfseries\color{CorporateNavy} STATUTORY ADOPTION SIGN-OFF}
+
+\vspace{0.2cm}
+\textsf{\small\color{SolidBlack} We, the undersigned, whose names and addresses are subscribed, agree to adopt these Articles of Association as the legal constitution of Muncheez Technologies Inc.}
+
+\vspace{2.0cm}
+
+\begin{tabularx}{\textwidth}{@{} X X @{}}
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Dean Ndere} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} Founder \& Chief Executive Officer} \newline
+    \textsf{\scriptsize\color{SolidBlack} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Date: \rule{3cm}{0.5pt}, 2026} &
+    
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Kris Kamau} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} Co-Founder \& Chief Technology Officer} \newline
+    \textsf{\scriptsize\color{SolidBlack} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Date: \rule{3cm}{0.5pt}, 2026} \\
+\end{tabularx}
+
+\vfill
+
+% --- FOOTER ---
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Nairobi, Kenya} &
+    \textsf{\small\bfseries\color{CorporateNavy} BRS FORM CR2 ATTACHMENT} \newline
+    \textsf{\scriptsize\color{SolidBlack} REF: MCH-2026-ARTICLES-STATUTORY} \\
+\end{tabularx}
+
+\end{document}

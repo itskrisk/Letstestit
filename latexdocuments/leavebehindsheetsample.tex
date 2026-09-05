@@ -1,0 +1,91 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.9in,top=0.9in,bottom=0.9in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Corporate Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{SlateGray}{HTML}{4A5568}
+\definecolor{BorderGray}{HTML}{CBD5E1}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+\pagestyle{empty}
+
+\setstretch{1.18}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\begin{document}
+
+% --- BRAND HEADER ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    {\fontsize{30}{36}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}} & \textsf{\small\bfseries\color{CorporateNavy} INVESTMENT \& PARTNERSHIP BRIEF} \\
+    {\textsf{\scriptsize\bfseries\color{SolidBlack} DIGITAL SOFTWARE MARKETPLACE \& LOGISTICS INFRASTRUCTURE}} & \textsf{\scriptsize\color{SlateGray} CONFIDENTIAL // 2026} \\
+\end{tabularx}
+
+\vspace{0.3cm}
+\hrule height 0.5pt
+\vspace{0.6cm}
+
+% --- EXECUTIVE SUMMARY ---
+{\fontsize{14}{18}\sffamily\bfseries\color{CorporateNavy} EXECUTIVE SUMMARY}
+
+\vspace{0.1cm}
+Muncheez Technologies Inc. is an enterprise software company providing mission-critical marketplace software and automated logistics infrastructure. Built to solve urban delivery bottlenecks across emerging markets, the platform provides proprietary routing, merchant inventory management, and instant digital payment settlement rails on a single unified stack.
+
+\vspace{0.6cm}
+
+% --- THE MARKET PROBLEM & MUNCHEEZ SOLUTION ---
+\begin{tabularx}{\textwidth}{@{} X p{0.5cm} X @{}}
+    {\fontsize{12}{15}\sffamily\bfseries\color{CorporateNavy} THE MARKET CHALLENGE} \newline
+    \textsf{\small\color{SolidBlack} Merchants face fragmented point-of-sale systems, high commission overheads, and unpredictable last-mile fulfillment. Existing platforms isolate order management from fleet dispatch, resulting in high operational churn and delayed delivery turnarounds.}
+    & &
+    {\fontsize{12}{15}\sffamily\bfseries\color{LinkBlue} THE MUNCHEEZ INFRASTRUCTURE} \newline
+    \textsf{\small\color{SolidBlack} Muncheez consolidates vendor management and last-mile routing into an integrated software pipeline. By pairing real-time demand matching with dynamic batch dispatching, the platform cuts delivery overhead while increasing merchant margins.} \\
+\end{tabularx}
+
+\vspace{0.8cm}
+
+% --- KEY OPERATIONAL METRICS & CORE CAPABILITIES ---
+{\fontsize{12}{15}\sffamily\bfseries\color{CorporateNavy} PLATFORM CAPABILITIES}
+
+\vspace{0.2cm}
+\begin{tabularx}{\textwidth}{@{} p{3.8cm} !{\color{BorderGray}\vrule width 1pt} X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} MERCHANT OS} & \textsf{\small\color{SolidBlack} Automated inventory synchronization, real-time catalog controls, and low-latency order processing.} \\[0.2cm]
+    \textsf{\small\bfseries\color{CorporateNavy} DISPATCH ROUTING} & \textsf{\small\color{SolidBlack} Algorithmic task distribution optimized for multi-modal fleets (walkers, riders, scooters, and vehicles).} \\[0.2cm]
+    \textsf{\small\bfseries\color{CorporateNavy} SETTLEMENT RAILS} & \textsf{\small\color{SolidBlack} Instant, automated payment distribution via M-PESA and direct banking APIs.} \\
+\end{tabularx}
+
+\vspace{0.8cm}
+
+% --- FOUNDING & GOVERNANCE STRUCTURE ---
+{\fontsize{12}{15}\sffamily\bfseries\color{CorporateNavy} LEADERSHIP \& GOVERNANCE}
+
+\vspace{0.1cm}
+\textsf{\small\color{SolidBlack} Muncheez was founded by a core team of six founders and founding members bringing deep expertise across software engineering, logistics operations, and commercial scaling across East Africa.}
+
+\vspace{0.8cm}
+
+% --- CORPORATE FOOTER ---
+\hrule height 0.5pt
+\vspace{0.4cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Corporate Headquarters} \newline
+    \textsf{\scriptsize\color{SlateGray} Muncheez Technologies Inc. \textperiodcentered\ Nairobi, Kenya} &
+    \textsf{\small\bfseries\color{LinkBlue} www.muncheez.com} \newline
+    \textsf{\scriptsize\color{SolidBlack} contact@muncheez.com} \\
+\end{tabularx}
+
+\end{document}

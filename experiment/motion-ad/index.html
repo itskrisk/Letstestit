@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUNCHEEZ_MOTION_AD_RECORD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #4A90E2;
+            --gold: #D4AF37;
+            --green: #00A082;
+            --black: #000000;
+            --white: #ffffff;
+            --ease-in-out-expo: cubic-bezier(1, 0, 0, 1);
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background: var(--black); 
+            font-family: 'Outfit', sans-serif;
+            color: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #ad-canvas {
+            width: 100vw; height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            will-change: transform, opacity, filter;
+            perspective: 1000px;
+        }
+
+        .text-hero {
+            font-size: clamp(3rem, 12vmin, 10rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.85;
+            text-align: center;
+            text-transform: uppercase;
+            white-space: nowrap;
+            max-width: 95vw;
+        }
+
+        .text-sub {
+            font-size: clamp(0.8rem, 2.5vmin, 1.5rem);
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .full-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.1);
+            filter: brightness(0.7);
+        }
+
+        .montage-clip {
+            position: absolute;
+            width: 100%; height: 100%;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .trail-container {
+            position: absolute;
+            width: 100%; height: 100%;
+            filter: blur(1px) brightness(1.5);
+            z-index: 1;
+        }
+        .trail {
+            fill: none;
+            stroke: var(--blue);
+            stroke-width: 3;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+        }
+
+        .color-block {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            mix-blend-mode: screen;
+        }
+
+        .climax-word {
+            position: absolute;
+            font-size: 18vmin;
+            font-weight: 900;
+            letter-spacing: -0.08em;
+            opacity: 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .logo-main {
+            font-size: clamp(4rem, 12vw, 10rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+        .logo-dot { color: var(--blue); }
+
+        .grain {
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1000;
+            background: url("https://grainy-gradients.vercel.app/noise.svg");
+            opacity: 0.04; mix-blend-mode: overlay;
+        }
+
+        .vignette {
+            position: fixed; inset: 0; z-index: 999; pointer-events: none;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.4) 100%);
+        }
+
+        #start-prompt {
+            position: fixed; inset: 0; z-index: 2000;
+            background: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+        }
+        #start-prompt.hide { opacity: 0; pointer-events: none; visibility: hidden; }
+        .prompt-text { font-size: 0.8rem; letter-spacing: 0.8em; font-weight: 600; text-transform: uppercase; color: #666; }
+        .play-icon { font-size: 3rem; margin-bottom: 2rem; color: #fff; }
+
+        #progress-bar {
+            position: fixed; bottom: 0; left: 0;
+            height: 2px; width: 0%;
+            background: var(--blue);
+            z-index: 3000;
+            transition: opacity 0.5s ease;
+        }
+
+        /* ─── Hidden Controls (Hover to reveal) ─── */
+        #controls-hot-zone {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 500px;
+            height: 150px;
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 40px;
+            padding-bottom: 40px;
+            pointer-events: all;
+        }
+
+        #controls {
+            display: flex;
+            gap: 15px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            pointer-events: none;
+        }
+        
+        #controls-hot-zone:hover #controls { 
+            opacity: 1; 
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover { background: white; color: black; transform: translateY(-2px); }
+
+        #recording-status {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff0000;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            z-index: 2000;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* ─── Record Mode (HARD HIDE) ─── */
+        body.recording { cursor: none !important; }
+        body.recording #controls-hot-zone { display: none !important; }
+        body.recording #progress-bar { display: none !important; }
+        body.recording #recording-status { display: block; }
+    </style>
+</head>
+<body id="main-body">
+
+    <div id="start-prompt" class="hide" onclick="handleStartTrigger()">
+        <div class="play-icon" id="play-icon">▶</div>
+        <div class="prompt-text" id="prompt-label">Experience the Rhythm</div>
+        <div id="spacebar-hint" style="margin-top: 2rem; font-size: 0.6rem; opacity: 0.4; letter-spacing: 0.2em;">PRESS SPACEBAR TO START</div>
+    </div>
+
+    <div id="recording-status">● Recording...</div>
+    <div id="progress-bar"></div>
+    <div class="grain"></div>
+    <div class="vignette"></div>
+
+    <div id="ad-canvas">
+        <div class="layer" id="scene-rhythm">
+            <h1 class="text-hero" id="word-1">Crave.</h1>
+            <h1 class="text-hero" id="word-2">Click.</h1>
+            <h1 class="text-hero" id="word-3">Done.</h1>
+            <h1 class="text-hero" id="word-4">Muncheez.</h1>
+        </div>
+        <div class="layer" id="scene-montage">
+            <div class="montage-clip" id="clip-1"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600" class="full-img"><h1 class="text-hero" style="font-size: 8vmin">Nairobi's Finest</h1></div>
+            <div class="montage-clip" id="clip-2"><img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=1600" class="full-img"><h1 class="text-hero" style="font-size: 8vmin">The Kitchens</h1></div>
+            <div class="montage-clip" id="clip-3"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600" class="full-img"><h1 class="text-hero" style="font-size: 8vmin">The Markets</h1></div>
+            <div class="montage-clip" id="clip-4"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1600" class="full-img"><h1 class="text-hero" style="font-size: 8vmin">The Bakery</h1></div>
+        </div>
+        <div class="layer" id="scene-typo">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <h1 class="text-hero" style="font-size: 10vmin" id="typo-1">Every Flavor.</h1>
+                <h1 class="text-hero" style="font-size: 10vmin" id="typo-2">Every Corner.</h1>
+                <h1 class="text-hero" style="font-size: 10vmin" id="typo-3">The 254.</h1>
+            </div>
+        </div>
+        <div class="layer" id="scene-trail">
+            <div class="trail-container">
+                <svg width="100%" height="100%" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                    <path class="trail" id="path-1" d="M 0 500 Q 250 100 500 500 T 1000 500"></path>
+                    <path class="trail" id="path-2" style="stroke: var(--gold)" d="M 0 400 Q 250 900 500 400 T 1000 400"></path>
+                    <path class="trail" id="path-3" style="stroke: var(--green)" d="M 0 600 Q 250 0 500 600 T 1000 600"></path>
+                </svg>
+            </div>
+            <h1 class="text-hero" style="font-size: 6vw" id="trail-text">Moving Nairobi.</h1>
+        </div>
+        <div class="layer" id="scene-colors">
+            <div class="color-block" style="background: var(--blue)" id="block-blue"></div>
+            <div class="color-block" style="background: var(--gold)" id="block-gold"></div>
+            <div class="color-block" style="background: var(--green)" id="block-green"></div>
+            <h1 class="climax-word" id="cw-1">FAST.</h1>
+            <h1 class="climax-word" id="cw-2">FRESH.</h1>
+            <h1 class="climax-word" id="cw-3">FAM.</h1>
+        </div>
+        <div class="layer" id="scene-promise">
+            <div style="text-align: center;">
+                <h1 class="text-hero" style="font-size: 8vw" id="promise-1">Respect the craft.</h1>
+                <h1 class="text-hero" style="font-size: 8vw; color: var(--blue);" id="promise-2">Love the food.</h1>
+            </div>
+        </div>
+        <div class="layer" id="scene-final">
+            <div style="text-align: center;">
+                <h1 class="logo-main" id="final-logo">Muncheez<span class="logo-dot">.</span></h1>
+                <p class="text-sub" id="final-sub">The City, Delivered.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="controls-hot-zone">
+        <div id="controls">
+            <button class="control-btn" onclick="tl.restart()">↺ Replay</button>
+            <button class="control-btn" onclick="downloadSource()">💾 Save Code</button>
+            <button class="control-btn" id="record-btn" onclick="prepareCinematicRecord()">🎥 Cinematic Record</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecordMode = false;
+        
+        const tl = gsap.timeline({ 
+            paused: true,
+            onComplete: () => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    setTimeout(() => stopRecording(), 1000); 
+                }
+            }
+        });
+
+        function handleStartTrigger() {
+            if (isRecordMode) {
+                document.getElementById('main-body').classList.add('recording');
+                if (mediaRecorder) mediaRecorder.start();
+                setTimeout(() => {
+                    document.getElementById('start-prompt').classList.add('hide');
+                    tl.restart();
+                }, 400);
+            } else {
+                document.getElementById('start-prompt').classList.add('hide');
+                tl.play();
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                const promptVisible = !document.getElementById('start-prompt').classList.contains('hide');
+                if (promptVisible) { e.preventDefault(); handleStartTrigger(); }
+            }
+        });
+
+        function init() {
+            const appleEase = "expo.inOut";
+            const appleOut = "expo.out";
+            const appleIn = "expo.in";
+            const totalSeconds = 53.5;
+            tl.to("#progress-bar", { width: "100%", duration: totalSeconds, ease: "none" }, 0);
+            tl.set("#scene-rhythm", { opacity: 1, visibility: "visible" }, 0);
+            ["#word-1", "#word-2", "#word-3", "#word-4"].forEach((id, i) => {
+                const t = i * 1.4;
+                tl.fromTo(id, { opacity: 0, scale: 0.2, filter: "blur(30px)", z: -500 }, { opacity: 1, scale: 1, filter: "blur(0px)", z: 0, duration: 1, ease: appleOut }, t);
+                tl.to(id, { opacity: 0, scale: 4, filter: "blur(40px)", z: 500, duration: 0.8, ease: appleIn }, t + 1);
+            });
+            tl.to("#scene-rhythm", { opacity: 0, duration: 0.8 }, 5.5);
+            tl.set("#scene-montage", { opacity: 1, visibility: "visible" }, 5.5);
+            ["#clip-1", "#clip-2", "#clip-3", "#clip-4"].forEach((id, i) => {
+                const t = 5.5 + (i * 2.2);
+                tl.to(id, { opacity: 1, duration: 0.5 }, t);
+                tl.fromTo(`${id} img`, { scale: 1.4, x: -100, filter: "blur(10px)" }, { scale: 1, x: 100, filter: "blur(0px)", duration: 2.8, ease: "none" }, t);
+                tl.fromTo(`${id} h1`, { opacity: 0, y: 100, scale: 0.8, filter: "blur(10px)" }, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1.2, ease: appleOut }, t + 0.3);
+                if (i < 3) tl.to(id, { opacity: 0, scale: 1.2, filter: "blur(20px)", duration: 0.6, ease: appleIn }, t + 2);
+                else tl.to(id, { opacity: 0, scale: 0.9, filter: "blur(30px)", duration: 1, ease: appleIn }, t + 2);
+            });
+            tl.to("#scene-montage", { opacity: 0, duration: 0.8 }, 14);
+            const scene3Start = 15.5;
+            tl.set("#scene-typo", { opacity: 1, visibility: "visible" }, scene3Start);
+            ["#typo-1", "#typo-2", "#typo-3"].forEach((id, i) => {
+                const t = scene3Start + (i * 2.8);
+                tl.fromTo(id, { x: i % 2 === 0 ? -400 : 400, opacity: 0, skewX: 30, filter: "blur(20px)" }, { x: 0, opacity: 1, skewX: 0, filter: "blur(0px)", duration: 1.8, ease: appleOut }, t);
+                if (i < 2) tl.to(id, { opacity: 0.05, y: -150, scale: 0.9, filter: "blur(5px)", duration: 1.5, ease: appleEase }, t + 1.8);
+            });
+            tl.to("#scene-typo", { opacity: 0, scale: 2, filter: "blur(40px)", duration: 1 }, scene3Start + 9);
+            const scene4Start = 24.5;
+            tl.set("#scene-trail", { opacity: 1, visibility: "visible" }, scene4Start);
+            tl.to(".trail", { strokeDashoffset: 0, duration: 3, stagger: 0.5, ease: "power4.inOut" }, scene4Start + 0.5);
+            tl.fromTo("#trail-text", { opacity: 0, scale: 0.5, letterSpacing: "4em", filter: "blur(20px)" }, { opacity: 1, scale: 1, letterSpacing: "-0.06em", filter: "blur(0px)", duration: 2.5, ease: appleOut }, scene4Start + 1.5);
+            tl.to("#scene-trail", { opacity: 0, filter: "blur(50px)", scale: 1.5, duration: 1.2 }, scene4Start + 6);
+            const scene5Start = 30.5;
+            tl.set("#scene-colors", { opacity: 1, visibility: "visible" }, scene5Start);
+            ["#block-blue", "#block-gold", "#block-green"].forEach((id, i) => {
+                const t = scene5Start + (i * 2.2);
+                tl.to(id, { opacity: 1, duration: 0.05 }, t);
+                tl.to(id, { opacity: 0, duration: 0.05 }, t + 2.1);
+            });
+            ["#cw-1", "#cw-2", "#cw-3"].forEach((id, i) => {
+                const t = scene5Start + (i * 2.2);
+                tl.fromTo(id, { scale: 0.2, opacity: 0, filter: "blur(30px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "back.out(3)" }, t + 0.2);
+                tl.to(id, { scale: 5, opacity: 0, filter: "blur(40px)", duration: 0.6, ease: appleIn }, t + 1.5);
+            });
+            tl.to("#scene-colors", { opacity: 0, duration: 0.8 }, scene5Start + 7);
+            const scene6Start = 37.5;
+            tl.set("#scene-promise", { opacity: 1, visibility: "visible" }, scene6Start);
+            tl.fromTo("#promise-1", { opacity: 0, y: 50, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 2, ease: appleOut }, scene6Start + 1);
+            tl.fromTo("#promise-2", { opacity: 0, y: 50, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 2, ease: appleOut }, scene6Start + 2.5);
+            tl.to("#scene-promise", { opacity: 0, y: -50, filter: "blur(20px)", duration: 1.5 }, scene6Start + 7);
+            const scene7Start = 45.5;
+            tl.set("#scene-final", { opacity: 1, visibility: "visible" }, scene7Start);
+            tl.fromTo("#final-logo", { opacity: 0, filter: "blur(40px)", scale: 0.6, z: -200 }, { opacity: 1, filter: "blur(0px)", scale: 1, z: 0, duration: 3, ease: "back.out(1.2)" }, scene7Start + 1);
+            tl.fromTo("#final-sub", { opacity: 0, y: 20 }, { opacity: 0.5, y: 0, duration: 2, ease: appleOut }, scene7Start + 2.5);
+            tl.play();
+        }
+
+        function downloadSource() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'muncheez-ad.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function prepareCinematicRecord() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { frameRate: 60, cursor: 'never' },
+                    audio: false
+                });
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+                recordedChunks = [];
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'muncheez-cinematic-ad.webm';
+                    a.click();
+                    isRecordMode = false;
+                    document.getElementById('main-body').classList.remove('recording');
+                    document.getElementById('recording-status').style.display = 'none';
+                    document.getElementById('start-prompt').classList.remove('hide');
+                    document.getElementById('prompt-label').innerText = 'Experience the Rhythm';
+                    document.getElementById('play-icon').innerText = '▶';
+                    tl.progress(0).pause();
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                isRecordMode = true;
+                document.getElementById('start-prompt').classList.remove('hide');
+                document.getElementById('prompt-label').innerText = 'RECORDING READY: SPACEBAR';
+                document.getElementById('play-icon').innerText = '⏺';
+            } catch (err) { alert("Recording preparation cancelled."); }
+        }
+
+        function stopRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }
+        window.onload = init;
+    </script>
+</body>
+</html>

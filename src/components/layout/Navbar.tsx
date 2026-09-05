@@ -18,10 +18,10 @@ export default function Navbar() {
     const AuthButton = ({ mobile = false }) => {
         // Only customer sessions are recognized in the Customer Navbar.
         // Riders, Merchants, and Admins who land here see a plain Login button.
-        const isCustomer = user && (profile?.role === 'customer' || !profile);
+        const isCustomer = user && (profile?.roles?.includes('customer') || profile?.role === 'customer' || !profile);
         const firstName = profile?.full_name?.split(' ')[0];
         const buttonText = isCustomer ? (firstName || 'ACCOUNT') : 'Login';
-        const targetPath = isCustomer ? '/c/stores' : '/login';
+        const targetPath = isCustomer ? '/stores' : '/login';
 
         const baseClasses = mobile
             ? 'py-6 text-center text-[10px] font-bold uppercase tracking-[0.5em] rounded-full'
@@ -114,7 +114,7 @@ export default function Navbar() {
                         )}
                         {user && (
                             <Link
-                                to="/c/stores"
+                                to="/stores"
                                 className="md:hidden flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#4A90E2]"
                             >
                                 {profile?.full_name?.split(' ')[0] || 'App'} <ArrowRight size={14} />

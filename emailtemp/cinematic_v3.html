@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;700&family=Inter:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        .img-stack {
+            position: relative;
+            height: 500px;
+            margin-bottom: 60px;
+        }
+
+        .img-main {
+            width: 80%;
+            height: 400px;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid #eee;
+        }
+
+        .img-sub {
+            width: 50%;
+            height: 300px;
+            object-fit: cover;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 10px solid #fff;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            padding: 0 40px;
+            text-align: left;
+        }
+
+        .brand {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: #4A90E2;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 52px;
+            font-weight: 300;
+            line-height: 1;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+        }
+
+        .italic {
+            font-style: italic;
+            opacity: 0.3;
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 25px 50px;
+            background: #000;
+            color: #fff !important;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="img-stack">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200" class="img-main">
+            <img src="https://images.unsplash.com/photo-1549466600-019313cf2010?q=80&w=800" class="img-sub">
+        </div>
+        <div class="content">
+            <span class="brand">Direct Signal</span>
+            <h1>The Pleasure <br>is <span class="italic">Ours</span>, <br>{{ .User.user_metadata.full_name }}</h1>
+            <p>Welcome to Muncheez. We've curated the city just for you. One last step to join the family.</p>
+            <a href="{{ .ConfirmationURL }}" class="btn">Confirm Induction</a>
+        </div>
+    </div>
+</body>
+
+</html>

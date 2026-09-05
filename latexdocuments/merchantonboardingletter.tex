@@ -1,0 +1,95 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in,top=0.8in,bottom=0.8in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+\pagestyle{empty}
+
+\setstretch{1.18}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+\begin{document}
+
+% --- BRAND HEADER ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    {\fontsize{30}{36}\sffamily\bfseries\color{SolidBlack} Muncheez\color{LinkBlue}{\textbf{.}}} & \textsf{\small\bfseries\color{LinkBlue} MERCHANT ONBOARDING} \\
+    {\textsf{\scriptsize\bfseries\color{SolidBlack} DIGITAL SOFTWARE MARKETPLACE \& LOGISTICS INFRASTRUCTURE}} & \textsf{\scriptsize\color{SolidBlack} CONFIDENTIAL} \\
+\end{tabularx}
+
+\vspace{0.2cm}
+\hrule height 0.5pt
+\vspace{0.5cm}
+
+% --- RECIPIENT METADATA ---
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{SolidBlack} PREPARED FOR:} & \textsf{\small\bfseries\color{SolidBlack} DATE:} \\
+    \textsf{\small\color{SolidBlack} \textbf{[Merchant Store / Business Name]}} & \textsf{\small\color{SolidBlack} \underline{\hspace{3.0cm}}, 2026} \\[0.05cm]
+    \textsf{\small\color{SolidBlack} Attn: \textbf{[Merchant Contact Name]}} & \\
+    \textsf{\small\color{SolidBlack} \textbf{[Business Location / Address, Nairobi]}} & \textsf{\small\bfseries\color{LinkBlue} MERCHANT ID: MCH-2026-XXXX} \\
+\end{tabularx}
+
+\vspace{0.5cm}
+
+% --- SUBJECT ---
+{\fontsize{13}{16}\sffamily\bfseries\color{SolidBlack} WELCOME TO MUNCHEEZ: OFFICIAL ONBOARDING \& INFRASTRUCTURE ACCESS}
+
+\vspace{0.4cm}
+
+% --- LETTER BODY ---
+Dear \textbf{[Merchant Name / Operations Team]},
+
+Welcome to the Muncheez merchant network. We are excited to partner with your business to power your digital storefront and streamline your last-mile logistics operations.
+
+As an onboarded merchant partner, you now have access to our integrated software ecosystem, enabling seamless order management, real-time delivery dispatch, and automated financial settlements.
+
+\vspace{0.2cm}
+
+% --- ONBOARDING CHECKLIST / ROADMAP CARD ---
+\color{SolidBlack}\hrule height 0.5pt
+\vspace{0.25cm}
+\textsf{\scriptsize\bfseries\color{LinkBlue}\uppercase{Next Steps to Go Live}} \\[0.2cm]
+
+\begin{tabularx}{\textwidth}{@{} p{3.2cm} !{\color{LinkBlue}\vrule width 1.5pt} X @{}}
+    \textsf{\small\bfseries\color{SolidBlack} 1. DASHBOARD ACCESS} & \textsf{\small\color{SolidBlack} Log in to your merchant portal at \textbf{merchant.muncheez.com} using your credentials.} \\[0.15cm]
+    \textsf{\small\bfseries\color{SolidBlack} 2. CATALOGUE SETUP} & \textsf{\small\color{SolidBlack} Review and verify your product inventory, pricing, and active operating hours.} \\[0.15cm]
+    \textsf{\small\bfseries\color{SolidBlack} 3. SETTLEMENT BANK} & \textsf{\small\color{SolidBlack} Confirm your preferred disbursement account (M-PESA / Commercial Bank) for payouts.} \\[0.15cm]
+    \textsf{\small\bfseries\color{SolidBlack} 4. HARDWARE TEST} & \textsf{\small\color{SolidBlack} Complete a quick 5-minute test order with your assigned integration specialist.} \\
+\end{tabularx}
+
+\vspace{0.25cm}
+\color{SolidBlack}\hrule height 0.5pt
+\vspace{0.3cm}
+
+% --- SUPPORT & DEDICATED MANAGER ---
+\textsf{\small\bfseries\color{SolidBlack} Your Dedicated Support Team} \newline
+\textsf{\small\color{SolidBlack} Your account has been assigned a dedicated Partner Success Manager to assist you through setup and training. Should you require immediate technical or operational assistance during setup, please reach out directly via your support channel.}
+
+\vspace{0.6cm}
+
+% --- SIGN-OFF BLOCK ---
+Sincerely,
+
+\vspace{0.6cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{SolidBlack} Merchant Operations Team} & \textsf{\small\bfseries\color{SolidBlack} Partner Success Desk} \\
+    \textsf{\small\color{SolidBlack} Muncheez Technologies Inc.} & \textsf{\small\color{LinkBlue} partners@muncheez.com} \\
+    \textsf{\scriptsize\color{LinkBlue} www.muncheez.com} & \textsf{\small\color{SolidBlack} +254 (0) 700 000 000} \\
+\end{tabularx}
+
+\end{document}

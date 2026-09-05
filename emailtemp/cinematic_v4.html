@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            font-family: 'Outfit', sans-serif;
+            color: #000;
+            text-align: center;
+        }
+
+        .header {
+            padding: 100px 20px;
+            border-bottom: 1px solid #111;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-name {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 200px;
+            font-weight: 900;
+            opacity: 0.03;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
+        .brand {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1em;
+            text-transform: uppercase;
+            color: #4A90E2;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 64px;
+            font-weight: 300;
+            line-height: 1;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .italic {
+            font-style: italic;
+            color: #4A90E2;
+        }
+
+        .img-wide {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            margin-bottom: 80px;
+        }
+
+        p {
+            max-width: 450px;
+            margin: 0 auto 60px auto;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 30px 60px;
+            background: #000;
+            color: #fff !important;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="bg-name">{{ .User.user_metadata.full_name }}</div>
+        <div class="brand">Muncheez Collective</div>
+        <h1>Purely <span class="italic">Exceptional</span>.</h1>
+    </div>
+    <img src="https://images.unsplash.com/photo-1547496502-affa22d38842?q=80&w=1200" class="img-wide">
+    <p>Welcome, {{ .User.user_metadata.full_name }}. An intentional dining experience is just a click away.</p>
+    <a href="{{ .ConfirmationURL }}" class="btn">Finalize Activation</a>
+    <div style="height: 100px;"></div>
+</body>
+
+</html>

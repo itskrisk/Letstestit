@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;700&family=Inter:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a1a;
+        }
+
+        .card {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero {
+            position: relative;
+            height: 500px;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 40px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 72px;
+            font-weight: 300;
+            line-height: 0.9;
+            margin: 0;
+            letter-spacing: -3px;
+        }
+
+        .name-label {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: #4A90E2;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 10px 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .content {
+            padding: 80px 50px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 25px 50px;
+            background: #1a1a1a;
+            color: #fff !important;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            font-size: 11px;
+            border: 1px solid #1a1a1a;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: transparent;
+            color: #1a1a1a !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="hero">
+            <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1200" class="hero-img">
+            <div class="name-label">{{ .User.user_metadata.full_name }}</div>
+            <div class="hero-text">
+                <h1>BEYOND<br>THE CITY.</h1>
+            </div>
+        </div>
+        <div class="content">
+            <div
+                style="font-size: 12px; font-weight: 700; color: #4A90E2; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 20px;">
+                Induction Complete</div>
+            <p>Welcome to the family. You're now connected to Nairobi's finest network. Let's make it official.</p>
+            <a href="{{ .ConfirmationURL }}" class="btn">Verify Profile</a>
+        </div>
+    </div>
+</body>
+
+</html>

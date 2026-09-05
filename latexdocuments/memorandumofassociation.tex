@@ -1,0 +1,175 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.1in,top=1.1in,bottom=1.1in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+% --- Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- High-Contrast Corporate Palette (Zero Grey) ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{RuleNavy}{HTML}{1E293B}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+
+\setstretch{1.2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+
+\begin{document}
+
+% ==========================================================
+% COVER PAGE (Minimalist Corporate Style)
+% ==========================================================
+\pagestyle{empty}
+\begin{titlepage}
+    \vspace*{2.5cm}
+    
+    % Brand Header
+    {\fontsize{44}{52}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}}
+    
+    \vspace{0.8cm}
+    
+    % Asymmetric Dual-Tone Accent Line
+    \begin{tikzpicture}
+        \draw[line width=3pt, color=CorporateNavy] (0,0) -- (\textwidth-3.5cm, 0);
+        \draw[line width=3pt, color=LinkBlue] (\textwidth-3.5cm,0) -- (\textwidth, 0);
+    \end{tikzpicture}
+    
+    \vspace{2.5cm}
+    
+    {\fontsize{11}{14}\sffamily\bfseries\color{LinkBlue}\uppercase{Statutory Filing \textperiodcentered\ Form CR2 Submission}}
+    
+    \vspace{0.5cm}
+    
+    {\fontsize{28}{34}\sffamily\bfseries\color{CorporateNavy} Memorandum of Association}
+    
+    \vspace{1.0cm}
+    
+    {\fontsize{11}{16}\sffamily\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    {\fontsize{10}{14}\sffamily\color{SolidBlack} Pursuant to the Companies Act, 2015 (Republic of Kenya)}
+    
+    \vfill
+    
+    \color{RuleNavy}\hrule height 1.5pt
+    \vspace{0.5cm}
+    
+    \begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+        \textsf{\small\bfseries\color{CorporateNavy} REGISTRAR OF COMPANIES} \newline
+        \textsf{\scriptsize\color{SolidBlack} Business Registration Service (BRS)} &
+        \textsf{\small\bfseries\color{CorporateNavy} STATUTORY DECLARATION} \newline
+        \textsf{\scriptsize\color{SolidBlack} Form CR2 Attachment} \\
+    \end{tabularx}
+\end{titlepage}
+
+% ==========================================================
+% BODY SETUP
+% ==========================================================
+\newpage
+\pagestyle{plain}
+\pagenumbering{arabic}
+
+{\fontsize{18}{22}\sffamily\bfseries\color{CorporateNavy} REPUBLIC OF KENYA} \newline
+{\fontsize{14}{18}\sffamily\bfseries\color{LinkBlue} THE COMPANIES ACT, 2015}
+
+\vspace{0.2cm}
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.4cm}
+
+{\fontsize{16}{20}\sffamily\bfseries\color{CorporateNavy} MEMORANDUM OF ASSOCIATION OF MUNCHEEZ TECHNOLOGIES INC.}
+
+\vspace{0.6cm}
+
+1. Each subscriber to this Memorandum of Association wishes to form a company under the Companies Act, 2015 and agrees to become a member of the company and to take the number of shares set out opposite his or her name.
+
+2. The legal name of the proposed company is **Muncheez Technologies Inc.**
+
+3. The registered office of the company will be situated in the Republic of Kenya.
+
+4. The liability of the members of the company is limited by shares.
+
+\vspace{0.8cm}
+\textbf{\color{CorporateNavy} STATUTORY SUBSCRIPTION SCHEDULE}
+
+\vspace{0.3cm}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{} p{4.5cm} X p{3cm} >{\raggedleft\arraybackslash}X @{}}
+    \toprule
+    \textbf{\color{CorporateNavy} Name of Subscriber} & \textbf{\color{CorporateNavy} Residential Address} & \textbf{\color{CorporateNavy} Share Class} & \textbf{\color{CorporateNavy} Number of Shares} \\
+    \midrule
+    \textbf{Dean Ndere} & Nairobi, Republic of Kenya & Class B Ordinary & \textbf{5,250 Shares} \\
+    \textbf{Kris Kamau} & Nairobi, Kenya / Türkiye & Class B Ordinary & \textbf{4,250 Shares} \\
+    \midrule
+    \textbf{\color{CorporateNavy} TOTAL SUBSCRIBED} & & & \textbf{\color{CorporateNavy} 9,500 Shares} \\
+    \bottomrule
+\end{tabularx}
+\end{table}
+
+\textsf{\scriptsize\color{SolidBlack} *Note: The remaining 500 shares (5.00\%) are reserved in the authorized capital for the Employee Share Option Plan (ESOP) pool to be issued pursuant to board resolutions.}
+
+\vspace{2.5cm}
+\newpage
+% ==========================================================
+% EXECUTION AND WITNESSING
+% ==========================================================
+{\fontsize{14}{18}\sffamily\bfseries\color{CorporateNavy} SUBSCRIPTION EXECUTION}
+
+\vspace{0.2cm}
+\textsf{\small\color{SolidBlack} Dated this \rule{3cm}{0.5pt} day of \rule{4cm}{0.5pt}, 2026.}
+
+\vspace{2.0cm}
+
+\begin{tabularx}{\textwidth}{@{} X X @{}}
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Dean Ndere} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} Subscriber \& CEO} \newline
+    \textsf{\scriptsize\color{SolidBlack} Muncheez Technologies Inc.} &
+    
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Kris Kamau} \newline
+    \textsf{\scriptsize\bfseries\color{LinkBlue} Subscriber \& CTO} \newline
+    \textsf{\scriptsize\color{SolidBlack} Muncheez Technologies Inc.} \\
+\end{tabularx}
+
+\vspace{2.5cm}
+
+\textbf{\color{CorporateNavy} WITNESS TO THE ABOVE SIGNATURES:}
+
+\vspace{1.5cm}
+
+\begin{tabularx}{\textwidth}{@{} X X @{}}
+    \rule{6.5cm}{1pt} \newline
+    \textsf{\small\bfseries\color{CorporateNavy} Witness Signature} \newline
+    \textsf{\scriptsize\color{SolidBlack} Full Name: \rule{4cm}{0.4pt}} \newline
+    \textsf{\scriptsize\color{SolidBlack} Address: \rule{4cm}{0.4pt}} \newline
+    \textsf{\scriptsize\color{SolidBlack} Occupation: Advocate / Commissioner for Oaths} &
+    
+    \textsf{\small\bfseries\color{CorporateNavy} OFFICIAL STAMP / SEAL} \\
+\end{tabularx}
+
+\vfill
+
+% --- FOOTER ---
+\color{RuleNavy}\hrule height 1.5pt
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{@{} X >{\raggedleft\arraybackslash}X @{}}
+    \textsf{\small\bfseries\color{CorporateNavy} Muncheez Technologies Inc.} \newline
+    \textsf{\scriptsize\color{SolidBlack} Nairobi, Kenya} &
+    \textsf{\small\bfseries\color{CorporateNavy} BRS FORM CR2 ATTACHMENT} \newline
+    \textsf{\scriptsize\color{SolidBlack} REF: MCH-2026-MEMORANDUM-STATUTORY} \\
+\end{tabularx}
+
+\end{document}
