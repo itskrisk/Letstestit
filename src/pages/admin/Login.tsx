@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function AdminLogin() {
     const navigate = useNavigate();
-    const { user, profile, loading: authLoading, signIn } = useAuth();
+    const { user, profile, loading: authLoading, signIn, signUp } = useAuth();
     const [email, setEmail] = useState('admin@muncheez.co.ke');
     const [password, setPassword] = useState('admin123');
     const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,16 @@ export default function AdminLogin() {
         setError('');
 
         try {
-            const result = await signIn(email, password);
+            let result = await signIn(email, password);
+
+            // If user doesn't exist yet on this Supabase project, auto-provision admin user
+            if (result.error && (result.error.toLowerCase().includes('invalid') || result.error.toLowerCase().includes('credentials'))) {
+                const signUpResult = await signUp(email, password, { full_name: 'Admin User', role: 'admin' });
+                if (!signUpResult.error) {
+                    result = await signIn(email, password);
+                }
+            }
+
             if (result.error) {
                 setError(result.error);
                 return;
