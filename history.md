@@ -1154,4 +1154,46 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - Implementation plan created and submitted for user review.
 
+---
+
+## [2026-09-05] Master Admin Auth, Customer Profile Settings & Mobile Profile Navigation Completion
+
+### Prompt / Request:
+> "proceed"
+
+### Actions Taken:
+1. **Implemented Master Admin Auth Fallback (`AuthContext.tsx` & `Login.tsx`)**:
+   - Added `MASTER_ADMIN_USER` object and master authentication fallback in `signIn()` for username `admin` or email `admin@muncheez.co.ke` with password `admin123`.
+   - Stored master session in `localStorage.getItem('muncheez_admin_master')` to survive page reloads and instantly grant Admin access.
+   - Updated `signOut()` to purge master local storage flags upon log out.
+   - Updated `src/pages/admin/Login.tsx` label to "Username or Email" supporting `admin` or `admin@muncheez.co.ke`.
+
+2. **Built Functional Customer Settings & Profile Modal (`ProfileModal.tsx`)**:
+   - Transformed `ProfileModal.tsx` into a comprehensive management modal supporting:
+     - Editable **Full Name**, **Phone Number**, and **Default Delivery Address**.
+     - Functional **Save Changes** button syncing with Supabase user metadata and `profiles` table.
+     - **Password Reset** email trigger.
+     - **Order History** tab displaying real/recent customer orders with live status badges.
+     - **Sign Out** button clearing active session and redirecting to `/login`.
+
+3. **Fixed Mobile & Desktop Profile Avatar Header Buttons**:
+   - Updated `StoreListing.tsx`, `SupermarketStore.tsx`, `PharmacyStore.tsx`, and `KitchenStore.tsx` header bars by changing profile button wrapper class from `hidden sm:flex` to `flex`.
+   - Enabled mobile users to view and tap the profile avatar button on mobile screens to open `ProfileModal`.
+
+4. **Updated Layout Role Guards (`MerchantLayout.tsx` & `CourierLayout.tsx`)**:
+   - Updated role checks in `MerchantLayout.tsx` and `CourierLayout.tsx` to inspect `user?.user_metadata?.role` as a fallback alongside `profile.roles`.
+   - Ensured new merchant and rider accounts pass through layout guards to reach their dashboard views where `VerificationOverlay` ("Application Under Review") is strictly rendered.
+
+5. **Fixed TypeScript Compilation & Verified Production Build**:
+   - Fixed `User` interface type definitions in `AuthContext.tsx` and imported `User as SupabaseUser` from `@supabase/supabase-js`.
+   - Ran `npm run build` (`tsc -b && vite build`) and verified zero TypeScript or Vite errors.
+
+6. **Pushed to GitHub**:
+   - Committed changes with message `fix(admin-auth-profile): implement master admin login fallback, functional profile settings modal, mobile profile icon access, and verified layout role guards`.
+   - Pushed cleanly to remote repository `https://github.com/itskrisk/Letstestit.git` on branch `main` (commit `767f4ca`).
+
+### Status:
+- **COMPLETED & VERIFIED ON GITHUB MAIN**. All requirements delivered.
+
+
 

@@ -40,7 +40,7 @@ const staggerItem = {
 
 export default function PharmacyStore({ merchant, products }: PharmacyStoreProps) {
     const navigate = useNavigate();
-    const { profile } = useAuth();
+    const { user, profile } = useAuth();
     const { addItem, updateQuantity, items, itemCount } = useCart();
     const [selectedCategory, setSelectedCategory] = useState('Featured items');
     const [searchTerm, setSearchTerm] = useState('');
@@ -174,78 +174,88 @@ export default function PharmacyStore({ merchant, products }: PharmacyStoreProps
                     onClose={() => setIsProfileOpen(false)}
                 />
 
-                {/* MOBILE MENU DRAWER (US-STYLE REDESIGN) */}
+                {/* High-End Mobile Menu Overlay (Matching Home Navbar) */}
                 <AnimatePresence>
                     {isMenuOpen && (
-                        <>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300]"
-                            />
-                            <motion.div
-                                initial={{ x: '-100%' }}
-                                animate={{ x: 0 }}
-                                exit={{ x: '-100%' }}
-                                transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-                                className="fixed top-0 left-0 bottom-0 w-[280px] bg-white z-[301] p-8 flex flex-col shadow-2xl"
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                            className="fixed inset-0 z-[600] bg-black/90 backdrop-blur-3xl pt-28 px-8 flex flex-col justify-between pb-12"
+                        >
+                            {/* Mobile Menu Logo */}
+                            <button
+                                onClick={() => { setIsMenuOpen(false); navigate('/'); }}
+                                className="absolute top-8 left-8 flex items-center gap-2 group text-left"
                             >
-                                <div className="flex items-center justify-between mb-12">
-                                    <div className="text-2xl font-heading font-black tracking-tighter text-black">
-                                        Muncheez<span className="text-[#D4AF37]">.</span>
-                                    </div>
-                                    <button onClick={() => setIsMenuOpen(false)} className="w-8 h-8 flex items-center justify-center hover:bg-black/5 rounded-full transition-all">
-                                        <X size={18} className="text-black" />
+                                <span className="font-heading font-bold text-2xl tracking-tighter text-white">
+                                    Muncheez<span className="text-[#4A90E2]">.</span>
+                                </span>
+                            </button>
+
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setIsMenuOpen(false)}
+                                className="absolute top-8 right-8 p-3 text-white/50 hover:text-white transition-colors"
+                            >
+                                <X size={28} strokeWidth={1.5} />
+                            </button>
+
+                            {/* Category Links with Monospace Numbers */}
+                            <div className="flex flex-col gap-6 mt-6">
+                                {[
+                                    { label: 'The Kitchens', path: '/c/stores?v=kitchen' },
+                                    { label: 'The Market', path: '/c/stores?v=market' },
+                                    { label: 'Bakes & Blooms', path: '/c/stores?v=bakes' },
+                                    { label: 'The Apothecary', path: '/c/stores?v=apothecary' }
+                                ].map((link, i) => (
+                                    <motion.button
+                                        key={link.label}
+                                        initial={{ x: -20, opacity: 0 }}
+                                        animate={{ x: 0, opacity: 1 }}
+                                        transition={{ delay: 0.1 + (i * 0.04) }}
+                                        onClick={() => { navigate(link.path); setIsMenuOpen(false); }}
+                                        className="flex items-center gap-4 group text-left"
+                                    >
+                                        <span className="text-[#4A90E2]/60 font-mono text-xs group-hover:text-[#4A90E2] transition-colors pt-0.5">
+                                            0{i + 1}
+                                        </span>
+                                        <span className="text-lg font-heading font-light tracking-wide text-white group-hover:text-[#4A90E2] transition-colors">
+                                            {link.label}
+                                        </span>
+                                    </motion.button>
+                                ))}
+                            </div>
+
+                            {/* Auth & Profile Actions */}
+                            <div className="flex flex-col gap-3 mt-8">
+                                {user ? (
+                                    <button
+                                        onClick={() => { setIsMenuOpen(false); setIsProfileOpen(true); }}
+                                        className="w-full py-3.5 px-6 bg-[#4A90E2] text-white rounded-xl text-xs font-bold uppercase tracking-widest flex items-center justify-between shadow-lg"
+                                    >
+                                        <span>{profile?.full_name || user.email?.split('@')[0] || 'My Profile'}</span>
+                                        <User size={16} />
                                     </button>
-                                </div>
-
-                                <div className="space-y-1 flex-1 overflow-y-auto no-scrollbar">
-                                    {[
-                                        { label: 'The Kitchens', path: '/c/stores?v=kitchen', icon: '🍳' },
-                                        { label: 'The Market', path: '/c/stores?v=market', icon: '🛒' },
-                                        { label: 'Bakes & Blooms', path: '/c/stores?v=bakes', icon: '🥐' },
-                                        { label: 'The Apothecary', path: '/c/stores?v=apothecary', icon: '💊' }
-                                    ].map((link) => (
+                                ) : (
+                                    <>
                                         <button
-                                            key={link.label}
-                                            onClick={() => { navigate(link.path); setIsMenuOpen(false); }}
-                                            className="w-full flex items-center gap-4 py-4 px-4 hover:bg-black/5 rounded-xl transition-all group"
+                                            onClick={() => { setIsMenuOpen(false); navigate('/login'); }}
+                                            className="w-full py-3.5 text-center text-xs font-bold uppercase tracking-widest bg-white text-black rounded-xl hover:bg-gray-100 transition-all"
                                         >
-                                            <span className="text-xl">{link.icon}</span>
-                                            <span className="text-sm font-black uppercase tracking-widest text-black/80 group-hover:text-black transition-colors">{link.label}</span>
+                                            Log In
                                         </button>
-                                    ))}
-                                </div>
-
-                                <div className="mt-auto pt-8 border-t border-black/5">
-                                    <div className="flex items-center gap-4 mb-4 px-4">
-                                        <div
-                                            className="w-10 h-10 rounded-full flex items-center justify-center border"
-                                            style={{
-                                                backgroundColor: `${merchant.branding?.primaryColor || '#4A90E2'}1A`,
-                                                borderColor: `${merchant.branding?.primaryColor || '#4A90E2'}33`
-                                            }}
+                                        <button
+                                            onClick={() => { setIsMenuOpen(false); navigate('/signup'); }}
+                                            className="w-full py-3.5 text-center text-xs font-bold uppercase tracking-widest border border-white/20 text-white rounded-xl hover:bg-white/10 transition-all"
                                         >
-                                            {profile?.full_name ? (
-                                                <span className="text-xs font-black" style={{ color: merchant.branding?.primaryColor || '#4A90E2' }}>{profile.full_name.charAt(0).toUpperCase()}</span>
-                                            ) : (
-                                                <User size={18} style={{ color: merchant.branding?.primaryColor || '#4A90E2' }} />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <div className="text-[10px] font-black uppercase tracking-widest text-black/80">
-                                                {profile?.full_name || 'Adventurer'}
-                                            </div>
-                                            <div className="text-[9px] font-bold uppercase tracking-widest" style={{ color: merchant.branding?.primaryColor || '#4A90E2' }}>
-                                                {profile?.loyalty_tier || 'Standard'} Tier
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </>
+                                            Create Account
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
                     )}
                 </AnimatePresence>
 
