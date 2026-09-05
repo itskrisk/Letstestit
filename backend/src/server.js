@@ -149,11 +149,11 @@ io.on('connection', (socket) => {
 // Make io accessible to routes
 app.set('io', io);
 
-const PORT = process.env.PORT || 3001;
-
-server.listen(PORT, () => {
-  console.log(`Muncheez API server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`Muncheez API server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
 
 module.exports = { app, server, io };

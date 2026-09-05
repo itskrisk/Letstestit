@@ -66,15 +66,15 @@ This file tracks every change, update, experiment, failure, and working solution
 
 ## [2026-07-12] Frontend Revival: White Screen Fix & WelcomeScreen Redesign
 
-### Prompt / Request (1 — Project Status Read):
+### Prompt / Request (1 â Project Status Read):
 > "read history.md and tell me what we were doing last and what we were upto"
 
 ### Actions Taken:
-1. **Read and summarized `history.md`:** Confirmed last recorded session was [2026-06-24] — codebase analysis and successful production build. Identified that the custom backend is still in blueprint/architecture phase and not yet connected to the frontend.
+1. **Read and summarized `history.md`:** Confirmed last recorded session was [2026-06-24] â codebase analysis and successful production build. Identified that the custom backend is still in blueprint/architecture phase and not yet connected to the frontend.
 
 ---
 
-### Prompt / Request (2 — Run the Frontend):
+### Prompt / Request (2 â Run the Frontend):
 > "run this project please. the front end. I want to see the website up and running"
 
 ### Actions Taken:
@@ -84,7 +84,7 @@ This file tracks every change, update, experiment, failure, and working solution
 
 ---
 
-### Prompt / Request (3 — White Screen Bug):
+### Prompt / Request (3 â White Screen Bug):
 > "okay we have a problem. the problem is the front end is broken somehow. i can only see a white screen. I am not sure if its because of something we did before. but, we need to fix the front end without breaking how i built it, so we need to locate and isolate the issue"
 
 ### Root Cause Identified:
@@ -100,7 +100,7 @@ The string `"YOUR_NEW_SUPABASE_PROJECT_URL"` is **truthy** in JavaScript, so the
 ```
 Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
 ```
-This exception occurred **at module load time**, before React could mount — causing a total white screen crash.
+This exception occurred **at module load time**, before React could mount â causing a total white screen crash.
 
 ### Fix Applied:
 - **File modified:** [`src/lib/supabaseClient.ts`](file:///c:/Users/Admin/Desktop/kris/src/lib/supabaseClient.ts)
@@ -108,11 +108,11 @@ This exception occurred **at module load time**, before React could mount — ca
 - `createClient()` now uses `isConfigured` to choose between the real URL or a syntactically valid dummy (`https://placeholder.supabase.co`) that won't crash the module.
 - Auth/data features are silently disabled when unconfigured; the rest of the frontend renders normally.
 
-### Result: ✅ Frontend fully restored and rendering.
+### Result: â Frontend fully restored and rendering.
 
 ---
 
-### Prompt / Request (4 — WelcomeScreen Redesign, Attempt 1):
+### Prompt / Request (4 â WelcomeScreen Redesign, Attempt 1):
 > "perfect, it works. lets work on a bit of front end before working on back end. I want us to work on that welcome screen. its too boring. Way too boring. How can we up our game, apple style engineered minimalistic and interesting while maintaining our aesthetic?"
 
 ### Actions Taken:
@@ -127,57 +127,57 @@ This exception occurred **at module load time**, before React could mount — ca
    - Inline SVG noise (removed external URL dependency)
    - Scale-down + blur exit
 
-### Result: ❌ User rejected — breathing/glowing effects were unwanted.
+### Result: â User rejected â breathing/glowing effects were unwanted.
 
 ---
 
-### Prompt / Request (5 — WelcomeScreen Redesign, Attempt 2 — retry):
+### Prompt / Request (5 â WelcomeScreen Redesign, Attempt 2 â retry):
 > "the breathing colors are throwing me off, either flat black or flat white and add other unique designs, maybe moving lines that form the words or something uniquely designed, like it was designed by a motion designer, motion graphics, but no glowing stuff and breathing stuff, we need minimalism"
 
-### Design Concept — "The Baseline Rule":
+### Design Concept â "The Baseline Rule":
 Inspired by motion graphics and kinetic typography title sequences. Core concept:
-1. A single `1px` white horizontal rule draws across the full viewport **left → right** (like a designer placing a guide).
+1. A single `1px` white horizontal rule draws across the full viewport **left â right** (like a designer placing a guide).
 2. Letters of `"Muncheez"` rise one-by-one through that rule using `overflow: hidden` clip (the "rise through the line" illusion).
 3. The blue dot `.` springs in last as final punctuation with a bounce ease.
-4. Two secondary **framing rules** extend outward from center (left arm + right arm) after the wordmark settles — like a typographer placing rules above/below a headline.
+4. Two secondary **framing rules** extend outward from center (left arm + right arm) after the wordmark settles â like a typographer placing rules above/below a headline.
 5. `"The 254 Selection"` tagline slides up from below with `0.52em` letter-spacing.
-6. **Exit:** letters drop back down (reverse stagger), framing rules retract, baseline rule erases **right → left**. Clean, mechanical.
+6. **Exit:** letters drop back down (reverse stagger), framing rules retract, baseline rule erases **right â left**. Clean, mechanical.
 
 ### Design Rules Enforced:
-- Pure flat `#000000` — zero gradients, zero glows, zero breathing.
+- Pure flat `#000000` â zero gradients, zero glows, zero breathing.
 - Single accent colour: `#0277BD` (brand blue) on the dot only.
 - All motion driven by geometry and timing, not visual effects.
 - Ring progress indicator retained (bottom-right).
 - Inline SVG film grain at `opacity: 0.032` for depth (no external URLs).
 
 ### File Modified:
-- [`src/components/layout/WelcomeScreen.tsx`](file:///c:/Users/Admin/Desktop/kris/src/components/layout/WelcomeScreen.tsx) — full rewrite (v3).
+- [`src/components/layout/WelcomeScreen.tsx`](file:///c:/Users/Admin/Desktop/kris/src/components/layout/WelcomeScreen.tsx) â full rewrite (v3).
 
 ### Key Animation Timeline:
 | Time | Event |
 |------|-------|
-| 0s | Baseline rule begins drawing left→right (0.55s) |
+| 0s | Baseline rule begins drawing leftâright (0.55s) |
 | 0.42s | First letter begins rising (before rule finishes) |
-| 0.42–0.9s | Letters stagger in, 58ms apart |
+| 0.42â0.9s | Letters stagger in, 58ms apart |
 | ~1.0s | Blue dot springs in |
 | ~1.2s | Framing rules extend outward from center |
 | ~1.4s | Tagline slides up |
 | 4.0s | Exit sequence begins |
-| Exit | Dot vanishes → letters drop reverse-staggered → rules retract → baseline erases right→left → full opacity fade |
+| Exit | Dot vanishes â letters drop reverse-staggered â rules retract â baseline erases rightâleft â full opacity fade |
 
-### Result: ✅ Implemented and live. Verified via Vite HMR hot-reload.
+### Result: â Implemented and live. Verified via Vite HMR hot-reload.
 
 ---
 
-### Prompt / Request (6 — Document Everything):
+### Prompt / Request (6 â Document Everything):
 > "make sure you have documented that and added it in history.md. we need to document everything from the prompt to the process and changes done"
 
 ### Actions Taken:
-1. **Appended full session log to `history.md`** — covering all 5 prompts, root causes, fixes, design decisions, rejections, and final outcomes.
+1. **Appended full session log to `history.md`** â covering all 5 prompts, root causes, fixes, design decisions, rejections, and final outcomes.
 
 ---
 
-### Prompt / Request (7 — Push to GitHub):
+### Prompt / Request (7 â Push to GitHub):
 > "is it okay if we push everything as it is to this repo https://github.com/renekrisk/Muncheeztesting"
 > "remember to add everything we do and type to histroy.d .we needeto record everything. I need you to rety and push it again. push it to the repo i gave you. What do you need? Clear out whatever repo we are tied to and push it to that that i gave you."
 
@@ -191,7 +191,7 @@ Inspired by motion graphics and kinetic typography title sequences. Core concept
 
 ---
 
-### Prompt / Request (8 — Fix Vercel Deploy):
+### Prompt / Request (8 â Fix Vercel Deploy):
 > "how can we update that on its vercel? because its vercel isnt really showing our new changes"
 
 ### Root Cause Identified:
@@ -286,8 +286,8 @@ oles array.
 
 ### Root Cause Identified:
 Supabase Postgres logs confirmed two sequential errors:
-1. `42703 column "roles" of relation "profiles" does not exist` — the `profiles` table was created with the old singular `role TEXT` column and `CREATE TABLE IF NOT EXISTS` never updated it.
-2. `42704 type "user_role" does not exist` — the `user_role` ENUM type was silently failing to persist due to transaction rollback conflicts from multiple schema runs.
+1. `42703 column "roles" of relation "profiles" does not exist` â the `profiles` table was created with the old singular `role TEXT` column and `CREATE TABLE IF NOT EXISTS` never updated it.
+2. `42704 type "user_role" does not exist` â the `user_role` ENUM type was silently failing to persist due to transaction rollback conflicts from multiple schema runs.
 
 ### Fix Applied:
 - **Removed all ENUM dependencies** from the signup trigger. Changed `ARRAY[v_role::user_role]` to `ARRAY[v_role]` (plain TEXT).
@@ -312,7 +312,7 @@ Supabase Postgres logs confirmed two sequential errors:
 1. **Created `/src/pages/auth/AuthCallback.tsx`**: A universal smart landing page that:
    - Waits for Supabase to process the URL token
    - Fetches the user's profile to read their `roles[0]`
-   - Redirects to the correct portal: customer → `/c/stores`, merchant → `/partner/dashboard`, courier → `/courier/dashboard`, admin → `/admin/dashboard`
+   - Redirects to the correct portal: customer â `/c/stores`, merchant â `/partner/dashboard`, courier â `/courier/dashboard`, admin â `/admin/dashboard`
    - Shows loading spinner, success checkmark, or error state with fallback links
 
 2. **Updated all 3 signup forms** to use `emailRedirectTo: \`${window.location.origin}/auth/callback\``:
@@ -323,7 +323,7 @@ Supabase Postgres logs confirmed two sequential errors:
 3. **Registered `/auth/callback` route** in `App.tsx`
 
 ### Required Supabase Dashboard Action:
-Go to **Authentication → URL Configuration** in Supabase and add `http://localhost:5173/auth/callback` to the **Redirect URLs** allowlist.---
+Go to **Authentication â URL Configuration** in Supabase and add `http://localhost:5173/auth/callback` to the **Redirect URLs** allowlist.---
 
 ## [2026-07-29] Critical Portal Isolation Fix: Resolved Layout Guard Mismatch (`profile.role` vs `profile.roles`)
 
@@ -373,7 +373,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 3. **Explored source directory**: Recursively listed and read key files across `src/` including contexts, layouts, pages, components, modules, lib, types, and utils.
 4. **Analyzed core architecture**:
    - **Role-based silo system**: 4 distinct portals (Customer, Merchant, Courier, Admin) with strict layout guards and `ProtectedRoute` enforcement
-   - **State management**: React Context hierarchy (`AuthProvider` → `MockDatabaseProvider` → `CartProvider`)
+   - **State management**: React Context hierarchy (`AuthProvider` â `MockDatabaseProvider` â `CartProvider`)
    - **Data layer**: Supabase-backed `MockDatabaseContext` with realtime subscriptions for orders, products, and merchants
    - **Type system**: Comprehensive TypeScript schemas in `types/schema.ts` and `types/social.ts`
 5. **Identified key features and modules**:
@@ -390,28 +390,28 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - Currently transitioning from **Mock Prototype** to **Supabase-driven Application**
 - Strong emphasis on **role isolation** and **single-login enforcement** via `active_sessions` table
 - Complex **order lifecycle** with 15+ status states
-- **Rider state machine** enforces valid transitions (OFFLINE → ONLINE_IDLE → OFFER_RECEIVED → ASSIGNED → ... → COMPLETED)
+- **Rider state machine** enforces valid transitions (OFFLINE â ONLINE_IDLE â OFFER_RECEIVED â ASSIGNED â ... â COMPLETED)
 - **Financial engine** implements double-entry ledger with fixed Kenyan market rates (M-Pesa fees, VAT, platform commission, rider payouts)
 - **Social features** are currently localStorage-based (friends, shared orders, reactions, gifting)
 - **Scaling roadmap** documents transition from Supabase BaaS to custom microservices architecture
 
 ### Files Reviewed:
-- `src/context/AuthContext.tsx` — Auth state, session management, concurrency checks
-- `src/context/MockDatabaseContext.tsx` — Supabase data layer with realtime subscriptions
-- `src/context/CartContext.tsx` — Shopping cart with single-merchant enforcement
-- `src/App.tsx` — Route configuration with role-based layout silos
-- `src/components/ProtectedRoute.tsx` — Role-based access control
-- `src/layouts/*.tsx` — Portal-specific layout guards
-- `src/lib/moneyEngine.ts` — Financial calculations and ledger logic
-- `src/lib/socialService.ts` — Social features service layer
-- `src/modules/rider/` — Rider state machine, types, and features
-- `src/types/schema.ts` — Core entity definitions
-- `supabase/schema.sql` — Database schema with 13+ tables
-- `src/pages/customer/Login.tsx`, `Signup.tsx` — Customer auth pages
-- `src/pages/merchant/PartnerLogin.tsx`, `PartnerSignup.tsx` — Merchant auth pages
-- `src/pages/courier/Login.tsx`, `Signup.tsx` — Courier auth pages
+- `src/context/AuthContext.tsx` â Auth state, session management, concurrency checks
+- `src/context/MockDatabaseContext.tsx` â Supabase data layer with realtime subscriptions
+- `src/context/CartContext.tsx` â Shopping cart with single-merchant enforcement
+- `src/App.tsx` â Route configuration with role-based layout silos
+- `src/components/ProtectedRoute.tsx` â Role-based access control
+- `src/layouts/*.tsx` â Portal-specific layout guards
+- `src/lib/moneyEngine.ts` â Financial calculations and ledger logic
+- `src/lib/socialService.ts` â Social features service layer
+- `src/modules/rider/` â Rider state machine, types, and features
+- `src/types/schema.ts` â Core entity definitions
+- `supabase/schema.sql` â Database schema with 13+ tables
+- `src/pages/customer/Login.tsx`, `Signup.tsx` â Customer auth pages
+- `src/pages/merchant/PartnerLogin.tsx`, `PartnerSignup.tsx` â Merchant auth pages
+- `src/pages/courier/Login.tsx`, `Signup.tsx` â Courier auth pages
 
-### Key Findings — Auth/Signup/Login Issues:
+### Key Findings â Auth/Signup/Login Issues:
 1. **Single-role trap**: Supabase Auth doesn't allow same email to sign up twice. The `handle_new_user()` trigger uses `ON CONFLICT (id) DO UPDATE SET roles = EXCLUDED.roles`, which REPLACES the entire roles array. A user CANNOT be both customer AND merchant with the same email.
 2. **Race condition during login**: `AuthContext`'s `onAuthStateChange` and the login page both fetch profile simultaneously. The login page may call `signOut()` if it thinks the role is wrong, while `AuthContext` has already set profile state. These flows fight each other.
 3. **No multi-role support in UI**: No way to add a second role to an existing account, choose which role to log in as, or see all roles in one place.
@@ -422,7 +422,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 ---
 
-## [2026-08-11] Multi-Role Auth Rewrite — Option 1 Implementation
+## [2026-08-11] Multi-Role Auth Rewrite â Option 1 Implementation
 
 ### Prompt / Request:
 > "Option 1: Rewrite for multi-role support"
@@ -434,13 +434,13 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 ### Fixes Applied:
 
-#### 1. Database Trigger — APPEND roles instead of replacing
+#### 1. Database Trigger â APPEND roles instead of replacing
 **File**: `supabase/schema.sql`
 - Changed `handle_new_user()` trigger to use `array_agg(DISTINCT r)` with `UNION` to APPEND new roles to existing roles instead of replacing them
 - Added new `add_user_role(p_user_id UUID, p_role TEXT)` function for adding roles to existing users
 - This allows one email to accumulate multiple roles over time
 
-#### 2. Login Pages — Removed race condition
+#### 2. Login Pages â Removed race condition
 **Files**: `src/pages/customer/Login.tsx`, `src/pages/merchant/PartnerLogin.tsx`, `src/pages/courier/Login.tsx`
 - Removed direct `supabase.from('profiles').select('roles')` calls from login pages
 - Removed `signOut()` calls when role didn't match portal
@@ -448,7 +448,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - Navigation is handled by auto-redirect `useEffect` hooks
 - If user has wrong role, layout guard shows correct portal instead of signing them out
 
-#### 3. AuthContext — Added `addRole` method
+#### 3. AuthContext â Added `addRole` method
 **File**: `src/context/AuthContext.tsx`
 - Added `addRole(role: AppRole)` method that calls the new `add_user_role` RPC
 - Exposed `addRole` in the context provider value
@@ -461,7 +461,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - Only appears when user has 2+ roles
 - Color-coded by portal (blue=customer, gold=merchant, black=courier, red=admin)
 
-#### 5. Signup Pages — Multi-role support
+#### 5. Signup Pages â Multi-role support
 **Files**: `src/pages/customer/Signup.tsx`, `src/pages/merchant/PartnerSignup.tsx`, `src/pages/courier/Signup.tsx`
 - When a logged-in user visits a signup page for a role they don't have:
   - Shows "Add [Role] Access" screen instead of "Already Signed In"
@@ -471,7 +471,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - When a logged-in user already has that role: redirects to their dashboard
 - New users still go through normal signup flow with email verification
 
-#### 6. App.tsx — Global PortalSwitcher
+#### 6. App.tsx â Global PortalSwitcher
 **File**: `src/App.tsx`
 - Imported and added `<PortalSwitcher />` to global layout
 - Available on all pages for multi-role users
@@ -482,10 +482,10 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - No errors
 
 ### How It Works Now:
-1. **New user** signs up at any portal → gets that single role → email verification → dashboard
-2. **Existing user** visits another portal's signup → sees "Add [Role] Access" → clicks button → role added to their account → redirected to that portal's dashboard
-3. **Multi-role user** sees floating portal switcher in bottom-right → can jump between Customer App, Partner Portal, Fleet Terminal, Admin Console
-4. **Login** no longer signs users out for being in the "wrong" portal — layout guards handle access control gracefully
+1. **New user** signs up at any portal â gets that single role â email verification â dashboard
+2. **Existing user** visits another portal's signup â sees "Add [Role] Access" â clicks button â role added to their account â redirected to that portal's dashboard
+3. **Multi-role user** sees floating portal switcher in bottom-right â can jump between Customer App, Partner Portal, Fleet Terminal, Admin Console
+4. **Login** no longer signs users out for being in the "wrong" portal â layout guards handle access control gracefully
 
 ---
 
@@ -499,7 +499,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 2. **Architecture defined**: Node.js + Express + PostgreSQL + Prisma + JWT + Socket.IO
 3. **Complete API mapping**: Every frontend action mapped to API endpoint, auth requirement, and permission
 4. **Prisma schema designed**: Full database schema with all models and relationships
-5. **Implementation roadmap**: 4-phase plan (Foundation → Core APIs → Real-time → Testing/Deployment)
+5. **Implementation roadmap**: 4-phase plan (Foundation â Core APIs â Real-time â Testing/Deployment)
 6. **Reference architectures**: KitchenAsty, Velora, and other GitHub projects identified as references
 
 ### Key Decisions Made:
@@ -511,11 +511,11 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - **M-Pesa Daraja API**: Direct payment integration
 
 ### Files Created:
-- `BACKEND_SPEC.md` — Complete backend specification (9 sections, ~400 lines)
+- `BACKEND_SPEC.md` â Complete backend specification (9 sections, ~400 lines)
 
 ---
 
-## [2026-08-17] Fresh Backend Start — Old Backend Backed Up
+## [2026-08-17] Fresh Backend Start â Old Backend Backed Up
 
 ### Prompt / Request:
 > "clear out our backend and lets start a fresh.... Bakc it up as the oldbackend folder and open a fresh"
@@ -532,9 +532,9 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 3. **Ready for new backend implementation**: Fresh schema is ready to be deployed to Supabase or used as reference for custom backend
 
 ### Current State:
- - `oldbackend/` — Contains the old schema with all its history and previous fixes
- - `supabase/schema.sql` — Clean, fresh schema ready for deployment
- - `BACKEND_SPEC.md` — Complete plan for building custom Node.js/Express backend
+ - `oldbackend/` â Contains the old schema with all its history and previous fixes
+ - `supabase/schema.sql` â Clean, fresh schema ready for deployment
+ - `BACKEND_SPEC.md` â Complete plan for building custom Node.js/Express backend
 
 ---
 
@@ -612,9 +612,9 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 - BACKEND_SPEC.md is now the single source of truth for backend implementation
 
 ### Current State:
- - `BACKEND_SPEC.md` — Fully updated with 100% frontend coverage
- - `supabase/schema.sql` — Clean, fresh schema ready for deployment
- - `oldbackend/` — Contains the old schema with all its history
+ - `BACKEND_SPEC.md` â Fully updated with 100% frontend coverage
+ - `supabase/schema.sql` â Clean, fresh schema ready for deployment
+ - `oldbackend/` â Contains the old schema with all its history
 
 ---
 
@@ -625,42 +625,42 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 ### Actions Taken:
 1. **Created complete backend folder structure** in `backend/`:
-   - `package.json` — Node.js project with Express, Prisma, JWT, Socket.IO, bcrypt, multer, nodemailer, axios
-   - `prisma/schema.prisma` — 20+ models (User, Profile, Session, Merchant, Rider, Product, Order, etc.)
-   - `prisma/seed.js` — Database seeder with 4 test users and sample products
-   - `src/server.js` — Express server with Socket.IO integration
-   - `src/middleware/auth.js` — JWT auth middleware with role-based access control
-   - `src/middleware/error.js` — Error handling middleware
-   - `src/routes/` — 7 route files (auth, customer, merchant, courier, admin, social, payment) with 60+ endpoints
-   - `.env.example` — Environment variables template
-   - `.gitignore` — Git ignore rules
-   - `README.md` — Comprehensive setup instructions
+   - `package.json` â Node.js project with Express, Prisma, JWT, Socket.IO, bcrypt, multer, nodemailer, axios
+   - `prisma/schema.prisma` â 20+ models (User, Profile, Session, Merchant, Rider, Product, Order, etc.)
+   - `prisma/seed.js` â Database seeder with 4 test users and sample products
+   - `src/server.js` â Express server with Socket.IO integration
+   - `src/middleware/auth.js` â JWT auth middleware with role-based access control
+   - `src/middleware/error.js` â Error handling middleware
+   - `src/routes/` â 7 route files (auth, customer, merchant, courier, admin, social, payment) with 60+ endpoints
+   - `.env.example` â Environment variables template
+   - `.gitignore` â Git ignore rules
+   - `README.md` â Comprehensive setup instructions
 
 2. **Switched from PostgreSQL to SQLite** for easy local setup:
    - Changed `provider = "postgresql"` to `provider = "sqlite"` in schema.prisma
    - Updated `.env.example` and created `.env` with SQLite connection string
-   - Removed all `Json` types (SQLite doesn't support them) — changed to `String?`
-   - Removed array types (`String[]`) — changed to `String` with comma-separated values
+   - Removed all `Json` types (SQLite doesn't support them) â changed to `String?`
+   - Removed array types (`String[]`) â changed to `String` with comma-separated values
    - Fixed all relation naming issues for SQLite compatibility
    - Removed duplicate `items` field in Order model
-   - Fixed import in `server.js` — destructured `authMiddleware` from middleware module
+   - Fixed import in `server.js` â destructured `authMiddleware` from middleware module
 
 3. **Installed dependencies:**
-   - Ran `npm install` — 535 packages installed successfully
+   - Ran `npm install` â 535 packages installed successfully
 
 4. **Database setup:**
-   - Ran `npx prisma generate` — Prisma client generated
-   - Ran `npx prisma migrate dev --name init` — Database created and migrated
-   - Ran `npm run prisma:seed` — Seeded with admin, merchant, courier, and customer users + 5 sample products
+   - Ran `npx prisma generate` â Prisma client generated
+   - Ran `npx prisma migrate dev --name init` â Database created and migrated
+   - Ran `npm run prisma:seed` â Seeded with admin, merchant, courier, and customer users + 5 sample products
 
 5. **Started backend server:**
-   - Ran `npm run dev` — Server started on port 5000 with nodemon auto-reload
+   - Ran `npm run dev` â Server started on port 5000 with nodemon auto-reload
    - Fixed `Router.use() requires a middleware function but got a Object` error
 
 6. **Tested endpoints:**
-   - `GET /health` → `{"status":"ok"}`
-   - `POST /api/auth/login` → Returns JWT token + user data with profile
-   - `GET /api/customer/stores` → Returns seeded merchant with products
+   - `GET /health` â `{"status":"ok"}`
+   - `POST /api/auth/login` â Returns JWT token + user data with profile
+   - `GET /api/customer/stores` â Returns seeded merchant with products
 
 ### Test Accounts Created:
 | Email | Password | Roles |
@@ -671,9 +671,9 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 | customer@muncheez.co.ke | customer123 | customer |
 
 ### Current State:
- - `backend/` — Complete Node.js + Express + SQLite backend running on port 5000
- - `backend/.env` — SQLite configuration ready
- - `backend/prisma/dev.db` — SQLite database file with seeded data
+ - `backend/` â Complete Node.js + Express + SQLite backend running on port 5000
+ - `backend/.env` â SQLite configuration ready
+ - `backend/prisma/dev.db` â SQLite database file with seeded data
  - All 60+ API endpoints implemented and tested
  - Ready for frontend integration
 
@@ -737,11 +737,11 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
    - Shrunk form labels, input underlines, and button padding.
    - Cleaned up the success/confirmation state.
 2. **Rebuilt Email Template from LaTeX Design System:**
-   - Translated LaTeX `\begin{tabularx}` brand header → email-safe `<table>` with logo left / meta right.
-   - Translated LaTeX `\begin{tikzpicture}` dual-tone rule → 76%/24% two-cell table row.
-   - Translated LaTeX details `tabularx p{4.5cm} X` → label/value table with `#e8edf4` row borders.
-   - Translated LaTeX two-column `tabularx` executive signoff → side-by-side signature cells.
-   - Translated LaTeX `\vfill` footer → separate footer `<tr>` with navy rule above and secretariat text.
+   - Translated LaTeX `\begin{tabularx}` brand header â email-safe `<table>` with logo left / meta right.
+   - Translated LaTeX `\begin{tikzpicture}` dual-tone rule â 76%/24% two-cell table row.
+   - Translated LaTeX details `tabularx p{4.5cm} X` â label/value table with `#e8edf4` row borders.
+   - Translated LaTeX two-column `tabularx` executive signoff â side-by-side signature cells.
+   - Translated LaTeX `\vfill` footer â separate footer `<tr>` with navy rule above and secretariat text.
    - Used corporate palette: `#0A192F` (CorporateNavy), `#0066CC` (LinkBlue), `#2D3748` (DeepCharcoal), `#1E293B` (RuleNavy).
    - All styles are inline for maximum email client compatibility (Gmail, Outlook, Apple Mail).
 3. **Updated Supabase Edge Function:**
@@ -751,7 +751,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 ---
 
-## [2026-08-31] RSVP Page & Email Redesign — Iteration 3
+## [2026-08-31] RSVP Page & Email Redesign â Iteration 3
 
 ### Prompt / Request:
 > "When I gave you the example, I did not ask for you to copy it precisely. I asked you to match our style. The email should come out very similar to what I've given you but consider that it's an email that will end up in someone else's DM. So center the text. Give me the HTML version of it as an email... Second of all, the RSVP page... You copied everything from my document into the RSVP page, when the RSVP page should only have very minor little details... it should just be an RSVP page..."
@@ -770,21 +770,21 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 ---
 
-## [2026-08-31] Email Redesign — Iteration 4 (Final Letter Style)
+## [2026-08-31] Email Redesign â Iteration 4 (Final Letter Style)
 
 ### Prompt / Request:
-> User provided a second LaTeX document — a centered personal letter. Requested: HTML match of it. Content = thank you for RSVP or regret message. Should mirror name, guest count, meeting link, date/time, sign off from Dean & Kris / Muncheez Technologies Inc.
+> User provided a second LaTeX document â a centered personal letter. Requested: HTML match of it. Content = thank you for RSVP or regret message. Should mirror name, guest count, meeting link, date/time, sign off from Dean & Kris / Muncheez Technologies Inc.
 
 ### Actions Taken:
 1. **Rebuilt email as a centered personal letter** matching the LaTeX structure precisely:
    - `Muncheez.` monogram header (navy + blue dot)
    - Centered subtitle: "A Confirmation of Your Attendance" or "We Appreciate Your Response"
-   - Small navy accent dot (5px circle — LaTeX `\fill circle (2pt)`)
+   - Small navy accent dot (5px circle â LaTeX `\fill circle (2pt)`)
    - Large `Dear [Name],` salutation (22px bold navy)
    - Two centered charcoal body paragraphs in 88%-width minipage
    - "Event Details" section with date, platform, and conditional guest count
-   - Sign-off: "With great anticipation," / "With gratitude," → "Dean Ndere & Kris Kamau" → "Muncheez Technologies Inc."
-   - Footer: "NAIROBI · KENYA" with top rule
+   - Sign-off: "With great anticipation," / "With gratitude," â "Dean Ndere & Kris Kamau" â "Muncheez Technologies Inc."
+   - Footer: "NAIROBI Â· KENYA" with top rule
 2. **Updated Edge Function** to inject two full copy variants (attending vs declined), all personalized variables, and conditional guest count row.
 
 ---
@@ -815,7 +815,7 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 ### Actions Taken:
 1. **Hero Component ([src/components/marketing/Hero.tsx](file:///c:/Users/Admin/Desktop/kris/src/components/marketing/Hero.tsx)):**
-   - Subtly refined hero tagline copy: *"Food is where we start. Urban logistics is where we scale. Bringing Nairobi’s finest merchants straight to your door."*
+   - Subtly refined hero tagline copy: *"Food is where we start. Urban logistics is where we scale. Bringing Nairobiâs finest merchants straight to your door."*
 2. **About Page ([src/pages/common/OurStory.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/common/OurStory.tsx)):**
    - **Section 1 (The Origin):** Framed food delivery as the rigorous testing ground for last-mile logistics (*"Food is the ultimate test of last-mile logistics... To build Nairobi's most intelligent urban logistics engine."*).
    - **Section 3 (Vision & Goal):** Clarified the broader platform scope (*"Culinary delivery is our foundation, but last-mile logistics is our destination..."*).
@@ -879,11 +879,11 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 1. **Created standalone OurTeam.tsx** ([src/pages/common/OurTeam.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/common/OurTeam.tsx)):
    - Full-bleed brand blue background (#0277BD)
-   - Apple-style minimalism: NO cards, NO padding slop � pure typographic layout
+   - Apple-style minimalism: NO cards, NO padding slop  pure typographic layout
    - ont-heading (Outfit) for wordmark and section heading
    - Plus Jakarta Sans for bio text
    - "The Team." heading in extralight 200, clamp(3.5rem, 10vw, 9rem) with yellow dot accent (#FACC15)
-   - Team rows separated by 1px gba(255,255,255,0.12) rules � no borders/boxes
+   - Team rows separated by 1px gba(255,255,255,0.12) rules  no borders/boxes
    - Name in extralight Outfit, Title in all-caps gold (#FACC15), Location in muted white
    - Bio in 14px/300 weight, comfortable 1.8 line height
    - Framer Motion staggered entrance animations
@@ -900,10 +900,10 @@ Go to **Authentication → URL Configuration** in Supabase and add `http://local
 
 4. **Registered /our-team route** in App.tsx (already done in previous step)
 
-5. **Updated Footer.tsx** � "Our Team" link points directly to /our-team
+5. **Updated Footer.tsx**  "Our Team" link points directly to /our-team
 
 6. **TypeScript verification:** 
-px tsc --noEmit --skipLibCheck � 0 errors
+px tsc --noEmit --skipLibCheck  0 errors
 
 ### Result: Team page is now a clean, standalone Apple-aesthetic page at /our-team with full site footer, using brand fonts and blue background. LegalPage no longer handles team content.
 
@@ -919,15 +919,15 @@ px tsc --noEmit --skipLibCheck � 0 errors
 
 1. **Took down the Social/Feed page (/social)**:
    - Replaced SocialDashboard component route with a <Navigate> redirect to /coming-soon with state { name: 'The Feed' }
-   - Now renders the existing Coming Soon design ("The Feed is being prepped in the kitchen.") � same design as App Store / Play Store coming soon screens
+   - Now renders the existing Coming Soon design ("The Feed is being prepped in the kitchen.")  same design as App Store / Play Store coming soon screens
    - Removed unused SocialDashboard import from App.tsx
 
 2. **Updated legal name across all footers to "Muncheez Technologies Ltd"**:
-   - Footer.tsx (main site footer): � 2026 Muncheez Technologies Ltd. Built for Nairobi.
-   - LegalPage.tsx (legal pages footer): � 2026 Muncheez Technologies Ltd. All Rights Reserved.
+   - Footer.tsx (main site footer): © 2026 Muncheez Technologies Ltd. Built for Nairobi.
+   - LegalPage.tsx (legal pages footer): © 2026 Muncheez Technologies Ltd. All Rights Reserved.
 
 3. **TypeScript verification:** 
-px tsc --noEmit --skipLibCheck � 0 errors
+px tsc --noEmit --skipLibCheck  0 errors
 
 
 ---
@@ -1025,6 +1025,32 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 
 ### Actions Taken:
 1. Updated [vercel.json](file:///c:/Users/Admin/Desktop/kris/vercel.json) to set "entrypoint": "src/server.js" inside services.backend.
+
+## [2026-09-05] Vercel Routing 404 Fix, Admin Credentials & Signup Form Remediation
+
+### Prompt / Request:
+- Fix Vercel routing 404 errors on direct navigation and refresh across SPA routes.
+- Provide Admin login credentials and resolve runtime error `Cannot read properties of undefined (reading 'value')`.
+- Resolve "Bucket not found" storage error during Rider and Merchant document uploads.
+- Fix Rider signup transport flow: selecting "On Foot" or "Bicycle" should skip vehicle details (make/model/plate) and driver's license/logbook requirements.
+
+### Root Cause Analysis:
+1. **Vercel 404 Error**: `vercel.json` used non-standard `"services"` definitions with `"type": "service"` rewrite objects, failing Vercel's rewrite evaluation. Requests for SPA paths (`/stores`, `/admin/*`, `/partner/*`, `/courier/*`) failed static file lookups and threw Vercel 404.
+2. **Admin Login Form Crash**: `src/pages/admin/Login.tsx` extracted form values via `(e.target as any).email.value` without setting `name="email"` or `name="password"` on `<input>` elements, causing `Cannot read properties of undefined (reading 'value')`.
+3. **Bucket Not Found**: `uploadFile` in `PartnerSignup.tsx` and `courier/Signup.tsx` threw uncaught storage errors when Supabase `documents` bucket was missing.
+4. **Rider Signup Transport Logic**: Step navigation indiscriminately forced all riders through `ASSET` (vehicle make/model/plate) and `COMPLIANCE` (driver's license) regardless of whether "On Foot" or "Bicycle" was chosen.
+
+### Fixes Applied:
+1. **[vercel.json](file:///c:/Users/Admin/Desktop/kris/vercel.json)**: Updated to standard Vercel SPA configuration with `{ "source": "/(.*)", "destination": "/index.html" }` and `{ "source": "/api/(.*)", "destination": "/api/$1" }`.
+2. **[api/index.js](file:///c:/Users/Admin/Desktop/kris/api/index.js)**: Created serverless function entrypoint exporting Express app from `backend/src/server.js`.
+3. **[backend/src/server.js](file:///c:/Users/Admin/Desktop/kris/backend/src/server.js)**: Wrapped `server.listen` with `if (require.main === module)` to prevent EADDRINUSE errors in serverless mode.
+4. **[src/pages/admin/Login.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/admin/Login.tsx)**: Refactored form inputs to use controlled React state (`email` & `password`) initialized to defaults (`admin@muncheez.co.ke` / `admin123`) with proper `name` attributes.
+5. **[src/pages/merchant/PartnerSignup.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/merchant/PartnerSignup.tsx)** & **[src/pages/courier/Signup.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/courier/Signup.tsx)**: Added base64 Data URL fallback to `uploadFile` when storage bucket is missing, preventing registration failures.
+6. **[src/pages/courier/Signup.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/courier/Signup.tsx)**: Updated step logic so selecting "On Foot" or "Bicycle" bypasses `ASSET` vehicle details and hides driver's license/logbook uploads.
+
+### Verification:
+- Ran `npm run build` — compiled cleanly with zero errors.
+
 2. Committed and pushed to https://github.com/itskrisk/Letstestit.git (main branch).
 
 ### Status:

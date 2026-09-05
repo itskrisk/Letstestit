@@ -6,6 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 export default function AdminLogin() {
     const navigate = useNavigate();
     const { user, profile, loading: authLoading, signIn } = useAuth();
+    const [email, setEmail] = useState('admin@muncheez.co.ke');
+    const [password, setPassword] = useState('admin123');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -22,9 +24,6 @@ export default function AdminLogin() {
         setError('');
 
         try {
-            const email = (e.target as any).email.value;
-            const password = (e.target as any).password.value;
-
             const result = await signIn(email, password);
             if (result.error) {
                 setError(result.error);
@@ -62,10 +61,12 @@ export default function AdminLogin() {
                     <div className="space-y-1">
                         <label className="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Email</label>
                         <input
+                            name="email"
                             type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-4 text-gray-900 placeholder-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
                             placeholder="admin@muncheez.co.ke"
-                            defaultValue="admin@muncheez.co.ke"
                         />
                     </div>
 
@@ -74,10 +75,12 @@ export default function AdminLogin() {
                         <div className="relative">
                             <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                             <input
+                                name="password"
                                 type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-4 text-gray-900 placeholder-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
                                 placeholder="••••••••"
-                                defaultValue="admin123"
                             />
                         </div>
                     </div>
