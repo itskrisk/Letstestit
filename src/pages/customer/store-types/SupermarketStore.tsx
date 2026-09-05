@@ -236,7 +236,7 @@ export default function SupermarketStore({ merchant = {}, products = [] }: Super
                         <div className="relative w-10 h-10 bg-white text-black rounded-lg flex items-center justify-center shadow-lg"><ShoppingBag size={18} />{itemCount > 0 && <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg border-2 border-white">{itemCount}</span>}</div>
                         <div
                             onClick={() => setIsProfileOpen(true)}
-                            className="hidden sm:flex w-10 h-10 bg-white/10 text-white rounded-lg items-center justify-center border border-white/10 cursor-pointer hover:bg-white/20 transition-all hover:scale-105 active:scale-95"
+                            className="flex w-10 h-10 bg-white/10 text-white rounded-lg items-center justify-center border border-white/10 cursor-pointer hover:bg-white/20 transition-all hover:scale-105 active:scale-95"
                         >
                             {profile?.full_name ? (
                                 <span className="text-xs font-black">{profile.full_name.charAt(0).toUpperCase()}</span>

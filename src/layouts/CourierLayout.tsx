@@ -18,9 +18,9 @@ export default function CourierLayout({ children }: { children: React.ReactNode 
         </div>
     );
 
-    const roles = profile?.roles || (profile?.role ? [profile.role] : []);
-    const isCourier = roles.includes('courier');
-    const primaryRole = roles[0] || profile?.role || 'user';
+    const roles = profile?.roles || (profile?.role ? [profile.role] : [user?.user_metadata?.role || 'user']);
+    const isCourier = roles.includes('courier') || user?.user_metadata?.role === 'courier';
+    const primaryRole = roles[0] || user?.user_metadata?.role || profile?.role || 'user';
 
     const handleSignOut = async () => {
         try {

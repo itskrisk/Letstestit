@@ -18,9 +18,9 @@ export default function MerchantLayout({ children }: { children: React.ReactNode
         </div>
     );
 
-    const roles = profile?.roles || (profile?.role ? [profile.role] : []);
-    const isMerchant = roles.includes('merchant');
-    const primaryRole = roles[0] || profile?.role || 'user';
+    const roles = profile?.roles || (profile?.role ? [profile.role] : [user?.user_metadata?.role || 'user']);
+    const isMerchant = roles.includes('merchant') || user?.user_metadata?.role === 'merchant';
+    const primaryRole = roles[0] || user?.user_metadata?.role || profile?.role || 'user';
 
     const handleSignOut = async () => {
         try {

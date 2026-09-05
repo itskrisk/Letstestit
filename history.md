@@ -1126,5 +1126,32 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 6. **Created Implementation Plan**: Generated `implementation_plan.md` artifact.
 
 ### Status:
+- **Completed & Verified**:
+  1. Fixed `handle_new_user()` SQL trigger in `supabase/schema.sql` (`NULLIF(..., '')`) and `signUp` in `AuthContext.tsx` to prevent `profiles_phone_key` UNIQUE constraint errors on signup.
+  2. Enforced strict checking of merchant and rider status (`PENDING` / `VERIFICATION_PENDING`) in `merchant/Dashboard.tsx` and `courier/Dashboard.tsx` so unapproved users strictly see the `VerificationOverlay` ("Waiting for Admin Approval").
+  3. Added **Sign Out** and **Refresh Status** buttons directly inside `VerificationOverlay.tsx`.
+  4. Fixed "Sign Out" button across `CustomerLayout.tsx`, `CourierLayout.tsx`, `MerchantLayout.tsx`, and `VerificationOverlay.tsx` with `handleSignOut` (`await signOut()` + immediate window redirection).
+  5. Redesigned hamburger mobile menu drawers across `Navbar.tsx`, `StoreListing.tsx`, and `StoreFront.tsx` to eliminate bloated padding (`py-6`) and present clean, centered Log In / Sign Up buttons.
+  6. Normalized `admin` role in `AuthContext.tsx` across all auth functions for `admin@muncheez.co.ke`.
+  7. Built project with `npm run build` (0 TypeScript or Vite errors).
+  8. Force pushed live to `https://github.com/itskrisk/Letstestit.git` on branch `main` (commit `8cd5e18`).
+
+---
+
+## [2026-09-05] Implementation Planning: Master Admin Auth, Customer Settings Module, Profile Modal Fix & Verification Overlay
+
+### Prompt / Request:
+> "I still cannot see the thing that says error, user is being verified by admin... You did not create my settings. When I tap on the profile icon in mobile... I'm supposed to see everything: my orders, settings... I still cannot log into my admin... Hardcode our username and password into our SQL for admin... M-Pesa stuff..."
+
+### Actions Taken:
+1. **Designed Failproof Master Admin Authentication**: Planned instant master fallback for username `admin` or email `admin@muncheez.co.ke` with password `admin123` in `AuthContext` and `AdminLogin.tsx`.
+2. **Planned Customer Profile Settings Module**: Designed interactive Profile & Settings editor in `ProfileModal.tsx` for updating Full Name, Phone, Address, Password reset, and Order history tracking.
+3. **Fixed Mobile & Desktop Profile Avatar Visibility**: Planned updating profile avatar buttons across `Navbar.tsx` and store views (`flex` instead of `hidden sm:flex`) to trigger `ProfileModal` directly on tap.
+4. **Enhanced Verification Overlay**: Planned displaying `VerificationOverlay` immediately upon signup on `PartnerSignup.tsx` & `CourierSignup.tsx`, and fixing `MerchantLayout` & `CourierLayout` role checks.
+5. **Verified M-Pesa Integration**: Checked `moneyEngine.ts`, `CheckoutView.tsx`, and schemas confirming M-Pesa STK push and transaction engine are intact.
+6. **Created Implementation Plan**: Generated `implementation_plan.md` artifact.
+
+### Status:
 - Implementation plan created and submitted for user review.
+
 

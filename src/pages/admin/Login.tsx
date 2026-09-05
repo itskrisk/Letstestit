@@ -106,14 +106,14 @@ export default function AdminLogin() {
                         </div>
                     )}
                     <div className="space-y-1">
-                        <label className="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Email</label>
+                        <label className="text-xs font-bold uppercase tracking-widest text-gray-400 ml-1">Username or Email</label>
                         <input
                             name="email"
-                            type="email"
+                            type="text"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-4 text-gray-900 placeholder-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
-                            placeholder="admin@muncheez.co.ke"
+                            placeholder="admin or admin@muncheez.co.ke"
                         />
                     </div>
 
@@ -143,7 +143,7 @@ export default function AdminLogin() {
                 </form>
 
                 <p className="text-center text-xs text-gray-400 mt-6">
-                    Default credentials: <strong>admin@muncheez.co.ke</strong> / <strong>admin123</strong>
+                    Master Admin: <strong>admin</strong> / <strong>admin123</strong>
                 </p>
             </div>
         </div>
