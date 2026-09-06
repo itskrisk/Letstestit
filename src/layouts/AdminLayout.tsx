@@ -17,7 +17,8 @@ import {
     Bell,
     ChevronDown,
     Menu,
-    X
+    X,
+    Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -35,6 +36,7 @@ export default function AdminLayout() {
     const navItems = [
         { icon: LayoutDashboard, label: "Overview", path: "/admin" },
         { icon: CheckCircle2, label: "Approvals", path: "/admin/approvals" },
+        { icon: Sparkles, label: "VIP Waitlist", path: "/admin/waitlist" },
         { icon: ShoppingBag, label: "Orders", path: "/admin/orders" },
         { icon: Store, label: "Merchants", path: "/admin/merchants" },
         { icon: Bike, label: "Riders", path: "/admin/riders" },

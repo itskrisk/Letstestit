@@ -43,6 +43,16 @@ export default function CookieModal({ isOpen, onClose }: CookieModalProps) {
             updatedAt: new Date().toISOString(),
         };
         localStorage.setItem('muncheez_cookie_preferences', JSON.stringify(toSave));
+        
+        // Write document cookies
+        const maxAge = 31536000; // 1 year
+        document.cookie = `muncheez_essential=true; path=/; max-age=${maxAge}; SameSite=Lax`;
+        document.cookie = `muncheez_analytics=${toSave.analytics}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        document.cookie = `muncheez_marketing=${toSave.marketing}; path=/; max-age=${maxAge}; SameSite=Lax`;
+        document.cookie = `muncheez_personalization=${toSave.personalization}; path=/; max-age=${maxAge}; SameSite=Lax`;
+
+        window.dispatchEvent(new CustomEvent('muncheez_cookies_updated', { detail: toSave }));
+        
         setPreferences(toSave);
         setSavedSuccess(true);
         setTimeout(() => {

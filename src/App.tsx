@@ -47,6 +47,7 @@ import AdminMarketing from "./pages/admin/Marketing";
 import AdminApprovals from "./pages/admin/Approvals";
 import AdminSettings from "./pages/admin/Settings";
 import AdminSupport from "./pages/admin/Support";
+import AdminWaitlist from "./pages/admin/Waitlist";
 
 // Auth Pages
 import AuthCallback from "./pages/auth/AuthCallback";
@@ -59,6 +60,7 @@ import ComingSoon from "./pages/common/ComingSoon";
 import OurStory from "./pages/common/OurStory";
 import LegalPage from "./pages/common/LegalPage";
 import OurTeam from "./pages/common/OurTeam";
+import CookieBanner from "./components/ui/shared/CookieBanner";
 
 export default function App() {
   return (
@@ -241,6 +243,14 @@ export default function App() {
                   }
                 />
                 <Route
+                  path="/admin/waitlist"
+                  element={
+                    <ProtectedRoute requiredRole="admin">
+                      <AdminWaitlist />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/admin/settings"
                   element={
                     <ProtectedRoute requiredRole="admin">
@@ -271,6 +281,7 @@ export default function App() {
               {/* ============================================ */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            <CookieBanner />
           </div>
         </CartProvider>
       </AuthProvider>

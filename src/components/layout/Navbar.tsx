@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from "../../context/AuthContext";
+import WaitlistModal from '../ui/shared/WaitlistModal';
 
 export default function Navbar() {
     const { user, profile } = useAuth();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -16,8 +18,6 @@ export default function Navbar() {
     }, []);
 
     const AuthButton = ({ mobile = false }) => {
-        // Only customer sessions are recognized in the Customer Navbar.
-        // Riders, Merchants, and Admins who land here see a plain Login button.
         const isCustomer = user && (profile?.roles?.includes('customer') || profile?.role === 'customer' || !profile);
         const firstName = profile?.full_name?.split(' ')[0];
         const buttonText = isCustomer ? (firstName || 'ACCOUNT') : 'Login';
@@ -99,8 +99,14 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* Right: Login (Desktop & Mobile) */}
-                    <div className="flex items-center gap-8">
+                    {/* Right: Login & Waitlist */}
+                    <div className="flex items-center gap-4 md:gap-6">
+                        <button
+                            onClick={() => setIsWaitlistOpen(true)}
+                            className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[9px] font-bold uppercase tracking-[0.25em] text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37] hover:text-black transition-all duration-300 cursor-pointer shadow-sm"
+                        >
+                            <Sparkles size={12} /> VIP Waitlist
+                        </button>
                         <AuthButton />
 
                         {/* Mobile Login Placeholder/Toggle */}
@@ -123,6 +129,11 @@ export default function Navbar() {
                     </div>
                 </div>
             </motion.nav>
+
+            <WaitlistModal
+                isOpen={isWaitlistOpen}
+                onClose={() => setIsWaitlistOpen(false)}
+            />
 
             {/* High-End Mobile Menu Overlay */}
             <AnimatePresence>

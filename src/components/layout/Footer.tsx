@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { Instagram, Facebook, Twitter, Linkedin, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import appStoreIcon from "../../assets/app-store-icon.png";
 import googlePlayIcon from "../../assets/google-play-icon.png";
-
+import CookieModal from '../ui/shared/CookieModal';
 
 export default function Footer() {
+    const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
+
     return (
         <footer className="bg-black pt-20 pb-10 text-white relative z-50" id="contact">
             <div className="container">
@@ -150,11 +153,16 @@ export default function Footer() {
                         <Link to="/legal/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link to="/legal/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
                         <Link to="/admin/login" className="hover:text-white transition-colors">Admin Login</Link>
-                        <Link to="/coming-soon" state={{ name: "Cookie Settings" }} className="hover:text-white transition-colors">Cookie Settings</Link>
+                        <button onClick={() => setIsCookieModalOpen(true)} className="hover:text-white transition-colors cursor-pointer uppercase">Cookie Settings</button>
                     </div>
                 </div>
 
             </div>
+
+            <CookieModal
+                isOpen={isCookieModalOpen}
+                onClose={() => setIsCookieModalOpen(false)}
+            />
         </footer>
     );
 }
