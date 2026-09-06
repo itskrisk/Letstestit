@@ -91,12 +91,12 @@
 
 <body>
     <div class="header">
-        <div class="bg-name">{{ .User.user_metadata.full_name }}</div>
+        <div class="bg-name">{{ .Data.full_name }}</div>
         <div class="brand">Muncheez Collective</div>
         <h1>Purely <span class="italic">Exceptional</span>.</h1>
     </div>
     <img src="https://images.unsplash.com/photo-1547496502-affa22d38842?q=80&w=1200" class="img-wide">
-    <p>Welcome, {{ .User.user_metadata.full_name }}. An intentional dining experience is just a click away.</p>
+    <p>Welcome, {{ .Data.full_name }}. An intentional dining experience is just a click away.</p>
     <a href="{{ .ConfirmationURL }}" class="btn">Finalize Activation</a>
     <div style="height: 100px;"></div>
 </body>

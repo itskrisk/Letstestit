@@ -94,8 +94,7 @@
     </div>
     <div class="content">
         <span class="brand-label">Access Granted</span>
-        <div style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px;">Greetings, {{
-            .User.user_metadata.full_name }}</div>
+        <div style="font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px;">Greetings, {{ .Data.full_name }}</div>
         <h1>Elevate the <br><span class="italic">Everyday</span>.</h1>
         <p>You've entered the inner circle of Nairobi's most intentional delivery collective. Welcome home.</p>
         <a href="{{ .ConfirmationURL }}" class="btn">Verify Presence</a>
