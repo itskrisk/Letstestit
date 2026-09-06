@@ -1266,6 +1266,35 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 - **COMPLETED & LIVE ON GITHUB MAIN**.
 
 
+---
+
+## [2026-09-06] Supabase Email Template Syntax Fix & Rate Limit Analysis
+
+### Prompt / Request:
+> "the'res also a bit of issue, i addded the custom emails in our email template folder to supabase, and now its telling me error, sending confrimation email. why is that? can you find out and tell me"
+
+### Diagnosis & Findings:
+1. **Invalid GoTrue Variable Syntax (`{{ .User.user_metadata.full_name }}`)**:
+   - Supabase Auth uses Go's `html/template` engine. In Supabase GoTrue, `{{ .User }}` does NOT exist in the email template context.
+   - When Supabase tried to render `{{ .User.user_metadata.full_name }}`, the Go template parser crashed with a `nil pointer evaluation error`.
+   - As a result, Supabase Auth returned `500 Internal Server Error: Error sending confirmation email` on signup or email verification.
+   - Correct syntax: `{{ .Data.full_name }}`.
+
+2. **Supabase Default Email Service Rate Limits**:
+   - Supabase's built-in SMTP service (Inbucket) enforces a strict rate limit of **3 to 4 emails per hour**.
+   - Exceeding this rate limit during testing triggers `Error sending confirmation email`.
+
+### Actions Taken:
+1. **Fixed Template Syntax Across `emailtemp/` Directory**:
+   - Replaced all occurrences of `{{ .User.user_metadata.full_name }}` with `{{ .Data.full_name }}` in `welcome.html`, `cinematic_v2.html`, `cinematic_v3.html`, `cinematic_v4.html`, `cinematic_v5.html`, `cinematic_v6.html`, and `02_minimalist_chic.html`.
+2. **Committed & Pushed**:
+   - Pushed commit `9318adb` to GitHub `itskrisk/Letstestit.git` on `main`.
+
+### Status:
+- **COMPLETED & LIVE ON GITHUB MAIN**.
+
+
+
 
 
 
