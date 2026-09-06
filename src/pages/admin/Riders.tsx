@@ -47,6 +47,7 @@ export default function Riders() {
     const [pendingAction, setPendingAction] = useState<{ type: ActionType; rider: Rider } | null>(null);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [drawerTab, setDrawerTab] = useState<DrawerTab>('details');
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const fetchRiders = async () => {
         setIsLoading(true);
@@ -182,6 +183,39 @@ export default function Riders() {
         exportRidersToCSV(toExport, `muncheez_riders_${new Date().toISOString().slice(0, 10)}.csv`);
     };
 
+    const handleSaveRider = async (data: any) => {
+        const newRiderId = `rider_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        
+        try {
+            await supabase.from('profiles').insert([{
+                id: newRiderId,
+                full_name: data.name,
+                phone: data.phone,
+                role: 'rider'
+            }]);
+        } catch (e) {
+            console.warn('Could not insert profile:', e);
+        }
+
+        const { error: riderError } = await supabase.from('riders').insert([{
+            id: newRiderId,
+            vehicle_type: data.vehicleType,
+            vehicle_make: data.vehicleMake || 'Unknown',
+            vehicle_model: data.vehicleModel || 'Unknown',
+            vehicle_plate: data.vehiclePlate || 'N/A',
+            status: 'APPROVED',
+            is_online: false,
+            rating: 5.0,
+            total_orders: 0
+        }]);
+
+        if (riderError) {
+            throw riderError;
+        }
+
+        await fetchRiders();
+    };
+
     return (
         <div className="space-y-8 pb-12">
             {/* Header */}
@@ -203,7 +237,10 @@ export default function Riders() {
                     >
                         <Download size={16} /> Export {selectedIds.size > 0 ? `(${selectedIds.size})` : 'All'}
                     </button>
-                    <button className="px-5 py-2.5 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 shadow-lg shadow-black/10 transition-all flex items-center gap-2">
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="px-5 py-2.5 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 shadow-lg shadow-black/10 transition-all flex items-center gap-2 cursor-pointer"
+                    >
                         <Bike size={18} /> Onboard Rider
                     </button>
                 </div>
@@ -398,10 +435,17 @@ export default function Riders() {
                     onConfirm={handleActionConfirm}
                 />
             )}
+
+            {/* Rider Add Modal */}
+            {isAddModalOpen && (
+                <RiderFormModal
+                    onClose={() => setIsAddModalOpen(false)}
+                    onSave={handleSaveRider}
+                />
+            )}
         </div>
     );
 }
-
 
 // ─── Rider Detail Drawer ───────────────────────────────────────────────────
 function RiderDetailDrawer({ rider, tab, onTabChange, activeOrder, onClose, onApprove, onSuspend, onOffboard }: any) {
@@ -764,5 +808,153 @@ function RiderStat({ label, value, icon: Icon, color, onClick }: any) {
                 <p className="text-2xl font-black text-black tracking-tighter">{value}</p>
             </div>
         </button>
+    );
+}
+
+function RiderFormModal({ onClose, onSave }: { onClose: () => void; onSave: (riderData: any) => Promise<void> }) {
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [vehicleType, setVehicleType] = useState('Motorbike');
+    const [vehicleMake, setVehicleMake] = useState('');
+    const [vehicleModel, setVehicleModel] = useState('');
+    const [vehiclePlate, setVehiclePlate] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!name.trim() || !phone.trim()) {
+            alert('Please enter both name and phone number');
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            await onSave({
+                name,
+                phone,
+                vehicleType,
+                vehicleMake,
+                vehicleModel,
+                vehiclePlate
+            });
+            onClose();
+        } catch (err: any) {
+            console.error('Error saving rider:', err);
+            alert('Failed to save rider: ' + (err?.message || 'Unknown error'));
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-3 bg-black text-white rounded-xl">
+                            <Bike size={20} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Onboard New Rider</h2>
+                            <p className="text-xs text-gray-500 font-medium">Add courier details to approve fleet access immediately.</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 text-gray-400 hover:text-black rounded-lg">
+                        <X size={18} />
+                    </button>
+                </div>
+                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Full Name *</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={e => setName(e.target.value)}
+                                placeholder="e.g. Samuel Mutua"
+                                required
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Phone Number *</label>
+                            <input
+                                type="text"
+                                value={phone}
+                                onChange={e => setPhone(e.target.value)}
+                                placeholder="e.g. +254712345678"
+                                required
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:border-black"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Vehicle Type</label>
+                            <select
+                                value={vehicleType}
+                                onChange={e => setVehicleType(e.target.value)}
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:border-black"
+                            >
+                                <option value="Motorbike">Motorbike</option>
+                                <option value="Bicycle">Bicycle</option>
+                                <option value="Scooter">Scooter</option>
+                                <option value="Car">Car / Van</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Plate Number</label>
+                            <input
+                                type="text"
+                                value={vehiclePlate}
+                                onChange={e => setVehiclePlate(e.target.value)}
+                                placeholder="e.g. KMCA 890Z"
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:border-black"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Vehicle Make</label>
+                            <input
+                                type="text"
+                                value={vehicleMake}
+                                onChange={e => setVehicleMake(e.target.value)}
+                                placeholder="e.g. TVS / Honda"
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Vehicle Model</label>
+                            <input
+                                type="text"
+                                value={vehicleModel}
+                                onChange={e => setVehicleModel(e.target.value)}
+                                placeholder="e.g. HLX 150"
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:border-black"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="pt-4 flex gap-3">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="flex-1 py-3 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-all shadow-lg shadow-black/10 disabled:opacity-50"
+                        >
+                            {isSubmitting ? 'Saving...' : 'Save & Activate Rider'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     );
 }

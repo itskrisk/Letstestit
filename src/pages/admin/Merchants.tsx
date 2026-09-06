@@ -440,9 +440,38 @@ export default function Merchants() {
                 <MerchantFormModal
                     merchant={null}
                     onClose={closeModal}
-                    onSave={(m: Merchant) => {
-                        // Mock saving logic since it requires Supabase insert now
-                        closeModal();
+                    onSave={async (m: Merchant) => {
+                        try {
+                            const newMerchantId = `merchant_${Date.now()}`;
+                            const newRecord = {
+                                id: newMerchantId,
+                                business_name: m.businessName,
+                                type: m.type,
+                                status: 'APPROVED',
+                                address: m.address || 'Nairobi, Kenya',
+                                mpesa_till: m.mpesaShortcode || '888999',
+                                is_active: true,
+                                created_at: new Date().toISOString(),
+                                logo_url: m.logoUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=400&fit=crop'
+                            };
+
+                            const { error } = await supabase.from('merchants').insert(newRecord);
+                            if (error) console.error('Supabase merchant insert error:', error);
+
+                            const fullMerchant: Merchant = {
+                                ...m,
+                                id: newMerchantId,
+                                status: 'APPROVED',
+                                isActive: true,
+                                createdAt: new Date(),
+                            };
+
+                            setMerchants(prev => [fullMerchant, ...prev]);
+                        } catch (err) {
+                            console.error('Error adding merchant:', err);
+                        } finally {
+                            closeModal();
+                        }
                     }}
                 />
             )}

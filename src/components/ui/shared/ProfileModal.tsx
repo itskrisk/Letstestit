@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     User, HelpCircle, LogOut, FileText, X, Cookie, Shield, ArrowLeft, Clock,
     ShoppingBag, MapPin, CreditCard, Heart, Bell, Lock, Compass, FileCode,
-    Trash2, Check, Plus, Download, RefreshCw, ChevronRight, Save, Phone, Mail,
-    Smartphone, AlertTriangle, CheckCircle, ExternalLink
+    Trash2, Check, Plus, Download, RefreshCw, ChevronRight, Save, Smartphone,
+    AlertTriangle, CheckCircle
 } from 'lucide-react';
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -34,8 +34,8 @@ type ModalView =
     | 'delete-account';
 
 const DEFAULT_ADDRESSES = [
-    { id: 'addr-1', label: 'Home', fullAddress: 'Apt 4B, Lavington Heights, James Gichuru Rd, Nairobi', doorNumber: '4B', instructions: 'Leave at gate with security guard', isDefault: true },
-    { id: 'addr-2', label: 'Work', fullAddress: 'Level 5, One Africa Place, Waiyaki Way, Westlands, Nairobi', doorNumber: 'Suite 502', instructions: 'Call upon arrival', isDefault: false }
+    { id: 'addr-1', label: 'Home', fullAddress: 'Lavington Heights, James Gichuru Rd, Nairobi', doorNumber: '4B', instructions: 'Leave with gate security', isDefault: true },
+    { id: 'addr-2', label: 'Work', fullAddress: 'One Africa Place, Waiyaki Way, Westlands, Nairobi', doorNumber: 'Suite 502', instructions: 'Call upon arrival', isDefault: false }
 ];
 
 const DEFAULT_FAVORITES = [
@@ -56,7 +56,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     // Profile Form State
     const [fullName, setFullName] = useState(profile?.full_name || '');
     const [phone, setPhone] = useState(profile?.phone || '');
-    const [avatarGradient, setAvatarGradient] = useState('from-[#4A90E2] to-[#BEE3F8]');
     const [isSaving, setIsSaving] = useState(false);
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -194,7 +193,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         setNewAddrDoor('');
         setNewAddrNotes('');
         setIsAddingAddr(false);
-        setFeedback({ type: 'success', text: 'Address added successfully' });
+        setFeedback({ type: 'success', text: 'Address saved successfully' });
     };
 
     const handleSetDefaultAddress = (id: string) => {
@@ -227,8 +226,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                 id: user?.id,
                 email: user?.email,
                 fullName: profile?.full_name,
-                phone: profile?.phone,
-                loyaltyTier: profile?.loyalty_tier || 'Standard'
+                phone: profile?.phone
             },
             addresses,
             favorites,
@@ -253,7 +251,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
 
     const handleSupportSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setFeedback({ type: 'success', text: 'Ticket #TK-' + Math.floor(1000 + Math.random() * 9000) + ' submitted. Our team will contact you within 5 minutes.' });
+        setFeedback({ type: 'success', text: 'Ticket #TK-' + Math.floor(1000 + Math.random() * 9000) + ' submitted. Our team will contact you shortly.' });
         setSupportDetails('');
     };
 
@@ -302,7 +300,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 15 }}
                             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                            className="relative w-full max-w-md bg-[#FDFBF7] rounded-3xl overflow-hidden shadow-2xl border border-black/10 flex flex-col max-h-[85vh] h-[640px]"
+                            className="relative w-full max-w-md bg-[#FDFBF7] rounded-3xl overflow-hidden shadow-2xl border border-black/10 flex flex-col max-h-[85vh] h-[620px]"
                         >
                             {/* Header Bar */}
                             <div className="flex items-center justify-between px-6 py-4 border-b border-black/5 bg-white shrink-0 z-10">
@@ -316,7 +314,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                     </button>
                                 ) : (
                                     <div className="text-xs font-black uppercase tracking-widest text-[#4A90E2]">
-                                        Muncheez Account
+                                        Customer Account
                                     </div>
                                 )}
 
@@ -358,26 +356,24 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                             exit={{ opacity: 0, x: -15 }}
                                             className="space-y-6"
                                         >
-                                            {/* User Profile Card */}
+                                            {/* User Profile Header */}
                                             <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-black/5 shadow-sm">
-                                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${avatarGradient} flex items-center justify-center shadow-md shrink-0`}>
-                                                    <span className="text-xl font-black text-white">{initial}</span>
+                                                <div className="w-14 h-14 rounded-full bg-[#4A90E2] text-white flex items-center justify-center shadow-md shrink-0">
+                                                    <span className="text-xl font-black">{initial}</span>
                                                 </div>
                                                 <div className="flex-1 overflow-hidden">
                                                     <h3 className="font-heading font-black text-base text-gray-900 truncate">
-                                                        {profile?.full_name || 'Valued Customer'}
+                                                        {profile?.full_name || 'Customer Account'}
                                                     </h3>
                                                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                                                    <div className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full bg-[#4A90E2]/10 text-[#4A90E2] text-[10px] font-bold uppercase tracking-wider border border-[#4A90E2]/20">
-                                                        <span>{profile?.loyalty_tier || 'Gold Tier'} Member</span>
-                                                    </div>
+                                                    <span className="inline-block mt-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</span>
                                                 </div>
                                             </div>
 
-                                            {/* Top 4 Quick Access Grid */}
+                                            {/* Quick Actions Grid */}
                                             <div>
                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 block mb-2 px-1">
-                                                    Quick Actions
+                                                    Quick Access
                                                 </span>
                                                 <div className="grid grid-cols-2 gap-2.5">
                                                     <button
@@ -389,7 +385,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                         </div>
                                                         <div>
                                                             <div className="text-xs font-bold text-gray-900">My Orders</div>
-                                                            <div className="text-[10px] text-gray-400 font-medium">{myOrders.length} active/past</div>
+                                                            <div className="text-[10px] text-gray-400 font-medium">{myOrders.length} orders</div>
                                                         </div>
                                                     </button>
 
@@ -415,7 +411,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                         </div>
                                                         <div>
                                                             <div className="text-xs font-bold text-gray-900">Payments</div>
-                                                            <div className="text-[10px] text-gray-400 font-medium">M-Pesa Express</div>
+                                                            <div className="text-[10px] text-gray-400 font-medium">M-Pesa</div>
                                                         </div>
                                                     </button>
 
@@ -469,7 +465,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                         <button onClick={() => setView('privacy')} className="w-full flex items-center justify-between p-3.5 hover:bg-gray-50 transition-colors text-left group">
                                                             <div className="flex items-center gap-3">
                                                                 <Shield size={16} className="text-gray-400 group-hover:text-[#4A90E2]" />
-                                                                <span className="text-xs font-bold text-gray-800">Privacy & Data Control</span>
+                                                                <span className="text-xs font-bold text-gray-800">Privacy & Data</span>
                                                             </div>
                                                             <ChevronRight size={16} className="text-gray-300 group-hover:translate-x-0.5 transition-transform" />
                                                         </button>
@@ -553,29 +549,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                     {view === 'profile' && (
                                         <motion.div key="profile" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 15 }} className="space-y-4">
                                             <h3 className="font-heading font-black text-lg text-gray-900">My Profile</h3>
-
-                                            {/* Avatar Picker */}
-                                            <div className="bg-white p-4 rounded-2xl border border-black/5 space-y-3">
-                                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Avatar Style</label>
-                                                <div className="flex items-center gap-3">
-                                                    {[
-                                                        'from-[#4A90E2] to-[#BEE3F8]',
-                                                        'from-amber-400 to-orange-500',
-                                                        'from-emerald-400 to-teal-600',
-                                                        'from-purple-500 to-indigo-600',
-                                                        'from-rose-400 to-red-600'
-                                                    ].map((grad) => (
-                                                        <button
-                                                            key={grad}
-                                                            type="button"
-                                                            onClick={() => setAvatarGradient(grad)}
-                                                            className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${grad} flex items-center justify-center text-white font-black text-sm shadow-sm transition-transform ${avatarGradient === grad ? 'ring-2 ring-black scale-110' : 'opacity-70 hover:opacity-100'}`}
-                                                        >
-                                                            {initial}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
 
                                             <form onSubmit={handleSaveProfile} className="space-y-3">
                                                 <div className="bg-white p-4 rounded-2xl border border-black/5 space-y-3">
@@ -739,7 +712,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                 </form>
                                             )}
 
-                                             {/* Addresses List */}
+                                            {/* Addresses List */}
                                             <div className="space-y-3">
                                                 {addresses.map((addr: any) => (
                                                     <div key={addr.id} className={`bg-white p-4 rounded-2xl border space-y-2 ${addr.isDefault ? 'border-[#4A90E2] ring-1 ring-[#4A90E2]/30' : 'border-black/5'}`}>
@@ -856,7 +829,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                             <h3 className="font-heading font-black text-lg text-gray-900">Notifications</h3>
                                             <div className="bg-white rounded-2xl border border-black/5 divide-y divide-gray-100">
                                                 {[
-                                                    { key: 'orderStatus', title: 'Order Status Updates', desc: 'Real-time push alerts when kitchen accepts order' },
+                                                    { key: 'orderStatus', title: 'Order Status Updates', desc: 'Real-time alerts when kitchen accepts order' },
                                                     { key: 'riderAlerts', title: 'Rider Location Alerts', desc: 'SMS updates when courier is nearby' },
                                                     { key: 'promotions', title: 'Promotions & Offers', desc: 'Exclusive weekly discounts & vouchers' },
                                                     { key: 'marketing', title: 'Marketing Newsletter', desc: 'New restaurant launches in Nairobi' }
