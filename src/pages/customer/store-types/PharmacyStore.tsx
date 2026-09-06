@@ -47,7 +47,7 @@ export default function PharmacyStore({ merchant, products }: PharmacyStoreProps
 
     // Modal & Menu States 
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-    const [userLocation, setUserLocation] = useState('Lavington, Nairobi');
+    const [userLocation, setUserLocation] = useState('');
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 

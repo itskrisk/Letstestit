@@ -98,7 +98,7 @@ export default function StoreListing() {
 
     // Location State
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-    const [userLocation, setUserLocation] = useState('Lavington, Nairobi');
+    const [userLocation, setUserLocation] = useState('');
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -288,7 +288,9 @@ export default function StoreListing() {
                             className="hidden md:flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full cursor-pointer hover:bg-white/10 transition-all"
                         >
                             <MapPin size={12} className="text-[#D4AF37]" />
-                            <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[150px]">{userLocation}</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[150px]">
+                                {userLocation || 'Set delivery location'}
+                            </span>
                         </div>
                     </div>
 

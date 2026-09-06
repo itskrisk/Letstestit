@@ -448,11 +448,11 @@ export default function Merchants() {
                                 business_name: m.businessName,
                                 type: m.type,
                                 status: 'APPROVED',
-                                address: m.address || 'Nairobi, Kenya',
-                                mpesa_till: m.mpesaShortcode || '888999',
+                                address: m.address || null,
+                                mpesa_till: m.mpesaShortcode || null,
                                 is_active: true,
                                 created_at: new Date().toISOString(),
-                                logo_url: m.logoUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=400&fit=crop'
+                                logo_url: m.logoUrl || null
                             };
 
                             const { error } = await supabase.from('merchants').insert(newRecord);

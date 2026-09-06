@@ -73,7 +73,10 @@ export default function VerificationOverlay({
         } catch (e) {
             console.error('Sign out error:', e);
         } finally {
-            localStorage.clear();
+            // Only remove app-specific items, preserve cookie preferences
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('muncheez_admin_master');
+            localStorage.removeItem('activeMerchantId');
             window.location.href = '/login';
         }
     };

@@ -125,19 +125,45 @@ export default function PartnerSignup() {
 
             if (signupResult.error) throw new Error(signupResult.error);
 
-            if (signupResult.user && (kraPinUrl || healthPermitUrl)) {
-                setUploadProgress('Saving documents...');
-                const documentData: any = {};
-                if (kraPinUrl) documentData.kraPin = { url: kraPinUrl, filename: documents.kraPin?.name, uploadedAt: new Date().toISOString() };
-                if (healthPermitUrl) documentData.healthPermit = { url: healthPermitUrl, filename: documents.healthPermit?.name, uploadedAt: new Date().toISOString() };
-
-                const { error: updateError } = await supabase
+            if (signupResult.user) {
+                // Create merchant record in Supabase
+                setUploadProgress('Setting up your store...');
+                const { error: createError } = await supabase
                     .from('merchants')
-                    .update({ documents: documentData })
-                    .eq('id', signupResult.user.id);
+                    .insert({
+                        id: signupResult.user.id,
+                        business_name: formData.businessName,
+                        type: formData.type,
+                        address: formData.address,
+                        phone: formData.phone,
+                        mpesa_till: formData.mpesaTill,
+                        status: 'PENDING',
+                        is_active: false,
+                        rating: 0,
+                        review_count: 0,
+                        delivery_fee: 150,
+                        created_at: new Date().toISOString(),
+                    });
 
-                if (updateError) {
-                    console.error('Error updating merchant documents:', updateError);
+                if (createError) {
+                    console.error('Error creating merchant record:', createError);
+                }
+
+                // Update with documents if any
+                if (kraPinUrl || healthPermitUrl) {
+                    setUploadProgress('Saving documents...');
+                    const documentData: any = {};
+                    if (kraPinUrl) documentData.kraPin = { url: kraPinUrl, filename: documents.kraPin?.name, uploadedAt: new Date().toISOString() };
+                    if (healthPermitUrl) documentData.healthPermit = { url: healthPermitUrl, filename: documents.healthPermit?.name, uploadedAt: new Date().toISOString() };
+
+                    const { error: updateError } = await supabase
+                        .from('merchants')
+                        .update({ documents: documentData })
+                        .eq('id', signupResult.user.id);
+
+                    if (updateError) {
+                        console.error('Error updating merchant documents:', updateError);
+                    }
                 }
             }
 

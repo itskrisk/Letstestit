@@ -33,16 +33,7 @@ type ModalView =
     | 'policies'
     | 'delete-account';
 
-const DEFAULT_ADDRESSES = [
-    { id: 'addr-1', label: 'Home', fullAddress: 'Lavington Heights, James Gichuru Rd, Nairobi', doorNumber: '4B', instructions: 'Leave with gate security', isDefault: true },
-    { id: 'addr-2', label: 'Work', fullAddress: 'One Africa Place, Waiyaki Way, Westlands, Nairobi', doorNumber: 'Suite 502', instructions: 'Call upon arrival', isDefault: false }
-];
-
-const DEFAULT_FAVORITES = [
-    { id: 'fav-1', name: "Mama's Kitchen", category: 'African Cuisine', rating: '4.9', path: '/store/kitchen-mama' },
-    { id: 'fav-2', name: 'Fresh Mart Supermarket', category: 'Groceries', rating: '4.8', path: '/store/supermarket-fresh' },
-    { id: 'fav-3', name: 'Nairobi Apothecary', category: 'Pharmacy & Wellness', rating: '5.0', path: '/store/apothecary-nairobi' }
-];
+// No default mock data - show empty state if user has no data
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const { user, profile, signOut, resetPassword, refreshUser } = useAuth();
@@ -60,9 +51,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
     // Saved Addresses State
-    const [addresses, setAddresses] = useState(() => {
+    const [addresses, setAddresses] = useState<any[]>(() => {
         const saved = localStorage.getItem('muncheez_user_addresses');
-        return saved ? JSON.parse(saved) : DEFAULT_ADDRESSES;
+        return saved ? JSON.parse(saved) : [];
     });
     const [newAddrLabel, setNewAddrLabel] = useState('Home');
     const [newAddrText, setNewAddrText] = useState('');
@@ -71,13 +62,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const [isAddingAddr, setIsAddingAddr] = useState(false);
 
     // Payment Methods State
-    const [mpesaNumber, setMpesaNumber] = useState(profile?.phone || '+254 700 000 000');
+    const [mpesaNumber, setMpesaNumber] = useState(profile?.phone || '');
     const [defaultPayment, setDefaultPayment] = useState('MPESA');
 
     // Favorites State
-    const [favorites, setFavorites] = useState(() => {
+    const [favorites, setFavorites] = useState<any[]>(() => {
         const saved = localStorage.getItem('muncheez_favorites');
-        return saved ? JSON.parse(saved) : DEFAULT_FAVORITES;
+        return saved ? JSON.parse(saved) : [];
     });
 
     // Notification Preferences State
@@ -92,7 +83,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     });
 
     // Location Preferences State
-    const [neighborhood, setNeighborhood] = useState(localStorage.getItem('muncheez_neighborhood') || 'Lavington');
+    const [neighborhood, setNeighborhood] = useState(localStorage.getItem('muncheez_neighborhood') || '');
     const [deliveryNotes, setDeliveryNotes] = useState(localStorage.getItem('muncheez_delivery_notes') || '');
 
     // Support Form State
@@ -260,7 +251,15 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         setIsSaving(true);
         try {
             await signOut();
-            localStorage.clear();
+            // Only remove app-specific items, preserve cookie preferences
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('muncheez_admin_master');
+            localStorage.removeItem('activeMerchantId');
+            localStorage.removeItem('muncheez_user_addresses');
+            localStorage.removeItem('muncheez_favorites');
+            localStorage.removeItem('muncheez_notification_settings');
+            localStorage.removeItem('muncheez_neighborhood');
+            localStorage.removeItem('muncheez_delivery_notes');
             onClose();
             window.location.href = '/';
         } catch (e) {

@@ -28,7 +28,19 @@ export default function CourierLayout({ children }: { children: React.ReactNode 
         } catch (e) {
             console.error('Sign out error:', e);
         } finally {
-            localStorage.clear();
+            // Preserve cookie preferences, remove app-specific items
+            const cookiePrefs = localStorage.getItem('muncheez_cookie_preferences');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('muncheez_admin_master');
+            localStorage.removeItem('activeMerchantId');
+            localStorage.removeItem('muncheez_user_addresses');
+            localStorage.removeItem('muncheez_favorites');
+            localStorage.removeItem('muncheez_notification_settings');
+            localStorage.removeItem('muncheez_neighborhood');
+            localStorage.removeItem('muncheez_delivery_notes');
+            if (cookiePrefs) {
+                localStorage.setItem('muncheez_cookie_preferences', cookiePrefs);
+            }
             window.location.href = '/courier/login';
         }
     };

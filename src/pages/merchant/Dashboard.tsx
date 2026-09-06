@@ -24,7 +24,7 @@ import { supabase } from "../../lib/supabaseClient";
 
 export default function MerchantDashboard() {
     const navigate = useNavigate();
-    const { user, profile } = useAuth();
+    const { user, profile, signOut } = useAuth();
     const { merchants, orders,
         updateOrderStatus,
         updateMerchantSettings,
@@ -69,6 +69,29 @@ export default function MerchantDashboard() {
 
         fetchMerchant();
     }, [user?.id]);
+
+    // Refresh merchant data periodically to pick up approval changes
+    useEffect(() => {
+        if (!user?.id || isApproved) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('merchants')
+                    .select('status, is_active')
+                    .eq('id', user.id)
+                    .single();
+
+                if (data && !error) {
+                    setSupabaseMerchant(prev => prev ? { ...prev, ...data } : prev);
+                }
+            } catch (err) {
+                // Silently fail - user can manually refresh
+            }
+        }, 5000); // Poll every 5 seconds when pending
+
+        return () => clearInterval(interval);
+    }, [user?.id, isApproved]);
 
     // Derived: Active Merchant (Prefer real DB profile, fallback to mock state)
     const [activeMerchantId, setActiveMerchantId] = useState<string | null>(profile?.id || localStorage.getItem('activeMerchantId') || (merchants.length > 0 ? merchants[0].id : null));
@@ -132,8 +155,9 @@ export default function MerchantDashboard() {
         return 'Products / Inventory';
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.removeItem('activeMerchantId');
+        await signOut();
         navigate('/partner/login');
     };
 

@@ -31,7 +31,7 @@ const performanceEngine = new PerformanceEngine();
 
 export default function RiderDashboard() {
     const navigate = useNavigate();
-    const { user, profile } = useAuth();
+    const { user, profile, signOut } = useAuth();
 
     // Real Supabase State
     const [currentRider, setCurrentRider] = useState<any>(null);
@@ -137,6 +137,29 @@ export default function RiderDashboard() {
             clearInterval(pollInterval);
         };
     }, [user]);
+
+    // Refresh rider status periodically to pick up approval changes
+    useEffect(() => {
+        if (!user?.id || currentRider?.status === 'APPROVED') return;
+
+        const interval = setInterval(async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('riders')
+                    .select('status, is_online')
+                    .eq('id', user.id)
+                    .single();
+
+                if (data && !error) {
+                    setSupabaseRider(prev => prev ? { ...prev, ...data } : prev);
+                }
+            } catch (err) {
+                // Silently fail - user can manually refresh
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [user?.id, currentRider?.status]);
 
     // Show loading state while data is being fetched
     if ((isLoadingData || isLoadingSupabase) && !currentRider && !supabaseRider) {
@@ -428,9 +451,11 @@ export default function RiderDashboard() {
                         onClick={async () => {
                             if (confirm("Sign out?")) {
                                 try {
-                                    await supabase.from('riders').update({ is_online: false }).eq('id', currentRider.id);
+                                    if (currentRider?.id) {
+                                        await supabase.from('riders').update({ is_online: false }).eq('id', currentRider.id);
+                                    }
                                 } catch (e) { }
-                                await supabase.auth.signOut();
+                                await signOut();
                                 navigate("/courier/login");
                             }
                         }}

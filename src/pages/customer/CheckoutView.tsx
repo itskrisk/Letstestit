@@ -28,7 +28,7 @@ export default function CheckoutView() {
     const [deliveryAddress, setDeliveryAddress] = useState('');
     const [deliveryInstructions, setDeliveryInstructions] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'cash' | 'card'>('mpesa');
-    const [phoneNumber, setPhoneNumber] = useState(profile?.phone || '0712345678');
+    const [phoneNumber, setPhoneNumber] = useState(profile?.phone || '');
     const [wantsCutlery, setWantsCutlery] = useState(false);
 
     // Load merchant data
@@ -77,7 +77,7 @@ export default function CheckoutView() {
                     price: i.price,
                     options: []
                 })),
-                deliveryAddress: deliveryAddress || merchant?.address || "Nairobi, Kenya",
+                deliveryAddress: deliveryAddress || merchant?.address || '',
                 paymentMethod: paymentMethod
             });
 

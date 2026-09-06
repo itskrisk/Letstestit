@@ -148,20 +148,44 @@ export default function CourierSignup() {
 
             if (signupResult.error) throw new Error(signupResult.error);
 
-            if (signupResult.user && (idUrl || licenseUrl || logbookUrl)) {
-                setUploadProgress('Saving documents...');
-                const documentData: any = {};
-                if (idUrl) documentData.id = { url: idUrl, filename: documents.id?.name, uploadedAt: new Date().toISOString() };
-                if (licenseUrl) documentData.license = { url: licenseUrl, filename: documents.license?.name, uploadedAt: new Date().toISOString() };
-                if (logbookUrl) documentData.logbook = { url: logbookUrl, filename: documents.logbook?.name, uploadedAt: new Date().toISOString() };
-
-                const { error: updateError } = await supabase
+            if (signupResult.user) {
+                // Create rider record in Supabase
+                setUploadProgress('Setting up your profile...');
+                const { error: createError } = await supabase
                     .from('riders')
-                    .update({ documents: documentData })
-                    .eq('id', signupResult.user.id);
+                    .insert({
+                        id: signupResult.user.id,
+                        vehicle_type: formData.vehicleType,
+                        vehicle_make: formData.make || null,
+                        vehicle_model: formData.model || null,
+                        vehicle_plate: formData.plate || null,
+                        status: 'PENDING',
+                        is_online: false,
+                        rating: 5.0,
+                        total_orders: 0,
+                        created_at: new Date().toISOString(),
+                    });
 
-                if (updateError) {
-                    console.error('Error updating rider documents:', updateError);
+                if (createError) {
+                    console.error('Error creating rider record:', createError);
+                }
+
+                // Update with documents if any
+                if (idUrl || licenseUrl || logbookUrl) {
+                    setUploadProgress('Saving documents...');
+                    const documentData: any = {};
+                    if (idUrl) documentData.id = { url: idUrl, filename: documents.id?.name, uploadedAt: new Date().toISOString() };
+                    if (licenseUrl) documentData.license = { url: licenseUrl, filename: documents.license?.name, uploadedAt: new Date().toISOString() };
+                    if (logbookUrl) documentData.logbook = { url: logbookUrl, filename: documents.logbook?.name, uploadedAt: new Date().toISOString() };
+
+                    const { error: updateError } = await supabase
+                        .from('riders')
+                        .update({ documents: documentData })
+                        .eq('id', signupResult.user.id);
+
+                    if (updateError) {
+                        console.error('Error updating rider documents:', updateError);
+                    }
                 }
             }
 
