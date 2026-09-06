@@ -70,29 +70,6 @@ export default function MerchantDashboard() {
         fetchMerchant();
     }, [user?.id]);
 
-    // Refresh merchant data periodically to pick up approval changes
-    useEffect(() => {
-        if (!user?.id || isApproved) return;
-
-        const interval = setInterval(async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('merchants')
-                    .select('status, is_active')
-                    .eq('id', user.id)
-                    .single();
-
-                if (data && !error) {
-                    setSupabaseMerchant(prev => prev ? { ...prev, ...data } : prev);
-                }
-            } catch (err) {
-                // Silently fail - user can manually refresh
-            }
-        }, 5000); // Poll every 5 seconds when pending
-
-        return () => clearInterval(interval);
-    }, [user?.id, isApproved]);
-
     // Derived: Active Merchant (Prefer real DB profile, fallback to mock state)
     const [activeMerchantId, setActiveMerchantId] = useState<string | null>(profile?.id || localStorage.getItem('activeMerchantId') || (merchants.length > 0 ? merchants[0].id : null));
 
@@ -141,11 +118,6 @@ export default function MerchantDashboard() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const merchantType = activeBusiness?.type || 'Merchant';
 
-    // Block non-approved merchants from dashboard operations
-    const rawStatus = supabaseMerchant?.status || profile?.status || activeBusiness?.status || 'PENDING';
-    const merchantStatus = rawStatus === 'VERIFICATION_PENDING' ? 'PENDING' : rawStatus;
-    const isApproved = merchantStatus === 'APPROVED';
-
     // Polymorphic Labels based on Merchant Type
     const getProductLabel = () => {
         const type = profile?.merchant_type || activeBusiness?.type;
@@ -154,6 +126,34 @@ export default function MerchantDashboard() {
         if (type?.toLowerCase() === 'pharmacy') return 'Medicine / Stock';
         return 'Products / Inventory';
     };
+
+    // Block non-approved merchants from dashboard operations
+    const rawStatus = supabaseMerchant?.status || profile?.status || activeBusiness?.status || 'PENDING';
+    const merchantStatus = rawStatus === 'VERIFICATION_PENDING' ? 'PENDING' : rawStatus;
+    const isApproved = merchantStatus === 'APPROVED';
+
+    // Refresh merchant data periodically to pick up approval changes
+    useEffect(() => {
+        if (!user?.id || isApproved) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('merchants')
+                    .select('status, is_active')
+                    .eq('id', user.id)
+                    .single();
+
+                if (data && !error) {
+                    setSupabaseMerchant((prev: any) => prev ? { ...prev, ...data } : prev);
+                }
+            } catch (err) {
+                // Silently fail - user can manually refresh
+            }
+        }, 5000); // Poll every 5 seconds when pending
+
+        return () => clearInterval(interval);
+    }, [user?.id, isApproved]);
 
     const handleLogout = async () => {
         localStorage.removeItem('activeMerchantId');

@@ -151,7 +151,7 @@ export default function RiderDashboard() {
                     .single();
 
                 if (data && !error) {
-                    setSupabaseRider(prev => prev ? { ...prev, ...data } : prev);
+                    setSupabaseRider((prev: any) => prev ? { ...prev, ...data } : prev);
                 }
             } catch (err) {
                 // Silently fail - user can manually refresh
