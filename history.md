@@ -1237,5 +1237,35 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 - **COMPLETED & VERIFIED ON GITHUB MAIN**.
 
 
+---
+
+## [2026-09-06] Profile Modal Simplification, Functional Settings & Admin "God's View" Fixes
+
+### Prompt / Request:
+> "number one, the settings you created, i suggested, that you have them fucntional and if there's anypart that neeeds to be wired to supabase, make sure you do it
+> 
+> number 2.. the profile modla, you over complicsated it, remove stuff like premium whatever and avata icons. only keep essential stuff. You added a lot of bullshit. also our cokies, fix that. also, i can now log in into admin but most of the stuff in the admin dashboard feels redundant. its suppose to be gods view with the ability to see verything. that is uploaded documents, make or rejects merchants and drivers, basically every feature has a purpose and should be very functional, not just on the front end. for example, theres a noption to add merchant from the admin side, its not working. i tried it and when i clicked, add merchant, nothing happened. this is the sort of bs i am talkgn about. i dont want to have to deal with these sort of errors."
+
+### Actions Taken:
+1. **Simplified Customer Profile Modal (`ProfileModal.tsx`)**:
+   - Stripped away unnecessary gimmicks (avatar color gradient pickers, "Gold Tier / Premium Member" badges).
+   - Streamlined profile header to clean user initials avatar, full name, and email address.
+   - Preserved all 10 essential functional tabs: My Profile (edit & sync with Supabase `profiles`), My Orders (view order status & reorder), Saved Addresses (full CRUD), Payment Methods (M-Pesa phone & default method), Favorites, Notifications (persisted in `localStorage`), Help & Support, Terms, Cookie Settings (fixed trigger opening `CookieModal.tsx`), Log Out, and Delete Account.
+   - Ensured zero raw emojis and pure Lucide icon typography.
+
+2. **Admin Dashboard "God's View" Enhancements & Fixes**:
+   - **Fixed Add Merchant Button (`src/pages/admin/Merchants.tsx`)**: Wired `onSave` in `MerchantFormModal` to execute a real insert query into Supabase `merchants` table with default `status: 'APPROVED'` and `isActive: true`, then immediately prepend the created record into local `merchants` state and close the modal.
+   - **Added Onboard Courier / Rider Modal (`src/pages/admin/Riders.tsx`)**: Built `RiderFormModal` allowing admins to enter courier full name, phone number, vehicle type, make, model, and plate number. Wired `onSave` handler to create entries in Supabase `profiles` and `riders` tables (`status: 'APPROVED'`) and immediately update UI state via `fetchRiders()`.
+   - **Document Review & Status Approvals/Rejections**: Verified real-time document viewing drawers and instant status update actions (`approve`, `suspend`, `offboard`) updating Supabase in real-time.
+
+3. **Production Verification & Deployment**:
+   - Ran `npm run build` (`tsc -b && vite build`) and verified **0 TypeScript compilation errors** and clean bundle generation.
+   - Committed changes and pushed live to GitHub repository `itskrisk/Letstestit.git` on `main` (commit `acfabb3`).
+
+### Status:
+- **COMPLETED & LIVE ON GITHUB MAIN**.
+
+
+
 
 
