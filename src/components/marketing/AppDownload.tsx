@@ -16,59 +16,49 @@ export default function AppDownload() {
             </div>
 
             <div className="container relative z-20 px-8 lg:px-20">
-                <div className="max-w-4xl flex flex-col md:flex-row items-center justify-between gap-12 md:gap-16 text-center md:text-left">
+                <div className="max-w-4xl flex flex-col md:flex-row items-center justify-between gap-12 md:gap-16 text-center md:text-left border-t border-b border-white/20 py-12">
 
                     {/* Content */}
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true }}
                         className="space-y-6 md:space-y-8"
                     >
                         <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/60 block">Get the App</span>
                         <h2 className="text-4xl md:text-6xl font-heading font-light text-white leading-[1.1] tracking-tight">
                             The city in your <br />
-                            <span className="text-white/30 italic text-5xl md:text-6xl">pocket.</span>
+                            <span className="text-white/40 italic text-5xl md:text-6xl">pocket.</span>
                         </h2>
-                        <p className="text-lg md:text-xl text-white/70 font-light leading-relaxed max-w-md">
+                        <p className="text-lg md:text-xl text-white/80 font-light leading-relaxed max-w-md">
                             Tap into the best of Nairobi. From local bakes to fine dining, it's all on Muncheez.
                         </p>
                     </motion.div>
 
-                    {/* App Icons / Buttons */}
+                    {/* App Links */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         viewport={{ once: true }}
                         className="w-full md:w-auto"
                     >
-                        {/* Mobile Overhaul: Touch Native Buttons */}
-                        <div className="flex flex-col gap-4 md:hidden">
-                            <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 bg-white text-black px-8 py-5 rounded-[2rem] active:scale-95 transition-transform group">
-                                <img src={appStoreIcon} alt="App Store" className="w-10 h-10 object-contain" />
-                                <div className="flex flex-col items-start text-left">
-                                    <span className="text-[8px] font-bold uppercase tracking-widest opacity-40">Download on</span>
-                                    <span className="text-lg font-bold font-heading">App Store</span>
+                        <div className="flex flex-col sm:flex-row md:flex-col gap-6 items-start">
+                            <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-white border-b border-white pb-2 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors group">
+                                <img src={appStoreIcon} alt="App Store" className="w-8 h-8 object-contain invert" />
+                                <div className="flex flex-col text-left">
+                                    <span className="text-[8px] font-bold uppercase tracking-widest text-white/60">Download on</span>
+                                    <span className="text-base font-bold font-heading uppercase tracking-wider">App Store &rarr;</span>
                                 </div>
                             </a>
-                            <a href="https://play.google.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 bg-black text-white px-8 py-5 rounded-[2rem] border border-white/10 active:scale-95 transition-transform group">
-                                <img src={googlePlayIcon} alt="Google Play" className="w-10 h-10 object-contain" />
-                                <div className="flex flex-col items-start text-left">
-                                    <span className="text-[8px] font-bold uppercase tracking-widest opacity-40">Get it on</span>
-                                    <span className="text-lg font-bold font-heading">Google Play</span>
-                                </div>
-                            </a>
-                        </div>
 
-                        {/* Desktop Icons */}
-                        <div className="hidden md:flex gap-8 items-center">
-                            <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" className="transition-all duration-500 hover:scale-110 hover:-translate-y-1 p-1 hover:bg-[#4A90E2] rounded-[22px]">
-                                <img src={appStoreIcon} alt="App Store" className="w-16 h-16 md:w-20 md:h-20 shadow-2xl rounded-2xl invert" />
-                            </a>
-                            <a href="https://play.google.com" target="_blank" rel="noopener noreferrer" className="transition-all duration-500 hover:scale-110 hover:-translate-y-1 p-1 hover:bg-white/10 rounded-[22px]">
-                                <img src={googlePlayIcon} alt="Google Play" className="w-16 h-16 md:w-20 md:h-20 shadow-2xl rounded-2xl" />
+                            <a href="https://play.google.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-white border-b border-white pb-2 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors group">
+                                <img src={googlePlayIcon} alt="Google Play" className="w-8 h-8 object-contain" />
+                                <div className="flex flex-col text-left">
+                                    <span className="text-[8px] font-bold uppercase tracking-widest text-white/60">Get it on</span>
+                                    <span className="text-base font-bold font-heading uppercase tracking-wider">Google Play &rarr;</span>
+                                </div>
                             </a>
                         </div>
                     </motion.div>

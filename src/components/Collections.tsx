@@ -16,7 +16,7 @@ const collections = [
         image: morningDewImg,
         icon: Heart,
         span: "lg:col-span-8",
-        aspect: "aspect-[4/3] lg:h-[420px]"
+        aspect: "aspect-[4/5] lg:aspect-[4/3] lg:h-[420px]"
     },
     {
         id: "02",
@@ -46,7 +46,7 @@ const collections = [
         image: theVaultImg,
         icon: Globe,
         span: "lg:col-span-8",
-        aspect: "aspect-[4/3] lg:h-[420px]"
+        aspect: "aspect-[4/5] lg:aspect-[4/3] lg:h-[420px]"
     }
 ];
 
@@ -60,7 +60,7 @@ export default function Collections() {
     const titleY = useTransform(scrollYProgress, [0, 0.5], [50, 0]);
 
     return (
-        <section ref={sectionRef} className="relative py-20 lg:py-40 bg-[#D4AF37] overflow-hidden" id="categories">
+        <section ref={sectionRef} className="relative py-20 lg:py-40 bg-[#D4AF37] overflow-hidden text-gray-900" id="categories">
 
             {/* Top Curve: Blue to Gold */}
             <div className="absolute top-[-1px] left-0 w-full leading-[0] z-10 rotate-180">
@@ -81,7 +81,7 @@ export default function Collections() {
             <div className="container relative z-20 px-6 lg:px-20">
 
                 {/* Header - Huge Architectural Typo */}
-                <div className="relative mb-12 lg:mb-40 text-center lg:text-left">
+                <div className="relative mb-12 lg:mb-32 text-center lg:text-left">
                     <motion.div className="relative z-10 space-y-6">
                         <div className="flex items-center justify-center lg:justify-start gap-4 mb-8">
                             <div className="h-[1px] w-12 bg-black/20" />
@@ -100,58 +100,58 @@ export default function Collections() {
                     </motion.div>
                 </div>
 
-                {/* Experimental Layout: Grid (Desktop) / Horizontal Scroll (Mobile) */}
+                {/* Unboxed Grid Layout (No Card Container Boxes) */}
                 <div className="lg:-mx-0 -mx-6">
                     <div className="flex lg:grid lg:grid-cols-12 overflow-x-auto lg:overflow-visible gap-6 lg:gap-8 snap-x snap-mandatory px-6 lg:px-0 pb-12 lg:pb-0 scrollbar-hide">
                         {collections.map((item, index) => (
                             <motion.div
                                 key={item.id}
-                                initial={{ opacity: 0, y: 50 }}
+                                initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                                 viewport={{ once: true, amount: 0.2 }}
-                                className={`relative group shrink-0 w-[85vw] sm:w-[350px] lg:w-auto snap-center ${item.span}`}
+                                className={`relative group shrink-0 w-[85vw] sm:w-[350px] lg:w-auto snap-center border-t border-b border-black/20 py-4 ${item.span}`}
                             >
                                 <Link
                                     to={`/c/stores?v=kitchen&tag=${item.name.toLowerCase().replace(' ', '-')}`}
                                     className="block h-full w-full"
                                 >
-                                    <div className="relative h-full overflow-hidden rounded-[2rem] bg-gray-900 shadow-xl isolate">
+                                    <div className="relative h-full overflow-hidden isolate">
                                         {/* Image Layer */}
                                         <div className={`w-full ${item.aspect} overflow-hidden`}>
                                             <img
                                                 src={item.image}
                                                 alt={item.name}
-                                                className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-[1200ms] ease-out will-change-transform opacity-80 group-hover:opacity-60"
+                                                className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-[1000ms] ease-out will-change-transform opacity-90 group-hover:opacity-100"
                                             />
                                         </div>
 
                                         {/* Overlay Gradient */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
 
-                                        {/* Content Layer - Bottom Aligned */}
-                                        <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 z-20 translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                                            <div className="flex items-end justify-between mb-4">
+                                        {/* Content Layer - Unboxed Editorial */}
+                                        <div className="absolute bottom-0 left-0 w-full p-6 lg:p-8 z-20">
+                                            <div className="flex items-end justify-between mb-3">
                                                 <div>
-                                                    <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                                    <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-2">
                                                         {item.tagline}
                                                     </span>
-                                                    <h3 className="text-3xl lg:text-5xl font-heading font-bold text-white mb-2 leading-none tracking-tight">
+                                                    <h3 className="text-3xl lg:text-4xl font-heading font-light text-white leading-none tracking-tight">
                                                         {item.name}
                                                     </h3>
                                                 </div>
-                                                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white lg:group-hover:bg-[#D4AF37] lg:group-hover:border-[#D4AF37] lg:group-hover:text-black transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 scale-100 lg:scale-75 lg:group-hover:scale-100 origin-right">
+                                                <div className="text-white hover:text-[#D4AF37] transition-colors">
                                                     <ArrowRight size={20} className="-rotate-45" />
                                                 </div>
                                             </div>
-                                            <p className="text-sm lg:text-base text-white/70 font-light max-w-sm line-clamp-2 lg:group-hover:line-clamp-none transition-all duration-500">
+                                            <p className="text-sm text-white/80 font-light leading-relaxed max-w-sm">
                                                 {item.description}
                                             </p>
                                         </div>
 
-                                        {/* Floating ID Number */}
-                                        <div className="absolute top-6 left-6 z-20">
-                                            <span className="text-xs font-bold text-white/30 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md">
+                                        {/* Floating ID */}
+                                        <div className="absolute top-4 left-4 z-20">
+                                            <span className="text-xs font-bold text-white/60 font-mono tracking-widest border-b border-white/30 pb-0.5">
                                                 {item.id}
                                             </span>
                                         </div>
@@ -163,11 +163,11 @@ export default function Collections() {
                 </div>
 
                 {/* Footer Stat/Action */}
-                <div className="hidden lg:block mt-32 text-center">
+                <div className="hidden lg:block mt-24 text-center">
                     <Link
                         to="/coming-soon"
                         state={{ name: "Full Selection", status: 'coming soon' }}
-                        className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-gray-900 transition-all duration-300 group"
+                        className="inline-flex items-center gap-3 border-b border-gray-900 pb-2 text-xs font-bold uppercase tracking-[0.3em] text-gray-900 hover:text-white hover:border-white transition-colors group"
                     >
                         Explore Full Selection
                         <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

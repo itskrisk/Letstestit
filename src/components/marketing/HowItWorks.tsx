@@ -4,7 +4,6 @@ import { useRef } from 'react';
 
 export default function HowItWorks() {
     const ref = useRef(null);
-    // Simplified flow for maximum clarity and 'Quiet Luxury' focus
 
     const steps = [
         {
@@ -28,7 +27,7 @@ export default function HowItWorks() {
     ];
 
     return (
-        <section ref={ref} className="relative py-24 lg:py-32 bg-[#D4AF37] overflow-hidden" id="how-it-works">
+        <section ref={ref} className="relative py-24 lg:py-32 bg-[#D4AF37] overflow-hidden text-gray-900" id="how-it-works">
 
             {/* Editorial Background Texture */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay grayscale">
@@ -40,15 +39,15 @@ export default function HowItWorks() {
             </div>
 
             <div className="container relative z-10 px-8 lg:px-20">
-                {/* Header - Apple Style */}
-                <div className="max-w-4xl mb-32">
+                {/* Header */}
+                <div className="max-w-4xl mb-24">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                         viewport={{ once: true }}
                     >
-                        <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-gray-900/60 mb-12 block">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-gray-900/60 mb-8 block">
                             The Narrative
                         </span>
                         <h2 className="text-5xl md:text-7xl font-heading font-light text-gray-900 leading-[1.1] tracking-tighter mb-8">
@@ -58,34 +57,30 @@ export default function HowItWorks() {
                     </motion.div>
                 </div>
 
-                {/* Vertical Storyline Flow */}
+                {/* Vertical Unboxed Flow */}
                 <div className="max-w-4xl relative">
-                    {/* Vertical Line */}
-                    <div className="absolute left-[31px] top-0 bottom-0 w-[0.5px] bg-gray-900/10"></div>
-
-                    <div className="space-y-24 lg:space-y-32">
+                    <div className="space-y-16 lg:space-y-24 border-t border-gray-900/20 pt-12">
                         {steps.map((step, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0.2, x: 20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                                viewport={{ amount: 0.8 }}
-                                className="relative pl-20 md:pl-24 group"
+                                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                                viewport={{ amount: 0.5 }}
+                                className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-b border-gray-900/20 pb-12"
                             >
-                                {/* Circle Node */}
-                                <div className="absolute left-0 top-0 w-16 h-16 rounded-full bg-[#D4AF37] border border-gray-900/20 flex items-center justify-center z-10 group-hover:bg-gray-900 group-hover:text-white transition-all duration-700">
-                                    <step.icon size={24} />
-                                </div>
-
-                                <div className="space-y-6">
-                                    <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-900/40">
+                                <div className="md:col-span-3">
+                                    <span className="text-xs font-mono font-bold uppercase tracking-[0.4em] text-gray-900/50 block mb-1">
                                         {step.id}
                                     </span>
-                                    <h3 className="text-4xl md:text-5xl font-heading font-light text-gray-900 tracking-tight">
+                                    <step.icon size={28} className="text-gray-900 mt-2" />
+                                </div>
+
+                                <div className="md:col-span-9 space-y-4">
+                                    <h3 className="text-3xl md:text-5xl font-heading font-light text-gray-900 tracking-tight">
                                         {step.title}
                                     </h3>
-                                    <p className="text-xl text-gray-700 font-light leading-relaxed max-w-xl">
+                                    <p className="text-lg md:text-xl text-gray-800 font-light leading-relaxed max-w-xl">
                                         {step.description}
                                     </p>
                                 </div>
@@ -94,24 +89,24 @@ export default function HowItWorks() {
                     </div>
                 </div>
 
-                {/* Final CTA */}
+                {/* Final CTA — Unboxed Editorial Link */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1.2, delay: 0.5 }}
-                    className="mt-40 pt-24 border-t border-gray-900/10"
+                    transition={{ duration: 1 }}
+                    className="mt-24 pt-12 border-t border-gray-900/20"
                 >
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-                        <p className="text-2xl md:text-3xl font-heading font-light text-gray-900/80 leading-relaxed italic max-w-lg">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <p className="text-xl md:text-2xl font-heading font-light text-gray-900/80 leading-relaxed italic max-w-lg">
                             "Built by people who love food as much as you do. Pure city energy."
                         </p>
                         <a
                             href="#categories"
-                            className="inline-flex items-center gap-4 bg-gray-900 text-white px-12 py-6 rounded-2xl font-bold text-lg hover:bg-black hover:-translate-y-1 transition-all shadow-2xl"
+                            className="inline-flex items-center gap-3 border-b-2 border-gray-900 pb-2 text-xs font-bold uppercase tracking-[0.3em] text-gray-900 hover:text-white hover:border-white transition-colors group"
                         >
                             <span>Begin Experience</span>
-                            <ArrowRight size={20} />
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                         </a>
                     </div>
                 </motion.div>
