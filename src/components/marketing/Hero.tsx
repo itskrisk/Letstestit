@@ -3,6 +3,7 @@ import { Search, ArrowRight } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LocationModal from './LocationModal';
+import heroImg from '../../assets/images/hero.jpg';
 
 export default function Hero() {
     const ref = useRef(null);
@@ -31,7 +32,7 @@ export default function Hero() {
                         {/* Dark layers for readability in specific corners */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-transparent to-black/60 z-10" />
                         <img
-                            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=60&w=1600&auto=format&fit=crop"
+                            src={heroImg}
                             alt="Premium Gourmet Delivery"
                             className="w-full h-full object-cover object-center scale-105"
                             loading="eager"

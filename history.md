@@ -1482,6 +1482,26 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **PUSHED SUCCESSFULLY TO GITHUB (`main`)**.
 
+---
+
+## [2026-09-15] Asset Image Integration & Git Sync
+
+### Prompt / Request:
+> "When a customer logs in, should they be automatically directed to /app (the ordering platform) instead of the corporate landing page /? ... also please maintain the current image card sizes and do not change them.. Use our images in folder and make sure they fit perfectly in the already allocated images card sizes... perfect. can you push what we have to the github"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Local Asset Images Integration**:
+   - Updated `src/components/marketing/Hero.tsx` to integrate custom local hero images (`hero.jpg`, `hero2.jpg`) while maintaining the original layout card dimensions.
+   - Updated `src/components/marketing/Services.tsx` to display curated local showcase images (`bakesandblooms.jpg`, `thekitchen.jpg`) inside existing card frameworks.
+   - Updated `src/components/Collections.tsx` to map local asset images (`themarket.jpg`, `apothecary.jpg`, `kulafiti.jpg`, `morningdew.jpg`, `streetkings.jpg`, `thevault.jpg`) to store category collection cards seamlessly.
+2. **Git Commit and GitHub Synchronization**:
+   - Staged all modified files and newly added asset images under `src/assets/images/`.
+   - Committed changes and pushed cleanly to GitHub repository.
+
+### Status:
+- **COMPLETED & PUSHED TO GITHUB (`main`)**.
+
+
 
 
 

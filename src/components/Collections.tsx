@@ -2,6 +2,10 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { Heart, Flame, Utensils, Globe, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import morningDewImg from '../assets/images/morningdew.jpg';
+import streetKingsImg from '../assets/images/streetkings.jpg';
+import kulaFitiImg from '../assets/images/kulafiti.jpg';
+import theVaultImg from '../assets/images/thevault.jpg';
 
 const collections = [
     {
@@ -9,7 +13,7 @@ const collections = [
         name: "Morning Dew",
         tagline: "The Early Rise",
         description: "Artisan coffee, flaky pastries, and the city’s most famous hidden bakeries.",
-        image: "https://images.unsplash.com/photo-1544681280-d25a782adc9b?q=60&w=800&auto=format&fit=crop",
+        image: morningDewImg,
         icon: Heart,
         span: "lg:col-span-8 lg:row-span-2",
         aspect: "aspect-[4/3] lg:aspect-auto lg:h-full"
@@ -19,7 +23,7 @@ const collections = [
         name: "Street Kings",
         tagline: "The Hustle",
         description: "The absolute best of local food carts—unfiltered flavors that define the city.",
-        image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=60&w=800&auto=format&fit=crop",
+        image: streetKingsImg,
         icon: Utensils,
         span: "lg:col-span-4 lg:row-span-2",
         aspect: "aspect-[4/5] lg:aspect-auto lg:h-full"
@@ -29,7 +33,7 @@ const collections = [
         name: "Kula Fiti",
         tagline: "The Balance",
         description: "Clean, organic, and locally-sourced meals for when your body needs a reset.",
-        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=60&w=800&auto=format&fit=crop",
+        image: kulaFitiImg,
         icon: Flame,
         span: "lg:col-span-4",
         aspect: "aspect-[4/5] lg:h-[400px]"
@@ -39,7 +43,7 @@ const collections = [
         name: "The Vault",
         tagline: "Elite Selection",
         description: "Exclusive menus from the city’s premier kitchens. Reserved for the bold.",
-        image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop",
+        image: theVaultImg,
         icon: Globe,
         span: "lg:col-span-8",
         aspect: "aspect-[4/3] lg:h-[400px]"

@@ -2,6 +2,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import theKitchenImg from '../../assets/images/THEKITCHEN.jpg';
+import theMarketImg from '../../assets/images/themarket.jpg';
+import bakesAndBloomsImg from '../../assets/images/bakesandblooms.jpg';
+import apothecaryImg from '../../assets/images/apothecary.jpg';
 
 const offerings = [
     {
@@ -9,7 +13,7 @@ const offerings = [
         category: "Fine Dining to Street Eats",
         title: "The Kitchens",
         description: "From Westlands' boutique dining to the legendary food carts of the city center. Delivered with soul.",
-        image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200",
+        image: theKitchenImg,
         color: "#F5F5F5"
     },
     {
@@ -17,15 +21,15 @@ const offerings = [
         category: "Supermarkets & Mama Mboga",
         title: "The Market",
         description: "Full supermarket hauls and fresh produce from local stalls, handled with the respect they deserve.",
-        image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200",
+        image: theMarketImg,
         color: "#E0E0E0"
     },
     {
         id: "03",
         category: "Bakeries & Florists",
         title: "Bakes & Blooms",
-        description: "Artisan sourdough, delicate pastries, and the city’s most vibrant floral arrangements.",
-        image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200",
+        description: "Artisan sourdough, delicate pastries, and the city's most vibrant floral arrangements.",
+        image: bakesAndBloomsImg,
         color: "#F5F5F5"
     },
     {
@@ -33,7 +37,7 @@ const offerings = [
         category: "Health & Hydration",
         title: "The Apothecary",
         description: "Quick, discreet pharmacy essentials and professional-grade water delivery for your home.",
-        image: "https://plus.unsplash.com/premium_photo-1671721438260-1adb3749253f?q=80&w=1200",
+        image: apothecaryImg,
         color: "#E0E0E0"
     }
 ];
