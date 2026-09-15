@@ -91,16 +91,6 @@ export default function Hero() {
                             <ArrowRight size={18} />
                         </button>
                     </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 2 }}
-                        className="absolute -bottom-32 left-1/2 -translate-x-1/2 flex flex-col items-center gap-6"
-                    >
-                        <span className="text-[8px] font-bold text-white/20 uppercase tracking-[0.4em] rotate-90 origin-left ml-2">Scroll</span>
-                        <div className="w-[1px] h-20 bg-gradient-to-b from-white/20 to-transparent"></div>
-                    </motion.div>
                 </div>
 
 

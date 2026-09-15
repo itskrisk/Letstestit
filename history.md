@@ -1581,6 +1581,136 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
 
+---
+
+## [2026-09-15] Desktop Hero Image Removal & Brand Blue Canvas Redesign
+
+### Prompt / Request:
+> "Hi, hi. I want you to, so remove the hero section for the desktop version only. The other versions, the other mobile versions should retain as they are. So instead of using the hero image in our desktop version, let us have a background color, which you already know how background colors are. Let's have the blue, and let's reorganize the same text on the hero image on the blue. Okay? Does that make sense?"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Desktop Hero Redesign (`src/components/marketing/Hero.tsx`)**:
+   - Removed hero image on desktop view (`hidden md:block` image layer eliminated).
+   - Applied brand blue gradient backdrop (`bg-gradient-to-br from-[#4A90E2] via-[#357ABD] to-[#1E4D8C]`) with subtle radial atmospheric glow for the desktop canvas.
+   - Reorganized desktop text hierarchy: added `Selection 01 • Nairobi 254` pill badge, `Cravings, Delivered.` headline with gold punctuation, italic subheadline, and high-visibility white delivery address search bar.
+   - Retained the mobile layout (`block md:hidden`) with `heroImg` background completely untouched.
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per explicit user instruction ("Don't push anything to GitHub until I tell you to.").
+
+### Status:
+- **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
+
+---
+
+## [2026-09-15] Desktop Hero Classy Minimalist Layout Refinement
+
+### Prompt / Request:
+> "i need you to reogranize the DESKTOP VERSION content.. reoganize it completely. Less is more. remove the word scroll on that hero section. remove the padding roudned things. classy is what we are going for.."
+
+### Actions Taken & Working Solutions Implemented:
+1. **Ultra-Minimalist Classy Desktop Hero (`src/components/marketing/Hero.tsx`)**:
+   - Removed all rounded pill badges (`Selection 01 • Nairobi 254`) and decorative tag elements.
+   - Removed bottom vertical line and "Scroll" text indicator entirely.
+   - Refined desktop layout to pure high-contrast typography (`Cravings, Delivered.`) over brand blue canvas.
+   - Simplified subtitle to a single clean line: *"Bringing Nairobi’s finest merchants straight to your door."*
+   - Cleaned up delivery address input container with subtle rounded corners (`rounded-2xl`).
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per explicit user instruction ("Don't push anything to GitHub until I tell you to.").
+
+### Status:
+- **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
+
+---
+
+## [2026-09-15] Organic Curve Section Divider Added to Hero Section
+
+### Prompt / Request:
+> "remember to separate sections with that unique curve we have going on in our home page. each section of colors has a unique curve, do the same for that section in hero."
+
+### Actions Taken & Working Solutions Implemented:
+1. **Signature Organic Curve Separator (`src/components/marketing/Hero.tsx`)**:
+   - Added our brand signature organic SVG wave curve separator (`absolute bottom-[-1px]`) at the bottom of the Hero component.
+   - Smoothly bridges the Hero section into the following offerings section (`Services.tsx`), maintaining brand consistency across section transitions.
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per explicit user instruction ("Don't push anything to GitHub until I tell you to.").
+
+### Status:
+- **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
+
+---
+
+## [2026-09-15] Desktop Hero Image Restoration (`herofordesktop.jpg`)
+
+### Prompt / Request:
+> "nah just put the image back.. Add the hero image as the backgroundfor that DESKTOP HERO VERSION. The hero image is in the assets folder in src.. or find one classy one in hd horizontal and use it. do not generate one. no ai generation. no padding"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Desktop Hero Image Restoration (`src/components/marketing/Hero.tsx`)**:
+   - Re-imported `herofordesktop.jpg` from `src/assets/images/herofordesktop.jpg`.
+   - Restored `herofordesktop.jpg` as the full-cover background image layer for desktop screens (`hidden md:block`).
+   - Maintained clean, un-cluttered classy typography (`Cravings, Delivered.`) over a gradient readability layer (`from-black/80 via-black/40 to-black/30`).
+   - Mobile hero layout and image (`hero.jpg`) remained 100% untouched.
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per explicit instruction ("Don't push anything to GitHub until I tell you to.").
+
+### Status:
+- **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
+
+---
+
+## [2026-09-15] Reverted Desktop Hero to GitHub Committed Version
+
+### Prompt / Request:
+> "repull what we had from github for that desktop version"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Reverted `src/components/marketing/Hero.tsx`**:
+   - Ran `git checkout HEAD -- src/components/marketing/Hero.tsx`.
+   - Restored [Hero.tsx](file:///c:/Users/Admin/Desktop/kris/src/components/marketing/Hero.tsx) to the exact committed state on GitHub (`main` branch commit `3f98db5`).
+
+### Status:
+- **REVERTED TO MATCH GITHUB REPOSITORY (`main`) EXACTLY**.
+
+---
+
+## [2026-09-15] Hero Scroll Word & Indicator Removal
+
+### Prompt / Request:
+> "now remove the word scroll from the hero section"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Scroll Indicator Removal (`src/components/marketing/Hero.tsx`)**:
+   - Removed the bottom `<motion.div>` containing the rotated `"Scroll"` text and vertical gradient line from the Hero component layout.
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per standing instructions.
+
+### Status:
+- **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
+
+---
+
+## [2026-09-15] Courier Login Portal Switcher & Forgot Password Route Fix
+
+### Prompt / Request:
+> "the courier login page is lacking the terminal question. making auth very diffficult. figure out what i am asking by finding out from other pages"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Courier Login Portal Switcher (`src/pages/courier/Login.tsx`)**:
+   - Added the `Switch Portals` section at the bottom of the courier login form with direct links to `Customer Sign In` (`/login`) and `Merchant Portal` (`/partner/login`).
+   - Fixed the `Forgot?` password reset link to point to `/auth/forgot-password` (consistent with customer and partner login pages).
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per standing instructions.
+
+### Status:
+- **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
+
+
+
+
+
+
+
+
 
 
 
