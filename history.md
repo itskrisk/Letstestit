@@ -1558,6 +1558,30 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
 
+---
+
+## [2026-09-15] Merchant Auth Image Assets, Navbar Waitlist Removal & Design Unification
+
+### Prompt / Request:
+> "now. do the same, i have added two new images for merhcant sign up and login page. 2. remove the waitlist option inavbar and just get rid of it completely. 3. make sure the merchant and rider sign up and login pages match the customer ones in both design and font and styling."
+
+### Actions Taken & Working Solutions Implemented:
+1. **Merchant Auth Image Integration (`src/pages/merchant/PartnerLogin.tsx` & `src/pages/merchant/PartnerSignup.tsx`)**:
+   - Imported local asset `merchantloginpic.jpg` into `PartnerLogin.tsx`.
+   - Imported local asset `merchantsignup.jpg` into `PartnerSignup.tsx`.
+   - Replaced all external Unsplash URLs with dedicated local merchant assets.
+2. **Complete Waitlist Removal (`src/components/layout/Navbar.tsx`)**:
+   - Removed `WaitlistModal` import, `isWaitlistOpen` state, VIP Waitlist button in header navigation, and modal render completely.
+3. **Design & Font Alignment Across All Portals**:
+   - Aligned `PartnerLogin.tsx` to match the exact split-screen layout (`bg-white flex overflow-hidden`), border-bottom input fields (`border-b border-gray-100`), brand badge icons, uppercase tracking, and typography design language of the customer and courier login portals.
+4. **Verification & Git Push**:
+   - Executed `npx tsc --noEmit`: 0 errors.
+   - Staged, committed, and pushed changes to GitHub (`main`).
+
+### Status:
+- **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
+
+
 
 
 

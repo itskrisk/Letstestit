@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { authApi } from '../../lib/api';
 import { supabase } from '../../lib/supabaseClient';
+import merchantSignupImg from '../../assets/images/merchantsignup.jpg';
 
 export default function PartnerSignup() {
     const navigate = useNavigate();
@@ -90,7 +91,7 @@ export default function PartnerSignup() {
             {/* Left Side: Editorial Image (Desktop Only) */}
             <div className="hidden lg:block lg:w-1/2 relative">
                 <img
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2000"
+                    src={merchantSignupImg}
                     alt="Merchant Partner"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
