@@ -1501,6 +1501,26 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED & PUSHED TO GITHUB (`main`)**.
 
+---
+
+## [2026-09-15] Dedicated Desktop Hero Image Integration & Git Sync
+
+### Prompt / Request:
+> "i have added a new image, for the hero section for desktop called hero for desktop. use that one"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Responsive Desktop & Mobile Hero Backgrounds**:
+   - Updated `src/components/marketing/Hero.tsx` to import both `hero.jpg` and `herofordesktop.jpg`.
+   - Used Tailwind responsive display utilities (`block md:hidden` vs `hidden md:block`) so mobile devices serve `hero.jpg` while desktop screens render the dedicated landscape `herofordesktop.jpg`.
+2. **Verification & Git Push**:
+   - Ran `npx tsc --noEmit`: 0 errors.
+   - Staged `src/assets/images/herofordesktop.jpg` and `src/components/marketing/Hero.tsx`.
+   - Committed changes and pushed to GitHub repository (`main`).
+
+### Status:
+- **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
+
+
 
 
 

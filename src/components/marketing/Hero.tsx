@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LocationModal from './LocationModal';
 import heroImg from '../../assets/images/hero.jpg';
+import heroDesktopImg from '../../assets/images/herofordesktop.jpg';
 
 export default function Hero() {
     const ref = useRef(null);
@@ -31,10 +32,18 @@ export default function Hero() {
                     <div className="w-full h-full">
                         {/* Dark layers for readability in specific corners */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-transparent to-black/60 z-10" />
+                        {/* Mobile Background */}
                         <img
                             src={heroImg}
-                            alt="Premium Gourmet Delivery"
-                            className="w-full h-full object-cover object-center scale-105"
+                            alt="Premium Gourmet Delivery Mobile"
+                            className="block md:hidden w-full h-full object-cover object-center scale-105"
+                            loading="eager"
+                        />
+                        {/* Desktop Background */}
+                        <img
+                            src={heroDesktopImg}
+                            alt="Premium Gourmet Delivery Desktop"
+                            className="hidden md:block w-full h-full object-cover object-center scale-105"
                             loading="eager"
                         />
                     </div>
