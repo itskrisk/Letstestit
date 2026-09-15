@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import VerificationOverlay from "../../components/VerificationOverlay";
+import CourierOnboarding from "./Onboarding";
 import { courierApi } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { PerformanceEngine } from "../../modules/rider/features/performance/performanceLogic";
@@ -91,27 +92,26 @@ export default function RiderDashboard() {
                 const profileResult = await courierApi.getProfile();
                 const riderData = profileResult.data;
 
-                if (!riderData) throw new Error('Rider profile not found');
+                if (riderData) {
+                    const enhancedRider = {
+                        ...riderData,
+                        performance: riderData.performance || {
+                            rating: riderData.rating || 5.0,
+                            acceptanceRate: 100,
+                            reliabilityScore: 100,
+                            completionRate: 100,
+                            onTimeRate: 100
+                        },
+                        vehicle: {
+                            make: riderData.vehicle_make || riderData.vehicle?.make || 'N/A',
+                            model: riderData.vehicle_model || riderData.vehicle?.model || 'N/A',
+                            plate: riderData.vehicle_plate || riderData.vehicle?.plate || 'N/A'
+                        }
+                    };
 
-                // Enhance with default mock presentation data for UI aesthetics until fully implemented in DB
-                const enhancedRider = {
-                    ...riderData,
-                    performance: {
-                        rating: 4.9,
-                        acceptanceRate: 98,
-                        reliabilityScore: 100,
-                        completionRate: 99,
-                        onTimeRate: 95
-                    },
-                    vehicle: {
-                        make: 'Honda',
-                        model: 'CB150R',
-                        plate: 'KDH 882X'
-                    }
-                };
-
-                setCurrentRider(enhancedRider);
-                setPresence(riderData.isOnline ? "ONLINE_IDLE" : "OFFLINE");
+                    setCurrentRider(enhancedRider);
+                    setPresence(riderData.isOnline || riderData.is_online ? "ONLINE_IDLE" : "OFFLINE");
+                }
 
                 // Fetch Orders (Available + Assigned to me)
                 const ordersResult = await courierApi.getDeliveries();
@@ -181,17 +181,17 @@ export default function RiderDashboard() {
         if (!currentRider && supabaseRider) {
             setCurrentRider({
                 ...supabaseRider,
-                performance: {
-                    rating: supabaseRider.rating || 4.9,
-                    acceptanceRate: 98,
+                performance: supabaseRider.performance || {
+                    rating: supabaseRider.rating || 5.0,
+                    acceptanceRate: 100,
                     reliabilityScore: 100,
-                    completionRate: 99,
-                    onTimeRate: 95
+                    completionRate: 100,
+                    onTimeRate: 100
                 },
                 vehicle: {
-                    make: supabaseRider.vehicle_make || 'Honda',
-                    model: supabaseRider.vehicle_model || 'CB150R',
-                    plate: supabaseRider.vehicle_plate || 'KDH 882X'
+                    make: supabaseRider.vehicle_make || 'N/A',
+                    model: supabaseRider.vehicle_model || 'N/A',
+                    plate: supabaseRider.vehicle_plate || 'N/A'
                 }
             });
             setPresence(supabaseRider.is_online ? "ONLINE_IDLE" : "OFFLINE");
@@ -200,6 +200,12 @@ export default function RiderDashboard() {
 
     // Show pending / verification approval overlay if rider is not APPROVED
     const rawRiderStatus = supabaseRider?.status || profile?.status || currentRider?.status || 'PENDING';
+    const isNeedsCourierKYC = rawRiderStatus === 'ONBOARDING_REQUIRED' || (!supabaseRider?.vehicle_make && !supabaseRider?.vehicle_plate);
+    if (isNeedsCourierKYC) {
+        return <CourierOnboarding onComplete={() => window.location.reload()} />;
+    }
+
+    // Show pending / verification approval overlay if rider is not APPROVED
     const riderStatus = rawRiderStatus === 'VERIFICATION_PENDING' ? 'PENDING' : rawRiderStatus;
     if (riderStatus !== 'APPROVED') {
         const overlayStatus = (riderStatus === 'PENDING' || riderStatus === 'UNDER_REVIEW' || riderStatus === 'REJECTED' || riderStatus === 'SUSPENDED') ? riderStatus : 'PENDING';

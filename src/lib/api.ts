@@ -47,12 +47,11 @@ export const authApi = {
     };
   },
 
-  signupMerchant: async (data: { email: string; password: string; name: string; phone?: string; businessName: string; type?: string }) => {
+  signupMerchant: async (data: { email: string; password: string; name: string; phone?: string }) => {
     const result = await authService.signUp(data.email, data.password, {
       full_name: data.name,
       phone: data.phone,
-      role: 'merchant',
-      merchant_type: data.type || 'Restaurant'
+      role: 'merchant'
     });
     return {
       user: result.data?.user || null,
@@ -61,15 +60,11 @@ export const authApi = {
     };
   },
 
-  signupCourier: async (data: { email: string; password: string; name: string; phone?: string; vehicleType?: string; make?: string; model?: string; plate?: string }) => {
+  signupCourier: async (data: { email: string; password: string; name: string; phone?: string }) => {
     const result = await authService.signUp(data.email, data.password, {
       full_name: data.name,
       phone: data.phone,
-      role: 'courier',
-      vehicle_type: data.vehicleType || 'Motorbike',
-      vehicle_make: data.make,
-      vehicle_model: data.model,
-      vehicle_plate: data.plate
+      role: 'courier'
     });
     return {
       user: result.data?.user || null,

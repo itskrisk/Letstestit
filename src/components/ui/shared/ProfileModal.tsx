@@ -8,9 +8,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useMockDatabase } from "../../../context/MockDatabaseContext";
 import { useCart } from "../../../context/CartContext";
 import { supabase } from '../../../lib/supabaseClient';
+import { orderService, profileService, complaintService } from '../../../lib/supabaseService';
 import CookieModal from './CookieModal';
 
 interface ProfileModalProps {
@@ -38,7 +38,6 @@ type ModalView =
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const { user, profile, signOut, resetPassword, refreshUser } = useAuth();
     const navigate = useNavigate();
-    const { orders } = useMockDatabase();
     const { addItem } = useCart();
 
     const [view, setView] = useState<ModalView>('main');
@@ -50,11 +49,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const [isSaving, setIsSaving] = useState(false);
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-    // Saved Addresses State
-    const [addresses, setAddresses] = useState<any[]>(() => {
-        const saved = localStorage.getItem('muncheez_user_addresses');
-        return saved ? JSON.parse(saved) : [];
-    });
+    // Real data from Supabase
+    const [supabaseOrders, setSupabaseOrders] = useState<any[]>([]);
+    const [supabaseAddresses, setSupabaseAddresses] = useState<any[]>([]);
+    const [supabaseFavorites, setSupabaseFavorites] = useState<any[]>([]);
+    const [supabaseNotifications, setSupabaseNotifications] = useState<any>({});
+    const [isLoadingData, setIsLoadingData] = useState(false);
+
+    // Address Form State
     const [newAddrLabel, setNewAddrLabel] = useState('Home');
     const [newAddrText, setNewAddrText] = useState('');
     const [newAddrDoor, setNewAddrDoor] = useState('');
@@ -65,26 +67,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     const [mpesaNumber, setMpesaNumber] = useState(profile?.phone || '');
     const [defaultPayment, setDefaultPayment] = useState('MPESA');
 
-    // Favorites State
-    const [favorites, setFavorites] = useState<any[]>(() => {
-        const saved = localStorage.getItem('muncheez_favorites');
-        return saved ? JSON.parse(saved) : [];
-    });
-
-    // Notification Preferences State
-    const [notifications, setNotifications] = useState(() => {
-        const saved = localStorage.getItem('muncheez_notification_settings');
-        return saved ? JSON.parse(saved) : {
-            orderStatus: true,
-            riderAlerts: true,
-            promotions: true,
-            marketing: false
-        };
-    });
-
     // Location Preferences State
-    const [neighborhood, setNeighborhood] = useState(localStorage.getItem('muncheez_neighborhood') || '');
-    const [deliveryNotes, setDeliveryNotes] = useState(localStorage.getItem('muncheez_delivery_notes') || '');
+    const [neighborhood, setNeighborhood] = useState('');
+    const [deliveryNotes, setDeliveryNotes] = useState('');
 
     // Support Form State
     const [supportCategory, setSupportCategory] = useState('Order Issue');
@@ -96,6 +81,42 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     // Delete Account Confirmation State
     const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
+    // Load real data from Supabase
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const loadData = async () => {
+            setIsLoadingData(true);
+            try {
+                // Load orders
+                const ordersResult = await orderService.getOrders(user.id);
+                if (ordersResult.data) {
+                    setSupabaseOrders(ordersResult.data);
+                }
+
+                // Load profile extensions
+                if (profile) {
+                    setSupabaseAddresses(profile.addresses || []);
+                    setSupabaseFavorites(profile.favorites || []);
+                    setSupabaseNotifications(profile.notification_settings || {
+                        orderStatus: true,
+                        riderAlerts: true,
+                        promotions: true,
+                        marketing: false
+                    });
+                    setNeighborhood(profile.location_preferences?.neighborhood || '');
+                    setDeliveryNotes(profile.location_preferences?.delivery_notes || '');
+                }
+            } catch (err) {
+                console.error('Error loading profile data:', err);
+            } finally {
+                setIsLoadingData(false);
+            }
+        };
+
+        loadData();
+    }, [user?.id, profile]);
+
     useEffect(() => {
         if (profile) {
             setFullName(profile.full_name || '');
@@ -104,29 +125,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         }
     }, [profile]);
 
-    // Save Addresses to localStorage
-    useEffect(() => {
-        localStorage.setItem('muncheez_user_addresses', JSON.stringify(addresses));
-    }, [addresses]);
-
-    // Save Favorites to localStorage
-    useEffect(() => {
-        localStorage.setItem('muncheez_favorites', JSON.stringify(favorites));
-    }, [favorites]);
-
-    // Save Notifications to localStorage
-    useEffect(() => {
-        localStorage.setItem('muncheez_notification_settings', JSON.stringify(notifications));
-    }, [notifications]);
-
-    // Filter user orders
-    const myOrders = orders.filter(o =>
-        o.customer.phone === profile?.phone ||
-        o.customer.name === profile?.full_name ||
-        o.customer.email === user?.email
-    ).sort((a, b) => {
-        const dateA = a.placedAt ? new Date(a.placedAt).getTime() : 0;
-        const dateB = b.placedAt ? new Date(b.placedAt).getTime() : 0;
+    // Filter user orders from Supabase
+    const myOrders = supabaseOrders.filter((o: any) =>
+        o.customer_id === user?.id
+    ).sort((a: any, b: any) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
         return dateB - dateA;
     });
 
@@ -168,32 +172,69 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleAddAddress = (e: React.FormEvent) => {
+    const handleAddAddress = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newAddrText.trim()) return;
+        if (!newAddrText.trim() || !user) return;
         const newAddr = {
             id: `addr-${Date.now()}`,
             label: newAddrLabel,
             fullAddress: newAddrText.trim(),
             doorNumber: newAddrDoor.trim() || 'N/A',
             instructions: newAddrNotes.trim() || 'None',
-            isDefault: addresses.length === 0
+            isDefault: supabaseAddresses.length === 0
         };
-        setAddresses([newAddr, ...addresses]);
+        const updated = [newAddr, ...supabaseAddresses];
+        setSupabaseAddresses(updated);
         setNewAddrText('');
         setNewAddrDoor('');
         setNewAddrNotes('');
         setIsAddingAddr(false);
-        setFeedback({ type: 'success', text: 'Address saved successfully' });
+
+        // Save to Supabase
+        const { error } = await supabase
+            .from('profiles')
+            .update({ addresses: updated })
+            .eq('id', user.id);
+
+        if (error) {
+            setFeedback({ type: 'error', text: 'Failed to save address' });
+        } else {
+            setFeedback({ type: 'success', text: 'Address saved successfully' });
+        }
     };
 
-    const handleSetDefaultAddress = (id: string) => {
-        setAddresses(addresses.map((a: any) => ({ ...a, isDefault: a.id === id })));
-        setFeedback({ type: 'success', text: 'Default delivery address updated' });
+    const handleSetDefaultAddress = async (id: string) => {
+        if (!user) return;
+        const updated = supabaseAddresses.map((a: any) => ({ ...a, isDefault: a.id === id }));
+        setSupabaseAddresses(updated);
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ addresses: updated })
+            .eq('id', user.id);
+
+        if (error) {
+            setFeedback({ type: 'error', text: 'Failed to update default address' });
+        } else {
+            setFeedback({ type: 'success', text: 'Default delivery address updated' });
+        }
     };
 
-    const handleDeleteAddress = (id: string) => {
-        setAddresses(addresses.filter((a: any) => a.id !== id));
+    const handleDeleteAddress = async (id: string) => {
+        if (!user) return;
+        const updated = supabaseAddresses.filter((a: any) => a.id !== id);
+        setSupabaseAddresses(updated);
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ addresses: updated })
+            .eq('id', user.id);
+
+        if (error) {
+            setFeedback({ type: 'error', text: 'Failed to delete address' });
+        } else {
+            setFeedback({ type: 'success', text: 'Address deleted' });
+        }
     };
 
     const handleReorder = (orderItems: any[]) => {
@@ -219,8 +260,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                 fullName: profile?.full_name,
                 phone: profile?.phone
             },
-            addresses,
-            favorites,
+            addresses: supabaseAddresses,
+            favorites: supabaseFavorites,
             ordersCount: myOrders.length,
             exportedAt: new Date().toISOString()
         };
@@ -234,16 +275,43 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         setFeedback({ type: 'success', text: 'Data archive downloaded' });
     };
 
-    const handleSaveLocation = () => {
-        localStorage.setItem('muncheez_neighborhood', neighborhood);
-        localStorage.setItem('muncheez_delivery_notes', deliveryNotes);
-        setFeedback({ type: 'success', text: 'Location preferences saved!' });
+    const handleSaveLocation = async () => {
+        if (!user) return;
+        const locationPrefs = { neighborhood, delivery_notes: deliveryNotes };
+        const { error } = await supabase
+            .from('profiles')
+            .update({ location_preferences: locationPrefs })
+            .eq('id', user.id);
+
+        if (error) {
+            setFeedback({ type: 'error', text: 'Failed to save location preferences' });
+        } else {
+            setFeedback({ type: 'success', text: 'Location preferences saved!' });
+        }
     };
 
-    const handleSupportSubmit = (e: React.FormEvent) => {
+    const handleSupportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setFeedback({ type: 'success', text: 'Ticket #TK-' + Math.floor(1000 + Math.random() * 9000) + ' submitted. Our team will contact you shortly.' });
-        setSupportDetails('');
+        if (!user || !supportDetails.trim()) return;
+
+        try {
+            const { error } = await supabase
+                .from('complaints')
+                .insert({
+                    subject: supportCategory,
+                    description: supportDetails,
+                    filed_by: user.id,
+                    status: 'OPEN',
+                    priority: 'MEDIUM'
+                });
+
+            if (error) throw error;
+
+            setFeedback({ type: 'success', text: 'Ticket #TK-' + Math.floor(1000 + Math.random() * 9000) + ' submitted. Our team will contact you shortly.' });
+            setSupportDetails('');
+        } catch (err: any) {
+            setFeedback({ type: 'error', text: err.message || 'Failed to submit ticket' });
+        }
     };
 
     const handleDeleteAccount = async () => {
@@ -251,15 +319,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         setIsSaving(true);
         try {
             await signOut();
-            // Only remove app-specific items, preserve cookie preferences
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('muncheez_admin_master');
-            localStorage.removeItem('activeMerchantId');
-            localStorage.removeItem('muncheez_user_addresses');
-            localStorage.removeItem('muncheez_favorites');
-            localStorage.removeItem('muncheez_notification_settings');
-            localStorage.removeItem('muncheez_neighborhood');
-            localStorage.removeItem('muncheez_delivery_notes');
             onClose();
             window.location.href = '/';
         } catch (e) {
@@ -397,7 +456,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                         </div>
                                                         <div>
                                                             <div className="text-xs font-bold text-gray-900">Addresses</div>
-                                                            <div className="text-[10px] text-gray-400 font-medium">{addresses.length} saved</div>
+                                                            <div className="text-[10px] text-gray-400 font-medium">{supabaseAddresses.length} saved</div>
                                                         </div>
                                                     </button>
 
@@ -423,7 +482,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                         </div>
                                                         <div>
                                                             <div className="text-xs font-bold text-gray-900">Favorites</div>
-                                                            <div className="text-[10px] text-gray-400 font-medium">{favorites.length} saved</div>
+                                                            <div className="text-[10px] text-gray-400 font-medium">{supabaseFavorites.length} saved</div>
                                                         </div>
                                                     </button>
                                                 </div>
@@ -482,7 +541,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                                 <Compass size={16} className="text-gray-400 group-hover:text-[#4A90E2]" />
                                                                 <span className="text-xs font-bold text-gray-800">Location Preferences</span>
                                                             </div>
-                                                            <span className="text-[10px] font-bold text-[#4A90E2]">{neighborhood}</span>
+                                                            <span className="text-[10px] font-bold text-[#4A90E2]">{neighborhood || 'Not set'}</span>
                                                         </button>
 
                                                         <button onClick={() => setIsCookieModalOpen(true)} className="w-full flex items-center justify-between p-3.5 hover:bg-gray-50 transition-colors text-left group">
@@ -613,22 +672,22 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                             <div className="flex justify-between items-start">
                                                                 <div>
                                                                     <span className="text-[10px] font-black bg-gray-100 text-gray-600 px-2 py-0.5 rounded uppercase tracking-wider">
-                                                                        #{order.id.split('-')[1] || order.id.slice(0, 6)}
+                                                                        #{order.id.slice(0, 8)}
                                                                     </span>
                                                                     <h4 className="font-bold text-sm text-gray-900 mt-1">
-                                                                        {order.items[0]?.name} {order.items.length > 1 && `+${order.items.length - 1} more`}
+                                                                        {order.items?.[0]?.name || 'Order'} {order.items?.length > 1 && `+${order.items.length - 1} more`}
                                                                     </h4>
                                                                 </div>
                                                                 <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                                                                    order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                                                                    order.status === 'COMPLETED' || order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
                                                                 }`}>
                                                                     {order.status}
                                                                 </span>
                                                             </div>
 
                                                             <div className="flex justify-between items-center text-xs border-t border-gray-100 pt-3">
-                                                                <span className="text-gray-400 font-medium">{order.placedAt ? new Date(order.placedAt).toLocaleDateString() : 'Recent'}</span>
-                                                                <span className="font-black text-[#4A90E2]">KES {order.total?.toLocaleString()}</span>
+                                                                <span className="text-gray-400 font-medium">{new Date(order.created_at).toLocaleDateString()}</span>
+                                                                <span className="font-black text-[#4A90E2]">KES {Number(order.total).toLocaleString()}</span>
                                                             </div>
 
                                                             <div className="flex gap-2 pt-1">
@@ -713,7 +772,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
 
                                             {/* Addresses List */}
                                             <div className="space-y-3">
-                                                {addresses.map((addr: any) => (
+                                                {supabaseAddresses.map((addr: any) => (
                                                     <div key={addr.id} className={`bg-white p-4 rounded-2xl border space-y-2 ${addr.isDefault ? 'border-[#4A90E2] ring-1 ring-[#4A90E2]/30' : 'border-black/5'}`}>
                                                         <div className="flex justify-between items-center">
                                                             <div className="flex items-center gap-2">
@@ -796,7 +855,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                         <motion.div key="favorites" initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 15 }} className="space-y-4">
                                             <h3 className="font-heading font-black text-lg text-gray-900">Favorites</h3>
                                             <div className="space-y-3">
-                                                {favorites.map((fav: any) => (
+                                                {supabaseFavorites.map((fav: any) => (
                                                     <div key={fav.id} className="bg-white p-4 rounded-2xl border border-black/5 flex justify-between items-center shadow-sm">
                                                         <div>
                                                             <h4 className="font-bold text-xs text-gray-900">{fav.name}</h4>
@@ -810,7 +869,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                                 Visit
                                                             </button>
                                                             <button
-                                                                onClick={() => setFavorites(favorites.filter((f: any) => f.id !== fav.id))}
+                                                                onClick={() => setSupabaseFavorites(supabaseFavorites.filter((f: any) => f.id !== fav.id))}
                                                                 className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
                                                             >
                                                                 <Trash2 size={14} />
@@ -840,8 +899,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                                                         </div>
                                                         <input
                                                             type="checkbox"
-                                                            checked={(notifications as any)[item.key]}
-                                                            onChange={e => setNotifications({ ...notifications, [item.key]: e.target.checked })}
+                                                            checked={(supabaseNotifications as any)[item.key]}
+                                                            onChange={e => setSupabaseNotifications({ ...supabaseNotifications, [item.key]: e.target.checked })}
                                                             className="w-4 h-4 accent-black cursor-pointer"
                                                         />
                                                     </div>

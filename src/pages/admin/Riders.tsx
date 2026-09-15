@@ -68,32 +68,43 @@ export default function Riders() {
             }
 
             if (riderData) {
-                const mappedRiders: Partial<Rider>[] = riderData.map(r => ({
-                    id: r.id,
-                    name: r.profile?.full_name || 'Unnamed Courier',
-                    phone: r.profile?.phone || '',
-                    vehicleType: r.vehicle_type || 'Motorbike',
-                    status: r.status || 'PENDING',
-                    isOnline: r.is_online || false,
-                    currentOrderId: undefined,
-                    documents: r.documents || {},
-                    performance: {
-                        rating: r.rating || 5.0,
-                        acceptanceRate: 100,
-                        completionRate: 100,
-                        reliabilityScore: 100,
-                        onTimeRate: 100,
-                        ordersToday: 0,
-                        totalOrders: r.total_orders || 0
-                    },
-                    earnings: { today: 0, weekly: 0, total: 0 },
-                    wallet: { balance: 0, pending: 0 },
-                    vehicle: {
-                        make: r.vehicle_make || 'Unknown',
-                        model: r.vehicle_model || 'Unknown',
-                        plate: r.vehicle_plate || 'Unknown'
-                    }
-                }));
+                const mappedRiders: Partial<Rider>[] = riderData.map(r => {
+                    const docs = r.documents ? { ...r.documents } : {};
+                    if (r.id_doc_url && !docs.id) docs.id = { url: r.id_doc_url, filename: 'National ID Card' };
+                    if (r.license_url && !docs.license) docs.license = { url: r.license_url, filename: 'Driving License' };
+                    if (r.logbook_url && !docs.logbook) docs.logbook = { url: r.logbook_url, filename: 'Logbook / Ownership Proof' };
+                    if (r.insurance_url && !docs.insurance) docs.insurance = { url: r.insurance_url, filename: 'Insurance Certificate' };
+                    if (r.profile_photo_url && !docs.photo) docs.photo = { url: r.profile_photo_url, filename: 'Profile Photo' };
+
+                    return {
+                        id: r.id,
+                        name: r.name || r.profile?.full_name || 'Unnamed Courier',
+                        phone: r.phone || r.profile?.phone || '',
+                        email: r.email || '',
+                        vehicleType: r.transport_mode || r.vehicle_type || 'Motorbike',
+                        status: r.status || 'PENDING',
+                        isOnline: r.is_online || false,
+                        currentOrderId: undefined,
+                        documents: docs,
+                        emergencyContact: r.emergency_contact || {},
+                        performance: r.performance || {
+                            rating: r.rating || 5.0,
+                            acceptanceRate: 100,
+                            completionRate: 100,
+                            reliabilityScore: 100,
+                            onTimeRate: 100,
+                            ordersToday: 0,
+                            totalOrders: r.total_orders || 0
+                        },
+                        earnings: r.earnings || { today: 0, weekly: 0, total: 0 },
+                        wallet: r.wallet || { balance: 0, pending: 0 },
+                        vehicle: {
+                            make: r.vehicle_make || 'N/A',
+                            model: r.vehicle_model || 'N/A',
+                            plate: r.vehicle_plate || 'N/A'
+                        }
+                    };
+                });
 
                 // Map active orders to riders
                 mappedRiders.forEach(r => {
@@ -510,9 +521,13 @@ function RiderDetailDrawer({ rider, tab, onTabChange, activeOrder, onClose, onAp
                 <button onClick={onClose} className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-colors mb-8">
                     <ArrowLeft size={16} /> Back to List
                 </button>
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 border-2 ${rider.isOnline ? 'bg-black text-white border-black' : 'bg-gray-100 text-gray-400 border-gray-200'}`}>
-                    <Bike size={28} />
-                </div>
+                {rider.documents?.photo?.url ? (
+                    <img src={rider.documents.photo.url} alt={rider.name} className="w-16 h-16 rounded-2xl object-cover mb-4 border-2 border-[#39B54A] shadow-md" />
+                ) : (
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 border-2 ${rider.isOnline ? 'bg-black text-white border-black' : 'bg-gray-100 text-gray-400 border-gray-200'}`}>
+                        <Bike size={28} />
+                    </div>
+                )}
                 <h2 className="font-black text-lg leading-tight mb-1">{rider.name}</h2>
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border w-fit ${rider.isOnline ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${rider.isOnline ? 'bg-green-500' : 'bg-gray-300'}`}></span>
@@ -578,11 +593,18 @@ function RiderDetailDrawer({ rider, tab, onTabChange, activeOrder, onClose, onAp
                                     <InfoGrid items={[
                                         { label: 'Full Name', value: rider.name },
                                         { label: 'Phone Number', value: rider.phone || '—' },
-                                        { label: 'Vehicle Type', value: rider.vehicleType },
+                                        { label: 'Transport Mode / Vehicle', value: rider.vehicleType },
                                         { label: 'Current Status', value: rider.status || 'N/A' },
                                     ]} />
                                 </Section>
-                                <Section title="Vehicle Information" icon="🚗">
+                                <Section title="Emergency Contact Details" icon="🚨">
+                                    <InfoGrid items={[
+                                        { label: 'Contact Name', value: rider.emergencyContact?.name || '—' },
+                                        { label: 'Relationship', value: rider.emergencyContact?.relationship || '—' },
+                                        { label: 'Emergency Phone', value: rider.emergencyContact?.phone || '—', full: true },
+                                    ]} />
+                                </Section>
+                                <Section title="Vehicle / Logistics Information" icon="🚗">
                                     <InfoGrid items={[
                                         { label: 'Make', value: rider.vehicle?.make || '—' },
                                         { label: 'Model', value: rider.vehicle?.model || '—' },

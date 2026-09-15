@@ -30,6 +30,50 @@ export default function CheckoutView() {
     const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'cash' | 'card'>('mpesa');
     const [phoneNumber, setPhoneNumber] = useState(profile?.phone || '');
     const [wantsCutlery, setWantsCutlery] = useState(false);
+    const [isLocating, setIsLocating] = useState(false);
+
+    // Prefill profile data
+    useEffect(() => {
+        if (profile) {
+            if (profile.phone && !phoneNumber) setPhoneNumber(profile.phone);
+            const savedAddr = (profile as any).addresses?.[0] || (profile as any).address;
+            if (savedAddr && !deliveryAddress) {
+                setDeliveryAddress(typeof savedAddr === 'string' ? savedAddr : savedAddr.street || savedAddr.city || '');
+            }
+        }
+    }, [profile]);
+
+    const handleGetCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            alert('Geolocation is not supported by your browser.');
+            return;
+        }
+        setIsLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                    const data = await res.json();
+                    if (data && data.display_name) {
+                        setDeliveryAddress(data.display_name);
+                    } else {
+                        setDeliveryAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                    }
+                } catch {
+                    setDeliveryAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                } finally {
+                    setIsLocating(false);
+                }
+            },
+            (err) => {
+                console.error('Geolocation error:', err);
+                setIsLocating(false);
+                alert('Could not fetch location. Please enter manually.');
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    };
 
     // Load merchant data
     useEffect(() => {
@@ -211,7 +255,18 @@ export default function CheckoutView() {
 
                             <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Delivery Location</label>
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Delivery Location</label>
+                                        <button
+                                            type="button"
+                                            onClick={handleGetCurrentLocation}
+                                            disabled={isLocating}
+                                            className="text-xs font-bold text-[#D4AF37] hover:underline flex items-center gap-1 disabled:opacity-50"
+                                        >
+                                            <MapPin size={12} />
+                                            {isLocating ? 'Locating...' : 'Use Current Location'}
+                                        </button>
+                                    </div>
                                     <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100 focus-within:ring-2 focus-within:ring-[#D4AF37]/20 transition-all">
                                         <MapPin size={20} className="text-[#D4AF37]" />
                                         <input

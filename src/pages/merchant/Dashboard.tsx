@@ -17,6 +17,7 @@ import SettingsView from "../../components/merchant/SettingsView";
 import HelpView from "../../components/merchant/HelpView";
 import OverviewView from "../../components/merchant/OverviewView";
 import VerificationOverlay from "../../components/VerificationOverlay";
+import MerchantOnboarding from "./Onboarding";
 
 import { useMockDatabase } from "../../context/MockDatabaseContext";
 import { useAuth } from "../../context/AuthContext";
@@ -199,6 +200,12 @@ export default function MerchantDashboard() {
                 </div>
             </div>
         );
+    }
+
+    // If merchant status is ONBOARDING_REQUIRED or missing KYC details, show Onboarding Wizard
+    const isNeedsKYC = rawStatus === 'ONBOARDING_REQUIRED' || (!supabaseMerchant?.address && !supabaseMerchant?.mpesa_till);
+    if (isNeedsKYC) {
+        return <MerchantOnboarding onComplete={() => window.location.reload()} />;
     }
 
     // Strict Blocking: If merchant is NOT approved, show the Waiting for Approval screen

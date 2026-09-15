@@ -15,7 +15,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-    CREATE TYPE merchant_type AS ENUM ('Restaurant', 'Supermarket', 'Pharmacy', 'Water', 'Flowers');
+    CREATE TYPE merchant_type AS ENUM ('Restaurant', 'Supermarket', 'Pharmacy', 'Bakery & Pastry', 'Groceries & Fresh Produce', 'Liquor & Beverages', 'Water', 'Flowers', 'Other');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
@@ -51,14 +51,19 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS profiles (
-    id           UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
-    full_name    TEXT,
-    phone        TEXT UNIQUE,
-    roles        TEXT[] DEFAULT '{customer}' CHECK (array_length(roles, 1) <= 1),
-    avatar_url   TEXT,
-    status       TEXT DEFAULT 'ACTIVE',
-    created_at   TIMESTAMPTZ DEFAULT NOW(),
-    updated_at   TIMESTAMPTZ DEFAULT NOW()
+    id                      UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+    full_name               TEXT,
+    phone                   TEXT UNIQUE,
+    roles                   TEXT[] DEFAULT '{customer}' CHECK (array_length(roles, 1) <= 1),
+    avatar_url              TEXT,
+    status                  TEXT DEFAULT 'ACTIVE',
+    addresses               JSONB DEFAULT '[]'::jsonb,
+    favorites               JSONB DEFAULT '[]'::jsonb,
+    payment_methods         JSONB DEFAULT '[]'::jsonb,
+    notification_settings   JSONB DEFAULT '{}'::jsonb,
+    location_preferences    JSONB DEFAULT '{}'::jsonb,
+    created_at              TIMESTAMPTZ DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS active_sessions (
@@ -70,46 +75,67 @@ CREATE TABLE IF NOT EXISTS active_sessions (
 );
 
 CREATE TABLE IF NOT EXISTS merchants (
-    id                UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
-    business_name     TEXT NOT NULL,
-    type              merchant_type NOT NULL DEFAULT 'Restaurant',
-    status            merchant_status DEFAULT 'PENDING',
-    logo_url          TEXT,
-    cover_url         TEXT,
-    description       TEXT,
-    address           TEXT,
-    kra_pin           TEXT,
-    health_permit     TEXT,
-    kra_pin_url       TEXT,
-    health_permit_url TEXT,
-    mpesa_till        TEXT,
-    mpesa_shortcode   TEXT,
-    operating_hours   JSONB DEFAULT '{}'::jsonb,
-    branding          JSONB DEFAULT '{}'::jsonb,
-    is_active         BOOLEAN DEFAULT false,
-    created_at        TIMESTAMPTZ DEFAULT NOW()
+    id                   UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
+    business_name        TEXT NOT NULL,
+    type                 TEXT NOT NULL DEFAULT 'Restaurant',
+    status               merchant_status DEFAULT 'PENDING',
+    logo_url             TEXT,
+    cover_url            TEXT,
+    description          TEXT,
+    address              TEXT,
+    phone                TEXT,
+    email                TEXT,
+    owner_name           TEXT,
+    kra_pin              TEXT,
+    health_permit        TEXT,
+    business_permit      TEXT,
+    kra_pin_url          TEXT,
+    health_permit_url    TEXT,
+    business_permit_url  TEXT,
+    mpesa_till           TEXT,
+    mpesa_shortcode      TEXT,
+    operating_hours      JSONB DEFAULT '{}'::jsonb,
+    branding             JSONB DEFAULT '{}'::jsonb,
+    documents            JSONB DEFAULT '{}'::jsonb,
+    is_active            BOOLEAN DEFAULT false,
+    rating               DECIMAL(3,2) DEFAULT 0.0,
+    review_count         INTEGER DEFAULT 0,
+    delivery_fee         DECIMAL(10,2) DEFAULT 150.00,
+    created_at           TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS riders (
-    id              UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
-    vehicle_type    TEXT DEFAULT 'Motorbike',
-    vehicle_make    TEXT,
-    vehicle_model   TEXT,
-    vehicle_plate   TEXT,
-    status          rider_status DEFAULT 'PENDING',
-    is_online       BOOLEAN DEFAULT false,
-    rating          DECIMAL(3,2) DEFAULT 5.0,
-    total_orders    INTEGER DEFAULT 0,
-    has_id_doc      BOOLEAN DEFAULT false,
-    has_license     BOOLEAN DEFAULT false,
-    has_logbook     BOOLEAN DEFAULT false,
-    has_helmet      BOOLEAN DEFAULT false,
-    has_thermal_bag BOOLEAN DEFAULT false,
-    has_vest        BOOLEAN DEFAULT false,
-    id_doc_url      TEXT,
-    license_url     TEXT,
-    logbook_url     TEXT,
-    created_at      TIMESTAMPTZ DEFAULT NOW()
+    id                UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
+    name              TEXT,
+    phone             TEXT,
+    email             TEXT,
+    transport_mode    TEXT DEFAULT 'Motorbike',
+    vehicle_type      TEXT DEFAULT 'Motorbike',
+    vehicle_make      TEXT,
+    vehicle_model     TEXT,
+    vehicle_plate     TEXT,
+    emergency_contact JSONB DEFAULT '{}'::jsonb,
+    status            rider_status DEFAULT 'PENDING',
+    is_online         BOOLEAN DEFAULT false,
+    rating            DECIMAL(3,2) DEFAULT 5.0,
+    total_orders      INTEGER DEFAULT 0,
+    documents         JSONB DEFAULT '{}'::jsonb,
+    performance       JSONB DEFAULT '{"completion_rate": 100, "on_time_rate": 100, "acceptance_rate": 100, "customer_rating": 5.0}'::jsonb,
+    earnings          JSONB DEFAULT '{"today": 0, "this_week": 0, "this_month": 0, "total": 0}'::jsonb,
+    wallet            JSONB DEFAULT '{"balance": 0, "pending": 0}'::jsonb,
+    has_id_doc        BOOLEAN DEFAULT false,
+    has_license       BOOLEAN DEFAULT false,
+    has_logbook       BOOLEAN DEFAULT false,
+    has_insurance     BOOLEAN DEFAULT false,
+    has_helmet        BOOLEAN DEFAULT false,
+    has_thermal_bag   BOOLEAN DEFAULT false,
+    has_vest          BOOLEAN DEFAULT false,
+    id_doc_url        TEXT,
+    license_url       TEXT,
+    logbook_url       TEXT,
+    insurance_url     TEXT,
+    profile_photo_url TEXT,
+    created_at        TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================================
@@ -394,33 +420,60 @@ BEGIN
     -- If Merchant: auto-create row
     IF 'merchant' = ANY(user_roles_arr) OR primary_role = 'merchant' THEN
         BEGIN
-            m_type := (COALESCE(NEW.raw_user_meta_data->>'merchant_type', 'Restaurant'))::merchant_type;
+            m_type := (COALESCE(NEW.raw_user_meta_data->>'merchant_type', NEW.raw_user_meta_data->>'type', 'Restaurant'))::merchant_type;
         EXCEPTION WHEN OTHERS THEN
             m_type := 'Restaurant'::merchant_type;
         END;
 
         INSERT INTO public.merchants (
-            id, business_name, type, status, kra_pin, health_permit, mpesa_till, address
+            id, business_name, type, status, kra_pin, health_permit, mpesa_till, address, phone, email, owner_name, delivery_fee
         ) VALUES (
             NEW.id,
-            COALESCE(NEW.raw_user_meta_data->>'full_name', 'Unnamed Business'),
+            COALESCE(NEW.raw_user_meta_data->>'business_name', NEW.raw_user_meta_data->>'full_name', 'Unnamed Business'),
             m_type,
             'PENDING',
             NEW.raw_user_meta_data->>'kra_pin',
             NEW.raw_user_meta_data->>'health_permit',
             NEW.raw_user_meta_data->>'mpesa_till',
-            NEW.raw_user_meta_data->>'address'
-        ) ON CONFLICT (id) DO NOTHING;
+            NEW.raw_user_meta_data->>'address',
+            user_phone,
+            NEW.email,
+            user_full_name,
+            150.00
+        ) ON CONFLICT (id) DO UPDATE SET
+            business_name = EXCLUDED.business_name,
+            type = EXCLUDED.type,
+            kra_pin = COALESCE(EXCLUDED.kra_pin, public.merchants.kra_pin),
+            health_permit = COALESCE(EXCLUDED.health_permit, public.merchants.health_permit),
+            mpesa_till = COALESCE(EXCLUDED.mpesa_till, public.merchants.mpesa_till),
+            address = COALESCE(EXCLUDED.address, public.merchants.address),
+            phone = COALESCE(EXCLUDED.phone, public.merchants.phone),
+            email = COALESCE(EXCLUDED.email, public.merchants.email),
+            owner_name = COALESCE(EXCLUDED.owner_name, public.merchants.owner_name);
     END IF;
 
     -- If Courier: auto-create row
     IF 'courier' = ANY(user_roles_arr) OR primary_role = 'courier' THEN
-        INSERT INTO public.riders (id, vehicle_type, status)
-        VALUES (
+        INSERT INTO public.riders (
+            id, name, phone, email, vehicle_type, vehicle_make, vehicle_model, vehicle_plate, status
+        ) VALUES (
             NEW.id,
+            user_full_name,
+            user_phone,
+            NEW.email,
             COALESCE(NEW.raw_user_meta_data->>'vehicle_type', 'Motorbike'),
+            NEW.raw_user_meta_data->>'vehicle_make',
+            NEW.raw_user_meta_data->>'vehicle_model',
+            NEW.raw_user_meta_data->>'vehicle_plate',
             'PENDING'
-        ) ON CONFLICT (id) DO NOTHING;
+        ) ON CONFLICT (id) DO UPDATE SET
+            name = EXCLUDED.name,
+            phone = COALESCE(EXCLUDED.phone, public.riders.phone),
+            email = COALESCE(EXCLUDED.email, public.riders.email),
+            vehicle_type = COALESCE(EXCLUDED.vehicle_type, public.riders.vehicle_type),
+            vehicle_make = COALESCE(EXCLUDED.vehicle_make, public.riders.vehicle_make),
+            vehicle_model = COALESCE(EXCLUDED.vehicle_model, public.riders.vehicle_model),
+            vehicle_plate = COALESCE(EXCLUDED.vehicle_plate, public.riders.vehicle_plate);
     END IF;
 
     RETURN NEW;
@@ -685,3 +738,39 @@ CREATE POLICY "Order parties can view rider location" ON rider_locations FOR SEL
         AND (orders.customer_id = auth.uid() OR orders.merchant_id = auth.uid() OR orders.rider_id = auth.uid())
     )
 );
+
+-- ============================================================
+-- WAITLIST TABLE & RLS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.waitlist (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email       TEXT UNIQUE NOT NULL,
+    role        TEXT DEFAULT 'customer',
+    status      TEXT DEFAULT 'pending',
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.waitlist ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can insert waitlist" ON public.waitlist;
+CREATE POLICY "Anyone can insert waitlist" ON public.waitlist FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admins can view waitlist" ON public.waitlist;
+CREATE POLICY "Admins can view waitlist" ON public.waitlist FOR SELECT USING (true);
+
+-- ============================================================
+-- STORAGE BUCKETS & POLICIES
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('documents', 'documents', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public access to documents" ON storage.objects;
+CREATE POLICY "Public access to documents" ON storage.objects
+    FOR SELECT USING (bucket_id = 'documents');
+
+DROP POLICY IF EXISTS "Authenticated users upload documents" ON storage.objects;
+CREATE POLICY "Authenticated users upload documents" ON storage.objects
+    FOR INSERT WITH CHECK (bucket_id = 'documents');
+
+DROP POLICY IF EXISTS "Users update own documents" ON storage.objects;
+CREATE POLICY "Users update own documents" ON storage.objects
+    FOR UPDATE USING (bucket_id = 'documents');

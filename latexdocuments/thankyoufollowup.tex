@@ -1,0 +1,91 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.2in,top=1.2in,bottom=1.2in]{geometry}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[hidelinks]{hyperref}
+
+% --- Brand Typography System ---
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- High-Contrast Executive Palette ---
+\definecolor{SolidBlack}{HTML}{000000}
+\definecolor{PureWhite}{HTML}{FFFFFF}
+\definecolor{LinkBlue}{HTML}{0066CC}
+\definecolor{CorporateNavy}{HTML}{0A192F}
+\definecolor{DeepCharcoal}{HTML}{2D3748}
+
+\color{SolidBlack}
+\pagecolor{PureWhite}
+\pagestyle{empty}
+
+\setstretch{1.3}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+\begin{center}
+
+% --- MINIMAL MONOGRAM HEADER ---
+{\fontsize{32}{38}\sffamily\bfseries\color{CorporateNavy} Muncheez\color{LinkBlue}{\textbf{.}}}
+
+\vspace{0.2cm}
+\textsf{\scriptsize\bfseries\color{LinkBlue}\uppercase{A Personal Note of Thanks}}
+
+\vspace{0.8cm}
+
+% Minimal Centered Accent Dot
+\begin{tikzpicture}
+    \fill[color=CorporateNavy] (0,0) circle (2pt);
+\end{tikzpicture}
+
+\vspace{1.0cm}
+
+% --- SALUTATION ---
+{\fontsize{22}{28}\sffamily\bfseries\color{CorporateNavy} Dear [ATTENDEE\_NAME],}
+
+\vspace{0.8cm}
+
+% --- PERSONALIZED LETTER BODY ---
+\begin{minipage}{0.88\textwidth}
+    \centering
+    \textsf{\small\color{DeepCharcoal} We are still buzzing from the energy in Nairobi, and as we look back on the platform launch, one thing is abundantly clear: \textbf{this milestone belongs to you just as much as it belongs to us.}}
+
+    \vspace{0.5cm}
+    \textsf{\small\color{DeepCharcoal} Building the future of logistics infrastructure is impossible without the visionaries, believers, and partners who show up to shape it. Your presence, your time, and your conversation didn't just fill a room—you helped lay the groundwork for what comes next.}
+
+    \vspace{0.5cm}
+    \textsf{\small\color{DeepCharcoal} Thank you for standing with us at the very beginning of this journey. We are honored to have had you in the room, and even more excited for what we will build together.}
+\end{minipage}
+
+\vspace{1.2cm}
+
+% --- EXCLUSIVE ACCESS LINK ---
+\textsf{\scriptsize\bfseries\color{CorporateNavy}\uppercase{Your Private Access Links}} \\[0.2cm]
+\textsf{\small\bfseries\color{LinkBlue} gallery.muncheez.com/guest-archive} \hspace{0.3cm}\textperiodcentered\hspace{0.3cm} \textsf{\small\bfseries\color{LinkBlue} launch.muncheez.com/keynote}
+
+\vspace{1.5cm}
+
+% --- EXECUTIVE SIGN-OFF (CLEAN & FIXED) ---
+\textsf{\small\color{DeepCharcoal} With deep gratitude,}
+
+\vspace{0.3cm}
+
+{\fontsize{14}{18}\sffamily\bfseries\color{CorporateNavy} The Founding Team}
+
+\vspace{0.1cm}
+
+\textsf{\small\bfseries\color{LinkBlue} Muncheez Technologies Inc.}
+
+\vfill
+
+% --- MINIMAL FOOTER ---
+\textsf{\scriptsize\bfseries\color{DeepCharcoal} NAIROBI \textperiodcentered\ KENYA}
+
+\end{center}
+
+\end{document}

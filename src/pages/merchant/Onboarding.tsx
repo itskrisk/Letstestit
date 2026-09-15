@@ -6,395 +6,549 @@ import {
     CheckCircle2,
     ChevronRight,
     ChevronLeft,
-    FileSpreadsheet,
-    UtensilsCrossed,
     Smartphone,
-    CreditCard,
-    Store
+    Store,
+    Upload,
+    FileText,
+    Shield,
+    AlertCircle,
+    Building2,
+    Briefcase
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { parseInventoryCSV, CSVParseResult } from "../../utils/csvParser";
-// Types mimicking the Architecture
-type OnboardingStep = 'BUSINESS' | 'INVENTORY' | 'FINANCE' | 'REVIEW';
-type MerchantType = 'Restaurant' | 'Supermarket' | 'Pharmacy' | 'Water';
+import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabaseClient';
 
-export default function MerchantOnboarding() {
+type OnboardingStep = 'BUSINESS' | 'FINANCE' | 'DOCUMENTS' | 'REVIEW';
+type MerchantType = 'Restaurant' | 'Supermarket' | 'Pharmacy' | 'Bakery & Pastry' | 'Groceries & Fresh Produce' | 'Liquor & Beverages';
+
+export default function MerchantOnboarding({ onComplete }: { onComplete?: () => void }) {
     const navigate = useNavigate();
+    const { user, profile } = useAuth();
     const [currentStep, setCurrentStep] = useState<OnboardingStep>('BUSINESS');
-    const [merchantType, setMerchantType] = useState<MerchantType>('Restaurant'); // Should come from Signup
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // Step 1: Business Data
+    // Business Data
     const [businessData, setBusinessData] = useState({
+        businessName: '',
+        type: 'Restaurant' as MerchantType,
+        address: '',
+        buildingBranch: '',
+        hours: '08:00 AM - 10:00 PM',
         description: '',
-        location: '',
-        hours: '',
-        branchName: ''
+        phone: profile?.phone || ''
     });
 
-    // Step 2: Inventory Data (Supermarket)
-    const [importResult, setImportResult] = useState<CSVParseResult | null>(null);
-    const [isParsing, setIsParsing] = useState(false);
+    // Finance Data
+    const [financeData, setFinanceData] = useState({
+        mpesaTill: '',
+        kraPin: ''
+    });
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+    // Documents
+    const [documents, setDocuments] = useState<{
+        businessPermitFile: File | null;
+        kraPinFile: File | null;
+        healthPermitFile: File | null;
+    }>({
+        businessPermitFile: null,
+        kraPinFile: null,
+        healthPermitFile: null
+    });
 
-        setIsParsing(true);
-        const result = await parseInventoryCSV(file);
-        setImportResult(result);
-        setIsParsing(false);
-    };
-
-    const updateBusinessData = (key: string, value: string) => {
+    const updateBusiness = (key: string, value: string) => {
         setBusinessData(prev => ({ ...prev, [key]: value }));
+        setError(null);
     };
 
-    const nextStep = (target: OnboardingStep) => {
-        setCurrentStep(target);
-        window.scrollTo(0, 0);
+    const updateFinance = (key: string, value: string) => {
+        setFinanceData(prev => ({ ...prev, [key]: value }));
+        setError(null);
+    };
+
+    const uploadFile = async (file: File, path: string): Promise<string> => {
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${path}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('documents')
+                .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+            if (!uploadError) {
+                const { data } = supabase.storage.from('documents').getPublicUrl(fileName);
+                if (data?.publicUrl) return data.publicUrl;
+            }
+        } catch (e) {
+            console.warn('Storage upload notice, fallback used:', e);
+        }
+
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string || `https://placeholder.file/${file.name}`);
+            reader.onerror = () => resolve(`https://placeholder.file/${file.name}`);
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const handleSubmitKYC = async () => {
+        if (!user?.id) {
+            setError('User session not found. Please log in again.');
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            let permitUrl = '';
+            let kraUrl = '';
+            let healthUrl = '';
+
+            if (documents.businessPermitFile) {
+                permitUrl = await uploadFile(documents.businessPermitFile, `merchants/${user.id}/permit`);
+            }
+            if (documents.kraPinFile) {
+                kraUrl = await uploadFile(documents.kraPinFile, `merchants/${user.id}/kra`);
+            }
+            if (documents.healthPermitFile) {
+                healthUrl = await uploadFile(documents.healthPermitFile, `merchants/${user.id}/health`);
+            }
+
+            const docPayload: any = {};
+            if (permitUrl) docPayload.businessPermit = { url: permitUrl, filename: documents.businessPermitFile?.name, uploadedAt: new Date().toISOString() };
+            if (kraUrl) docPayload.kraPin = { url: kraUrl, filename: documents.kraPinFile?.name, uploadedAt: new Date().toISOString() };
+            if (healthUrl) docPayload.healthPermit = { url: healthUrl, filename: documents.healthPermitFile?.name, uploadedAt: new Date().toISOString() };
+
+            const fullAddress = businessData.buildingBranch
+                ? `${businessData.buildingBranch}, ${businessData.address}`
+                : businessData.address;
+
+            const { error: upsertError } = await supabase
+                .from('merchants')
+                .upsert({
+                    id: user.id,
+                    business_name: businessData.businessName || `${profile?.full_name || 'Partner'}'s Store`,
+                    owner_name: profile?.full_name || user.email?.split('@')[0] || 'Owner',
+                    phone: businessData.phone || profile?.phone || '',
+                    email: user.email || '',
+                    type: businessData.type,
+                    address: fullAddress,
+                    description: businessData.description,
+                    mpesa_till: financeData.mpesaTill,
+                    kra_pin: financeData.kraPin,
+                    business_permit_url: permitUrl || null,
+                    kra_pin_url: kraUrl || null,
+                    health_permit_url: healthUrl || null,
+                    documents: docPayload,
+                    status: 'PENDING',
+                    is_active: false
+                }, { onConflict: 'id' });
+
+            if (upsertError) throw upsertError;
+
+            setCurrentStep('REVIEW');
+            if (onComplete) onComplete();
+        } catch (err: any) {
+            console.error('Error submitting KYC:', err);
+            setError(err.message || 'Failed to submit onboarding documents.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-200 py-6 px-8 flex justify-between items-center sticky top-0 z-50">
-                <div className="flex items-center gap-2">
-                    <span className="font-heading font-bold text-xl tracking-tighter text-black">
+        <div className="min-h-screen bg-[#FDFBF7] font-sans flex flex-col">
+            {/* Top Bar */}
+            <div className="bg-white border-b border-gray-100 py-6 px-8 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+                <div className="flex items-center gap-3">
+                    <span className="font-heading font-black text-2xl tracking-tighter text-black">
                         Muncheez<span className="text-[#D4AF37]">.</span>
                     </span>
-                    <span className="px-3 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-full">
-                        Partner Setup
+                    <span className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase tracking-widest rounded-full">
+                        Glovo-Style Partner Setup
                     </span>
                 </div>
 
-                {/* Progress Indicators */}
+                {/* Progress Bar */}
                 <div className="flex items-center gap-2">
-                    {['BUSINESS', 'INVENTORY', 'FINANCE', 'REVIEW'].map((step, i) => (
-                        <div key={step} className={`h-1 w-8 rounded-full transition-colors ${['BUSINESS', 'INVENTORY', 'FINANCE', 'REVIEW'].indexOf(currentStep) >= i
-                            ? 'bg-[#D4AF37]'
-                            : 'bg-gray-200'
-                            }`} />
+                    {['BUSINESS', 'FINANCE', 'DOCUMENTS', 'REVIEW'].map((step, i) => (
+                        <div
+                            key={step}
+                            className={`h-1.5 w-10 rounded-full transition-all duration-300 ${['BUSINESS', 'FINANCE', 'DOCUMENTS', 'REVIEW'].indexOf(currentStep) >= i
+                                    ? 'bg-[#D4AF37]'
+                                    : 'bg-gray-200'
+                                }`}
+                        />
                     ))}
                 </div>
             </div>
 
-            <main className="flex-1 max-w-4xl mx-auto w-full p-8">
-                <AnimatePresence mode='wait'>
+            {/* Main Section */}
+            <main className="flex-1 max-w-3xl mx-auto w-full p-6 md:p-10 flex flex-col justify-center">
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold flex items-center gap-3">
+                        <AlertCircle size={20} />
+                        <span>{error}</span>
+                    </div>
+                )}
 
+                <AnimatePresence mode="wait">
                     {/* STEP 1: BUSINESS SETUP */}
                     {currentStep === 'BUSINESS' && (
                         <motion.div
                             key="business"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
                             className="space-y-8"
                         >
                             <div>
-                                <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">Tell us about your business</h1>
-                                <p className="text-gray-500">Let customers know who you are and where to find you.</p>
+                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
+                                    Store & Category Details
+                                </h1>
+                                <p className="text-gray-500 mt-2">
+                                    Provide your legal business details, store branch address, and operating category.
+                                </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
-                                {/* Merchant Type Selector (For Demo Context) */}
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 mb-6">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Simulating Merchant Type:</label>
-                                    <div className="flex gap-4">
-                                        {['Restaurant', 'Supermarket', 'Pharmacy', 'Water'].map(type => (
+                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
+                                {/* Type Selector */}
+                                <div>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-3">
+                                        Store Operating Category
+                                    </label>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        {([
+                                            'Restaurant', 'Supermarket', 'Pharmacy',
+                                            'Bakery & Pastry', 'Groceries & Fresh Produce', 'Liquor & Beverages'
+                                        ] as MerchantType[]).map(t => (
                                             <button
-                                                key={type}
-                                                onClick={() => setMerchantType(type as MerchantType)}
-                                                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest rounded transition-colors ${merchantType === type ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-500'
+                                                type="button"
+                                                key={t}
+                                                onClick={() => updateBusiness('type', t)}
+                                                className={`py-3 px-3 text-xs font-bold uppercase tracking-wider rounded-xl border text-center transition-all ${businessData.type === t
+                                                        ? 'bg-black text-white border-black shadow-md'
+                                                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                                                     }`}
                                             >
-                                                {type}
+                                                {t}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-700">
-                                            <MapPin size={14} /> Location / Branch Name
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            Store / Business Name
                                         </label>
                                         <input
                                             type="text"
-                                            placeholder="e.g. Westlands Branch"
-                                            value={businessData.branchName}
-                                            onChange={(e) => updateBusinessData('branchName', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-black outline-none font-medium"
+                                            placeholder="e.g. Swahili Plate Restaurant"
+                                            value={businessData.businessName}
+                                            onChange={e => updateBusiness('businessName', e.target.value)}
+                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-700">
-                                            <Clock size={14} /> Opening Hours
-                                        </label>
-                                        <input
-                                            type="text"
-                                            placeholder="e.g. 08:00 AM - 10:00 PM"
-                                            value={businessData.hours}
-                                            onChange={(e) => updateBusinessData('hours', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-black outline-none font-medium"
-                                        />
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                                City / Sub-County Area
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. Westlands, Nairobi"
+                                                value={businessData.address}
+                                                onChange={e => updateBusiness('address', e.target.value)}
+                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                                Building / Branch Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. Westgate Mall, 1st Floor"
+                                                value={businessData.buildingBranch}
+                                                onChange={e => updateBusiness('buildingBranch', e.target.value)}
+                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="col-span-2 space-y-2">
-                                        <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-700">
-                                            <Store size={14} /> Description
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                                Operating Hours
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 08:00 AM - 10:00 PM"
+                                                value={businessData.hours}
+                                                onChange={e => updateBusiness('hours', e.target.value)}
+                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                                Dispatch Contact Phone
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                placeholder="e.g. 0712 345 678"
+                                                value={businessData.phone}
+                                                onChange={e => updateBusiness('phone', e.target.value)}
+                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            Store Description
                                         </label>
                                         <textarea
-                                            placeholder="Briefly describe your business..."
+                                            placeholder="Authentic coastal cuisine, fresh seafood & natural fruit juices..."
                                             value={businessData.description}
-                                            onChange={(e) => updateBusinessData('description', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-black outline-none font-medium h-32"
+                                            onChange={e => updateBusiness('description', e.target.value)}
+                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium h-24 resize-none transition-all"
                                         />
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex justify-end">
-                                <button onClick={() => nextStep('INVENTORY')} className="px-8 py-4 bg-black text-white rounded-xl font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-[#D4AF37] hover:text-black transition-colors">
-                                    Continue to Inventory <ChevronRight size={16} />
+                                <button
+                                    onClick={() => {
+                                        if (!businessData.businessName.trim() || !businessData.address.trim()) {
+                                            setError('Please enter your store name and physical address.');
+                                            return;
+                                        }
+                                        setCurrentStep('FINANCE');
+                                    }}
+                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-black transition-all flex items-center gap-2 shadow-lg"
+                                >
+                                    Continue to Financial & Tax Setup <ChevronRight size={16} />
                                 </button>
                             </div>
                         </motion.div>
                     )}
 
-                    {/* STEP 2: INVENTORY (POLYMORPHIC) */}
-                    {currentStep === 'INVENTORY' && (
-                        <motion.div
-                            key="inventory"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            className="space-y-8"
-                        >
-                            <div>
-                                <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">
-                                    {merchantType === 'Restaurant' ? 'Build your Menu' : 'Stock your Shelves'}
-                                </h1>
-                                <p className="text-gray-500">
-                                    {merchantType === 'Restaurant'
-                                        ? 'Add your best sellers first. You can add the rest later.'
-                                        : 'Upload your inventory in bulk or start with a few items.'}
-                                </p>
-                            </div>
-
-                            {/* POLYMORPHIC CONTENT */}
-                            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm min-h-[400px]">
-
-                                {/* 🍔 RESTAURANT FLOW */}
-                                {merchantType === 'Restaurant' && (
-                                    <div className="text-center py-12 space-y-6">
-                                        <div className="w-20 h-20 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto text-[#D4AF37]">
-                                            <UtensilsCrossed size={40} />
-                                        </div>
-                                        <h3 className="text-2xl font-heading font-bold">Manual Menu Builder</h3>
-                                        <p className="max-w-md mx-auto text-gray-500">Create categories (e.g., "Starters", "Mains") and add items with photos and prices.</p>
-
-                                        <button className="px-6 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all w-full max-w-sm mx-auto flex items-center justify-center gap-3 group">
-                                            <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center group-hover:bg-[#D4AF37] group-hover:text-black transition-colors">+</span>
-                                            <span className="font-bold text-gray-600 group-hover:text-black uppercase tracking-wider text-sm">Add First Item</span>
-                                        </button>
-                                    </div>
-                                )}
-
-                                {/* 🛒 SUPERMARKET / RETAIL FLOW */}
-                                {['Supermarket', 'Pharmacy', 'Water'].includes(merchantType) && (
-                                    <div className="space-y-8">
-                                        {!importResult ? (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                {/* Option A: CSV Import */}
-                                                <label className="border border-gray-200 rounded-xl p-6 hover:border-black transition-colors cursor-pointer group relative">
-                                                    <input type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
-                                                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-700 mb-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
-                                                        <FileSpreadsheet size={24} />
-                                                    </div>
-                                                    <h3 className="font-bold text-lg mb-2">Bulk Import via CSV</h3>
-                                                    <p className="text-sm text-gray-500 mb-6">Best for catalogs with 50+ items. Upload your inventory file.</p>
-                                                    {isParsing ? (
-                                                        <span className="text-green-600 text-xs font-bold uppercase tracking-widest animate-pulse">Analyzing...</span>
-                                                    ) : (
-                                                        <span className="text-green-600 text-xs font-bold uppercase tracking-widest group-hover:underline">Select File</span>
-                                                    )}
-                                                </label>
-
-                                                {/* Option B: Manual */}
-                                                <div className="border border-gray-200 rounded-xl p-6 hover:border-black transition-colors cursor-pointer group">
-                                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 mb-4 group-hover:bg-black group-hover:text-white transition-colors">
-                                                        <Store size={24} />
-                                                    </div>
-                                                    <h3 className="font-bold text-lg mb-2">Add Manually</h3>
-                                                    <p className="text-sm text-gray-500 mb-6">Start small. Add your top 20 items one by one.</p>
-                                                    <span className="text-gray-900 text-xs font-bold uppercase tracking-widest group-hover:underline">Start Adding</span>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            // IMPORT PREVIEW
-                                            <div className="space-y-6">
-                                                <div className="flex items-center justify-between">
-                                                    <div>
-                                                        <h3 className="text-xl font-bold flex items-center gap-2">
-                                                            {importResult.success ? <CheckCircle2 className="text-green-500" /> : <Clock className="text-red-500" />}
-                                                            Import Analysis
-                                                        </h3>
-                                                        <p className="text-sm text-gray-500">
-                                                            Found {importResult.summary.validRows} valid items out of {importResult.summary.totalRows} rows.
-                                                        </p>
-                                                    </div>
-                                                    <button onClick={() => setImportResult(null)} className="text-xs font-bold uppercase hover:underline">Reset</button>
-                                                </div>
-
-                                                {/* Error Report */}
-                                                {importResult.errors.length > 0 && (
-                                                    <div className="bg-red-50 p-4 rounded-lg border border-red-100 text-red-800 text-sm max-h-32 overflow-y-auto">
-                                                        <p className="font-bold mb-2">Issues Found:</p>
-                                                        <ul className="list-disc pl-4 space-y-1">
-                                                            {importResult.errors.map((err: string, i: number) => <li key={i}>{err}</li>)}
-                                                        </ul>
-                                                    </div>
-                                                )}
-
-                                                {/* Preview Table */}
-                                                <div className="border rounded-lg overflow-hidden">
-                                                    <table className="w-full text-sm text-left">
-                                                        <thead className="bg-gray-50 text-xs uppercase font-bold text-gray-500">
-                                                            <tr>
-                                                                <th className="p-3">SKU</th>
-                                                                <th className="p-3">Name</th>
-                                                                <th className="p-3">Stock</th>
-                                                                <th className="p-3 text-right">Price</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="divide-y divide-gray-100">
-                                                            {importResult.products.slice(0, 5).map((p: any, i: number) => (
-                                                                <tr key={i} className="hover:bg-gray-50">
-                                                                    <td className="p-3 font-mono text-xs">{p.sku}</td>
-                                                                    <td className="p-3">{p.name}</td>
-                                                                    <td className="p-3">{p.stockLevel}</td>
-                                                                    <td className="p-3 text-right">KES {p.price?.toLocaleString()}</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                    {importResult.products.length > 5 && (
-                                                        <div className="p-2 text-center text-xs text-gray-400 bg-gray-50 border-t">
-                                                            + {importResult.products.length - 5} more items
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div className="flex justify-end pt-4">
-                                                    <button className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-green-700 transition-colors">
-                                                        Confirm & Import {importResult.products.length} Items
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex justify-between">
-                                <button onClick={() => nextStep('BUSINESS')} className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                                    <ChevronLeft size={14} /> Back
-                                </button>
-                                <button onClick={() => nextStep('FINANCE')} className="px-8 py-4 bg-black text-white rounded-xl font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-[#D4AF37] hover:text-black transition-colors">
-                                    Setup Payments <ChevronRight size={16} />
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {/* STEP 3: PAYMENTS (M-PESA) */}
+                    {/* STEP 2: FINANCE & TAX */}
                     {currentStep === 'FINANCE' && (
                         <motion.div
                             key="finance"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
                             className="space-y-8"
                         >
                             <div>
-                                <h1 className="text-4xl font-heading font-bold text-gray-900 mb-2">Get Paid</h1>
-                                <p className="text-gray-500">Secure M-Pesa settlement for your business.</p>
+                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
+                                    Financial & Tax Settlement
+                                </h1>
+                                <p className="text-gray-500 mt-2">
+                                    Enter your settlement M-Pesa Till number and KRA PIN for tax compliance.
+                                </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm space-y-8">
-
-                                <div className="p-4 bg-green-50 border border-green-100 rounded-xl flex items-start gap-3">
-                                    <div className="p-2 bg-white rounded-full text-green-600 shadow-sm"><Smartphone size={20} /></div>
-                                    <div>
-                                        <h4 className="font-bold text-green-900 text-sm uppercase tracking-wide">M-Pesa Verification</h4>
-                                        <p className="text-xs text-green-700 mt-1">We will send a test transaction of KES 1.00 to verify ownership.</p>
+                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
+                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3">
+                                    <Smartphone className="text-[#D4AF37] shrink-0" size={24} />
+                                    <div className="text-xs text-amber-900">
+                                        <p className="font-bold uppercase tracking-wider">Direct M-Pesa Settlement</p>
+                                        <p className="text-amber-700 mt-0.5">Earnings are settled directly into your registered M-Pesa Till / Paybill number.</p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700">Settlement Method</label>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <button className="p-4 border-2 border-black bg-black text-white rounded-xl flex items-center justify-center gap-2 font-bold uppercase tracking-widest text-xs">
-                                                <Smartphone size={16} /> M-Pesa Till / Paybill
-                                            </button>
-                                            <button className="p-4 border border-gray-200 text-gray-400 rounded-xl flex items-center justify-center gap-2 font-bold uppercase tracking-widest text-xs hover:border-gray-400">
-                                                <CreditCard size={16} /> Bank Transfer
-                                            </button>
-                                        </div>
+                                    <div>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            M-Pesa Till / Paybill Number
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. 882910"
+                                            value={financeData.mpesaTill}
+                                            onChange={e => updateFinance('mpesaTill', e.target.value)}
+                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-mono font-bold transition-all"
+                                        />
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700">Business Shortcode (Till/Paybill)</label>
-                                            <input type="text" placeholder="e.g. 882292" className="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-black outline-none font-medium font-mono" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700">Phone Number (Owner)</label>
-                                            <input type="text" placeholder="07..." className="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-black outline-none font-medium font-mono" />
-                                        </div>
+                                    <div>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            KRA PIN Number
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. A019283746Z"
+                                            value={financeData.kraPin}
+                                            onChange={e => updateFinance('kraPin', e.target.value)}
+                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-mono font-bold uppercase transition-all"
+                                        />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex justify-between">
-                                <button onClick={() => nextStep('INVENTORY')} className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                                    <ChevronLeft size={14} /> Back
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={() => setCurrentStep('BUSINESS')}
+                                    className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+                                >
+                                    <ChevronLeft size={16} /> Back
                                 </button>
-                                <button onClick={() => nextStep('REVIEW')} className="px-8 py-4 bg-black text-white rounded-xl font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-[#D4AF37] hover:text-black transition-colors">
-                                    Review Application <ChevronRight size={16} />
+                                <button
+                                    onClick={() => {
+                                        if (!financeData.mpesaTill.trim()) {
+                                            setError('Please enter your M-Pesa Till number.');
+                                            return;
+                                        }
+                                        setCurrentStep('DOCUMENTS');
+                                    }}
+                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-black transition-all flex items-center gap-2 shadow-lg"
+                                >
+                                    Continue to Compliance Documents <ChevronRight size={16} />
                                 </button>
                             </div>
                         </motion.div>
                     )}
 
-                    {/* STEP 4: REVIEW / SUCCESS */}
+                    {/* STEP 3: DOCUMENT UPLOADS */}
+                    {currentStep === 'DOCUMENTS' && (
+                        <motion.div
+                            key="documents"
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            className="space-y-8"
+                        >
+                            <div>
+                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
+                                    Upload Verification Documents
+                                </h1>
+                                <p className="text-gray-500 mt-2">
+                                    Submit clear photos or PDFs of your Single Business Permit, KRA PIN, and Health Permit.
+                                </p>
+                            </div>
+
+                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
+                                {/* Single Business Permit */}
+                                <div>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                        Single Business Permit (County Government)
+                                    </label>
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#D4AF37] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
+                                        <Building2 className="text-[#D4AF37] mb-1.5" size={26} />
+                                        <span className="text-xs font-bold text-gray-700">
+                                            {documents.businessPermitFile ? documents.businessPermitFile.name : 'Click to select Single Business Permit'}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400 mt-1">PNG, JPG, or PDF up to 5MB</span>
+                                        <input
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            className="hidden"
+                                            onChange={e => setDocuments(prev => ({ ...prev, businessPermitFile: e.target.files?.[0] || null }))}
+                                        />
+                                    </label>
+                                </div>
+
+                                {/* KRA PIN Certificate */}
+                                <div>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                        KRA PIN Certificate
+                                    </label>
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#D4AF37] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
+                                        <Upload className="text-[#D4AF37] mb-1.5" size={26} />
+                                        <span className="text-xs font-bold text-gray-700">
+                                            {documents.kraPinFile ? documents.kraPinFile.name : 'Click to select KRA Certificate'}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400 mt-1">PNG, JPG, or PDF up to 5MB</span>
+                                        <input
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            className="hidden"
+                                            onChange={e => setDocuments(prev => ({ ...prev, kraPinFile: e.target.files?.[0] || null }))}
+                                        />
+                                    </label>
+                                </div>
+
+                                {/* Health Permit */}
+                                <div>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                        County Food & Health Hygiene Permit
+                                    </label>
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#D4AF37] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
+                                        <FileText className="text-[#D4AF37] mb-1.5" size={26} />
+                                        <span className="text-xs font-bold text-gray-700">
+                                            {documents.healthPermitFile ? documents.healthPermitFile.name : 'Click to select Health Permit'}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400 mt-1">PNG, JPG, or PDF up to 5MB</span>
+                                        <input
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            className="hidden"
+                                            onChange={e => setDocuments(prev => ({ ...prev, healthPermitFile: e.target.files?.[0] || null }))}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={() => setCurrentStep('FINANCE')}
+                                    className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+                                >
+                                    <ChevronLeft size={16} /> Back
+                                </button>
+                                <button
+                                    onClick={handleSubmitKYC}
+                                    disabled={loading}
+                                    className="px-8 py-4 bg-[#D4AF37] text-black font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#c49f27] transition-all flex items-center gap-2 shadow-lg disabled:opacity-50"
+                                >
+                                    {loading ? (
+                                        <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                        <>
+                                            Submit Store For Review <CheckCircle2 size={18} />
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* STEP 4: REVIEW CONFIRMATION */}
                     {currentStep === 'REVIEW' && (
                         <motion.div
                             key="review"
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white p-12 rounded-2xl shadow-xl text-center max-w-lg mx-auto border-t-4 border-[#D4AF37]"
+                            className="bg-white p-10 md:p-12 rounded-3xl shadow-xl text-center max-w-lg mx-auto border-t-4 border-[#D4AF37]"
                         >
-                            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600 mb-6">
-                                <CheckCircle2 size={48} />
+                            <div className="w-20 h-20 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 mb-6">
+                                <CheckCircle2 size={40} />
                             </div>
-                            <h2 className="text-3xl font-heading font-bold text-gray-900 mb-4">Application Received</h2>
-                            <p className="text-gray-500 mb-8 leading-relaxed">
-                                Your shop <strong>"{businessData.branchName || 'Westlands Branch'}"</strong> is now under review. We typically verify M-Pesa details within 24 hours.
+                            <h2 className="text-3xl font-heading font-black text-gray-900 mb-3">
+                                Application Submitted!
+                            </h2>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                                Your store details and documents have been submitted to Muncheez Admin for review.
                             </p>
 
-                            <div className="space-y-3">
-                                <button onClick={() => navigate('/partner/dashboard')} className="w-full py-4 bg-black text-white rounded-xl font-bold uppercase tracking-widest hover:bg-[#D4AF37] hover:text-black transition-colors">
-                                    Go to Dashboard
-                                </button>
-                                <p className="text-xs text-gray-400">You can explore the dashboard while we verify.</p>
-                            </div>
+                            <button
+                                onClick={() => navigate('/partner/dashboard')}
+                                className="w-full py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-black transition-all shadow-lg"
+                            >
+                                View Application Status
+                            </button>
                         </motion.div>
                     )}
-
                 </AnimatePresence>
             </main>
         </div>
     );
 }
-

@@ -69,33 +69,40 @@ export default function Merchants() {
             if (error) throw error;
 
             if (data) {
-                const mappedMerchants: Merchant[] = data.map(m => ({
-                    id: m.id,
-                    businessName: m.business_name || 'Unnamed Business',
-                    description: m.description || 'Partner application currently under review.',
-                    type: m.type || 'Restaurant',
-                    status: m.status || 'PENDING',
-                    ownerName: m.owner?.full_name || 'Unknown',
-                    ownerPhone: m.owner?.phone || '',
-                    email: '',
-                    address: m.address || 'Pending Address',
-                    isActive: m.is_active || false,
-                    rating: 0,
-                    completedOrders: 0,
-                    revenue: 0,
-                    logoUrl: m.logo_url || '',
-                    mpesaShortcode: m.mpesa_shortcode || '',
-                    mpesaTillNumber: m.mpesa_till || '',
-                    kraPin: m.kra_pin || '',
-                    createdAt: m.created_at,
-                    documents: m.documents || {},
-                    settings: {
-                        isOpen: m.is_active || false,
-                        acceptingOrders: m.is_active || false,
-                        autoAccept: false,
-                        preparationTime: 20
-                    }
-                }));
+                const mappedMerchants: Merchant[] = data.map(m => {
+                    const docs = m.documents ? { ...m.documents } : {};
+                    if (m.kra_pin_url && !docs.kraPin) docs.kraPin = { url: m.kra_pin_url, filename: 'KRA PIN Certificate' };
+                    if (m.health_permit_url && !docs.healthPermit) docs.healthPermit = { url: m.health_permit_url, filename: 'Health Hygiene Permit' };
+                    if (m.business_permit_url && !docs.businessPermit) docs.businessPermit = { url: m.business_permit_url, filename: 'Single Business Permit' };
+
+                    return {
+                        id: m.id,
+                        businessName: m.business_name || 'Unnamed Business',
+                        description: m.description || 'Partner application currently under review.',
+                        type: m.type || 'Restaurant',
+                        status: m.status || 'PENDING',
+                        ownerName: m.owner_name || m.owner?.full_name || 'Unknown',
+                        ownerPhone: m.phone || m.owner?.phone || '',
+                        email: m.email || '',
+                        address: m.address || 'Pending Address',
+                        isActive: m.is_active || false,
+                        rating: m.rating || 0,
+                        completedOrders: 0,
+                        revenue: 0,
+                        logoUrl: m.logo_url || '',
+                        mpesaShortcode: m.mpesa_shortcode || '',
+                        mpesaTillNumber: m.mpesa_till || '',
+                        kraPin: m.kra_pin || '',
+                        createdAt: m.created_at,
+                        documents: docs,
+                        settings: {
+                            isOpen: m.is_active || false,
+                            acceptingOrders: m.is_active || false,
+                            autoAccept: false,
+                            preparationTime: 20
+                        }
+                    };
+                });
                 setMerchants(mappedMerchants);
             }
         } catch (err) {
@@ -670,6 +677,15 @@ function ApplicationDetailDrawer({ merchant, tab, onTabChange, onClose, onApprov
                                         { label: 'Address', value: merchant.address || '—' },
                                         { label: 'M-Pesa Shortcode', value: merchant.mpesaShortcode || '—', icon: '💳' },
                                         { label: 'Description', value: merchant.description || 'No description provided.', full: true },
+                                    ]} />
+                                </Section>
+
+                                 {/* Financial & Settlement */}
+                                <Section title="Financial & Settlement Details" icon={<FileText size={16} />}>
+                                    <InfoGrid items={[
+                                        { label: 'M-Pesa Buy Goods Till', value: merchant.mpesaTillNumber || '—' },
+                                        { label: 'KRA PIN Number', value: merchant.kraPin || '—' },
+                                        { label: 'M-Pesa Shortcode', value: merchant.mpesaShortcode || '—', full: true },
                                     ]} />
                                 </Section>
 
