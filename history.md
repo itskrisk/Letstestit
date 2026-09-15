@@ -1467,8 +1467,21 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 - Executed `npx tsc --noEmit`: **0 compilation errors**.
 - All components compile cleanly and data flows from initial auth $\rightarrow$ post-login KYC wizard $\rightarrow$ Supabase $\rightarrow$ Admin console.
 
+---
+
+## [2026-09-15] Git Commit and Push to Repository
+
+### Prompt / Request:
+> "push to git. you also have the token in env. so use it"
+
+### Actions Taken:
+1. **Staged All Workspace Files**: Ran `git add .` including all updated onboarding components, admin drawers, schema definitions, and project logs.
+2. **Created Commit**: Committed changes with message `"feat: Implement Glovo-style onboarding for merchants & couriers with adaptive KYC and complete admin visibility"`.
+3. **Pushed to GitHub**: Pushed commit `0c11407` to `https://github.com/itskrisk/Letstestit.git` (`main -> main`) using the GitHub token from `.env`.
+
 ### Status:
-- **FULLY VERIFIED & ON TRACK TO WIN**.
+- **PUSHED SUCCESSFULLY TO GITHUB (`main`)**.
+
 
 
 
