@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 
 const team = [
@@ -27,122 +28,78 @@ export default function OurTeam() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: '#0277BD', color: '#fff' }}
-    >
+    <div className="min-h-screen flex flex-col bg-[#4A90E2] text-white selection:bg-white selection:text-black">
+      <Navbar />
+
       {/* ── Back ── */}
-      <div className="px-8 md:px-16 pt-10">
+      <div className="px-6 md:px-16 pt-32">
         <button
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 group"
-          style={{ color: 'rgba(255,255,255,0.55)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', transition: 'color 0.2s' }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+          className="inline-flex items-center gap-2 text-white/80 hover:text-white text-[11px] font-bold tracking-[0.3em] uppercase transition-colors group cursor-pointer"
         >
-          <ArrowLeft size={13} strokeWidth={2} style={{ transition: 'transform 0.2s' }} className="group-hover:-translate-x-1" />
+          <ArrowLeft size={14} strokeWidth={2} className="group-hover:-translate-x-1 transition-transform" />
           Back
         </button>
       </div>
 
       {/* ── Hero ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 md:px-16 py-24 text-center">
-        {/* Label */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 md:px-16 py-20 text-center">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            fontSize: '10px',
-            fontWeight: 700,
-            letterSpacing: '0.5em',
-            textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.5)',
-            marginBottom: '32px',
-          }}
+          className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/80 mb-8"
         >
           Muncheez Technologies Ltd.
         </motion.p>
 
-        {/* Big heading */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-          className="font-heading"
-          style={{
-            fontSize: 'clamp(3.5rem, 10vw, 9rem)',
-            fontWeight: 200,
-            letterSpacing: '-0.04em',
-            lineHeight: 0.9,
-            marginBottom: '48px',
-          }}
+          className="font-heading text-6xl sm:text-8xl md:text-9xl font-light tracking-tighter text-white leading-none mb-12"
         >
-          The Team<span style={{ color: '#FACC15' }}>.</span>
+          The Team<span className="text-[#D4AF37]">.</span>
         </motion.h1>
 
-        {/* Thin rule */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          style={{ width: '40px', height: '1px', backgroundColor: 'rgba(255,255,255,0.3)', marginBottom: '80px', transformOrigin: 'center' }}
+          className="w-12 h-[1px] bg-white/40 mb-20 origin-center"
         />
 
-        {/* Team members — pure typography, no cards */}
-        <div style={{ width: '100%', maxWidth: '720px' }}>
+        {/* Team members */}
+        <div className="w-full max-w-4xl space-y-0">
           {team.map((member, i) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.35 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                paddingTop: '48px',
-                paddingBottom: '48px',
-                borderTop: '1px solid rgba(255,255,255,0.12)',
-                textAlign: 'left',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '24px',
-                alignItems: 'start',
-              }}
+              className="py-12 border-t border-white/20 text-left grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
             >
-              {/* Left — Name + Title */}
               <div>
-                <p
-                  className="font-heading"
-                  style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 300, letterSpacing: '-0.02em', marginBottom: '8px' }}
-                >
+                <p className="font-heading text-3xl sm:text-5xl font-light tracking-tight text-white mb-2">
                   {member.name}
                 </p>
-                <p
-                  style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.35em', textTransform: 'uppercase', color: '#FACC15', marginBottom: '4px' }}
-                >
+                <p className="text-xs font-bold tracking-[0.35em] uppercase text-[#D4AF37] mb-1">
                   {member.title}
                 </p>
-                <p
-                  style={{ fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}
-                >
+                <p className="text-[10px] tracking-[0.2em] uppercase text-white/70">
                   {member.note}
                 </p>
               </div>
 
-              {/* Right — Bio */}
-              <p
-                style={{ fontSize: '14px', fontWeight: 300, lineHeight: 1.8, color: 'rgba(255,255,255,0.65)', maxWidth: '340px' }}
-              >
+              <p className="text-base font-light leading-relaxed text-white/90">
                 {member.bio}
               </p>
             </motion.div>
           ))}
-
-          {/* Bottom rule */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }} />
+          <div className="border-t border-white/20" />
         </div>
       </div>
 
-      {/* ── Footer ── */}
       <Footer />
     </div>
   );

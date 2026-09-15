@@ -1704,21 +1704,102 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED LOCALLY & HELD FROM GIT PUSH UNTIL INSTRUCTED**.
 
+---
+
+## [2026-09-15] Local Git Commit
+
+### Prompt / Request:
+> "commit"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Local Git Commit (`commit cc9995b`)**:
+   - Staged all modified files ([Hero.tsx](file:///c:/Users/Admin/Desktop/kris/src/components/marketing/Hero.tsx), [Login.tsx](file:///c:/Users/Admin/Desktop/kris/src/pages/courier/Login.tsx), [history.md](file:///c:/Users/Admin/Desktop/kris/history.md)) and renamed asset files.
+   - Committed changes locally with message `"feat: Remove scroll text indicator from hero and add portal switcher to courier login"`.
+2. **Git Push Constraint**:
+   - **NOT pushed to GitHub** per standing instructions.
+
+---
+
+## Task: Story Section & Legal Pages Redesign + Navigation Link Verification
+
+### User Request:
+1. Ensure the mobile hamburger menu links "The Team" correctly to `/our-team`.
+2. Redesign `/our-story` (`OurStory.tsx`) with richer content telling the origin story, eliminating phone call friction, why we are here (curation over congestion), and showcasing our new 3-pillar Ecosystem (Customers, Merchants, Couriers) + Muncheez Technologies Ltd urban logistics engine. Maintain signature color curve transitions (`#4A90E2` -> `#D4AF37` -> `#00A082` -> `#0F172A`).
+3. Redesign all pages under `/legal` (`Contact Us`, `Privacy Policy`, `Terms of Service`, `Cookie Policy`, `FAQ`, `Help Center` in `LegalPage.tsx`) as standalone, high-end pages matching our intentional luxury aesthetic.
+4. Ensure legal pages are ONLY linked in `Footer.tsx` and completely omitted from `Navbar.tsx` and the mobile hamburger menu.
+
+### Actions Taken:
+1. **Verified Navigation in `Navbar.tsx`**:
+   - Confirmed mobile hamburger menu links "The Team" to `/our-team`.
+   - Ensured zero legal pages are present in the desktop header or mobile hamburger menu.
+2. **Redesigned `OurStory.tsx`**:
+   - **Section 1 (`#4A90E2` Blue)**: Origin Story focusing on eliminating phone call friction, WhatsApp location back-and-forth, paybill errors, and cold food. Built 100% locally for Nairobi (Kilimani, Westlands, Lavington, CBD, Karen).
+   - **Section 2 (`#D4AF37` Gold)**: "About Us & Why We Are Here" focusing on curation over congestion, scouting hidden culinary gems, and logistics precision.
+   - **Section 3 (`#00A082` Green)**: "Our New Ecosystem" featuring interactive glassmorphic cards for 3 pillars:
+     - Pillar 01: The Connoisseur (Customers)
+     - Pillar 02: The Culinary Kitchen (Merchants)
+     - Pillar 03: The Fleet Navigator (Couriers)
+   - **Section 4 (`#0F172A` Deep Dark)**: Muncheez Technologies Ltd. logistics infrastructure engine powering urban dispatch, commerce APIs, and fleet telematics.
+   - Preserved signature organic SVG curves between all color blocks.
+3. **Redesigned `LegalPage.tsx`**:
+   - Created dedicated layouts for `Terms of Service`, `Privacy Policy`, `Cookie Policy`, `Contact Us`, `FAQ`, and `Help Center`.
+   - Added interactive `Contact Us` form with instant transmission state, direct HQ contact cards, and response SLA commitments.
+   - Added searchable FAQ accordion system with categories for M-Pesa, delivery, and merchant/rider onboarding.
+   - Added Help Center concierge desk grid with one-click quick actions.
+   - Integrated top `Navbar` and bottom `Footer` on legal pages.
 
 
+---
 
+## Task: Repull Original Story Page & Align Color System + Pure White Fonts Across Legal & Team Pages
 
+### User Request:
+1. **Repull `/our-story` (`OurStory.tsx`) directly from git** to restore the clean, sleek, original story page.
+2. Ensure legal pages (`/legal/*` in `LegalPage.tsx`) and the team page (`OurTeam.tsx`) use our signature brand background color (`#4A90E2` Brand Blue) and **pure white text (`text-white`)** for complete visual consistency with the Home page.
 
+### Actions Taken:
+1. **Restored `OurStory.tsx` from Git**:
+   - Ran `git checkout HEAD -- src/pages/common/OurStory.tsx` to completely restore the exact original, clean, sleek story page layout.
+2. **Updated `OurTeam.tsx`**:
+   - Set background color to `#4A90E2` (Brand Blue) and text color to **pure white (`text-white`)**.
+   - Preserved signature editorial layout with `Navbar` and `Footer`.
+3. **Updated `LegalPage.tsx`**:
+   - Transformed background of all legal and utility pages (`Terms of Service`, `Privacy Policy`, `Cookie Policy`, `Contact Us`, `FAQ`, `Help Center`) to `#4A90E2` (Brand Blue).
+   - Set all typography to **pure white (`text-white`)** for high-contrast consistency with our Home page.
+   - Styled cards, forms, and accordions with translucent glassmorphic containers (`bg-white/10 backdrop-blur-xl border border-white/20 text-white`).
 
+---
 
+## Task: Remove Card Box Padding Across Contact Us & Legal Pages for Unboxed Editorial Layout
 
+### User Request:
+1. **Remove all card box padding, rounded cards, and boxed container backgrounds** from the Contact page and all pages under `/legal`.
+2. Enforce pure, clean, classy, unboxed editorial typography matching our `OurTeam` and `Home` design language.
 
+### Actions Taken:
+1. **Updated `LegalPage.tsx`**:
+   - Removed all `bg-white/10`, `backdrop-blur-xl`, `border border-white/20`, `rounded-3xl` card wrappers and card padding from `ContactLayout`, `LegalLayout`, `FAQLayout`, and `HelpLayout`.
+   - Replaced boxed form input cards with clean, unboxed, bottom-border editorial input lines (`border-b border-white/30 bg-transparent text-lg text-white`).
+   - Replaced card grid boxes with clean horizontal divider rules (`border-t border-b border-white/20 py-12`).
+   - Maintained `#4A90E2` Brand Blue background with pure white typography (`text-white`) and `Navbar` + `Footer`.
 
+---
 
+## Task: Enforce Strict NO PADDING / NO CARD BOXES Rule Across All Legal Pages & Update AGENTS.md
 
+### User Request:
+1. Ensure all legal pages (`Terms of Service`, `Privacy Policy`, `Cookie Policy`, `Contact Us`, `FAQ`, `Help Center`) have **zero card padding, zero rounded container boxes, and zero card wrappers**.
+2. Establish "NO PADDING / NO CARD BOXES" as a permanent design rule in `AGENTS.md`.
 
+### Actions Taken:
+1. **Enforced NO PADDING Rule in `LegalPage.tsx`**:
+   - Verified and confirmed that every layout (`LegalLayout`, `ContactLayout`, `FAQLayout`, `HelpLayout`) is completely unboxed.
+   - All content utilizes edge-to-edge typography, clean horizontal rules (`border-t`/`border-b border-white/20`), and bottom-border input fields without boxed padding.
+2. **Created `AGENTS.md` Rule**:
+   - Added permanent project rule to `AGENTS.md` prohibiting card box padding, rounded card containers, and padded box backgrounds in future designs.
 
-
+### Status:
+- **COMPLETED**.
 
 
 

@@ -152,12 +152,11 @@ export default function Navbar() {
                         </button>
                         <div className="flex flex-col gap-6 mt-6">
                             {[
-                                { name: 'Our Offering', href: '/#about' },
-                                { name: 'Selection', href: '/#categories' },
                                 { name: 'Our Story', href: '/our-story' },
+                                { name: 'The Team', href: '/our-team' },
+                                { name: 'Selection', href: '/#categories' },
+                                { name: 'Our Offering', href: '/#about' },
                                 { name: 'Feed', href: '/social' },
-                                { name: 'Contact', href: '/legal/contact-us' },
-                                { name: 'The Team', href: '/legal/our-team' },
                             ].map((item, i) => (
                                 <motion.a
                                     key={item.name}

@@ -1,10 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Mail, Phone, MapPin, LucideIcon, ChevronDown } from 'lucide-react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { ArrowLeft, ChevronDown, CheckCircle2, HelpCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 
 // --- Types ---
-type PageType = 'legal' | 'narrative' | 'utility';
+type PageType = 'legal' | 'contact' | 'faq' | 'help';
 
 interface PageData {
     type: PageType;
@@ -13,168 +15,177 @@ interface PageData {
     content: string;
     lastUpdated?: string;
     sections?: { title: string; body: string | string[] }[];
-    team?: { name: string; role: string; bio: string }[];
-    contact?: { type: string; value: string; icon: LucideIcon }[];
+    contact?: { type: string; value: string; icon?: any; subtext: string }[];
 }
 
 // --- Content Data ---
-// (Kept separate for readability, would distinct files in prod)
 const pages: Record<string, PageData> = {
-    // 1. LEGAL ARCHIVES (Split Screen)
     'terms-of-service': {
         type: 'legal',
         title: 'Terms of Service',
-        subtitle: 'The Foundation',
+        subtitle: 'Legal Governance & Operating Contract',
         lastUpdated: '01.01.2026',
-        content: "Detailed protocols governing the use of the Muncheez platform. By engaging with our services, you agree to these binding terms.",
+        content: "Detailed protocols governing the use of the Muncheez platform in the Republic of Kenya. By engaging with our app or website, you agree to these legally binding terms.",
         sections: [
-            { title: "1. Agreement to Terms", body: "By accessing or using Muncheez (the 'Platform'), you explicitly agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, you must cease use immediately. These terms constitute a legally binding agreement between you and Muncheez Kenya Ltd." },
-            { title: "2. Eligibility & Account Integrity", body: "You must be at least 18 years of age to use Muncheez. By creating an account, you warrant that all information provided is accurate and current. You are responsible for safeguarding your credentials and for all activities that occur under your account." },
-            { title: "3. Service Scope", body: "Muncheez acts as an intermediary platform connecting users with independent restaurant partners ('Merchants') and independent delivery riders. While we facilitate the transaction, the Merchant is solely responsible for the quality, safety, and hygiene of the food products." },
-            { title: "4. Payments & Financial Terms", body: "All prices are listed in Kenya Shillings (KES). Payments are processed securely via M-Pesa and authorized card processors. By initiating a transaction, you authorize us to charge the total amount including food costs, delivery fees, and applicable taxes." },
-            { title: "5. Order Cancellations & Refunds", body: "Orders may be cancelled for a full refund ONLY prior to Merchant acceptance. Once preparation has begun, cancellations are non-refundable. Refunds for missing items, wrong orders, or quality issues are subject to verification." },
-            { title: "6. User Code of Conduct", body: "We enforce a strict zero-tolerance policy against harassment, abuse, or discrimination towards our Riders, Merchants, or Support Staff. Violation of this policy will result in immediate and permanent account suspension." },
-            { title: "7. Intellectual Property Rights", body: "The Muncheez name, logo, design, and all underlying software are the exclusive intellectual property of Muncheez. You are granted a limited, non-exclusive license to use the app for personal, non-commercial purposes only." },
-            { title: "8. Limitation of Liability", body: "To the maximum extent permitted by Kenyan law, Muncheez shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the service." },
-            { title: "9. Data Protection & Privacy", body: "Your use of the Platform is subject to our Privacy Policy. We process personal data in strict compliance with the Kenya Data Protection Act, 2019." },
-            { title: "10. Governing Law", body: "These Terms are governed by the laws of the Republic of Kenya. Any disputes shall be subject to the exclusive jurisdiction of the courts located in Nairobi." }
-        ]
-    },
-    'privacy-policy': {
-        type: 'legal',
-        title: 'Privacy Policy',
-        subtitle: 'Your Data, Respected',
-        lastUpdated: '01.01.2026',
-        content: "Muncheez is committed to protecting your privacy in compliance with the Kenya Data Protection Act, 2019. We believe in transparency and the fundamental rights of our users.",
-        sections: [
-            { title: "1. Data We Collect", body: "We collect only data necessary for our operations: (a) Identity Data: Name, phone number (for M-Pesa), email; (b) Location Data: Delivery coordinates and saved addresses; (c) Transaction Data: Order history and payment references (we do not store full card details); (d) Usage Data: App interactions to improve our UX." },
-            { title: "2. Purpose of Processing", body: "We process your data to: (a) Fulfill delivery contracts; (b) Process payments via M-Pesa/Card; (c) Provide customer support; (d) Ensure platform security and fraud prevention; (e) Comply with legal obligations (KRA, ODPC)." },
-            { title: "3. Legal Basis for Processing", body: "Our processing is lawful under the Data Protection Act: (a) Performance of Contract (delivering food); (b) Legal Obligation (tax/regulatory); (c) Legitimate Interest (security/improvement); (d) Consent (marketing/location tracking)." },
-            { title: "4. Data Sharing & Third Parties", body: "We do not sell your data. We share data only with: (a) Merchants (to prepare your order); (b) Riders (to find your location); (c) Payment Processors (Safaricom/Gateways); (d) Legal Authorities (when required by court order)." },
-            { title: "5. International Data Transfers", body: "Muncheez complies with data localization requirements. A primary copy of your data is hosted within compliant jurisdictions. Any cross-border transfer is conducted with appropriate safeguards as required by the ODPC." },
-            { title: "6. Data Security", body: "We employ industry-standard encryption (TLS 1.2+), strict access controls, and regular security audits to protect your personal information against unauthorized access, loss, or destruction." },
-            { title: "7. Your Rights", body: "Under the Data Protection Act, you have the right to: (a) Access your data; (b) Request rectification of errors; (c) Request erasure ('Right to be Forgotten'); (d) Object to processing; (e) Withdraw consent. Contact privacy@muncheez.com to exercise these rights." },
-            { title: "8. Data Retention", body: "We retain transaction data for 7 years as required by Kenyan tax laws. Account information is retained while your account is active. You may request account deletion at any time." },
-            { title: "9. Children's Privacy", body: "Muncheez is not intended for use by persons under 18. We do not knowingly collect data from minors." },
-            { title: "10. Contact Us", body: "For privacy inquiries or to reach our Data Protection Officer, please email privacy@muncheez.com or visit our offices in Westlands, Nairobi." }
+            { title: "1. Binding Agreement", body: "By accessing or using Muncheez (operated by Muncheez Technologies Ltd.), you explicitly agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, you must cease use immediately." },
+            { title: "2. Eligibility & Account Security", body: "You must be at least 18 years of age to establish an active account. You are responsible for safeguarding your credentials and for all transactions conducted under your phone number or account." },
+            { title: "3. Platform Intermediary Scope", body: "Muncheez acts as a high-technology intermediary connecting consumers with independent restaurant partners ('Merchants') and independent fleet riders. Merchants retain full responsibility for food preparation, hygiene, and order compliance." },
+            { title: "4. Pricing, Currency & Payments", body: "All prices are listed in Kenya Shillings (KES). Transactions are processed via Safaricom M-Pesa and authorized payment gateways. You authorize Muncheez to charge food costs, delivery fees, and applicable taxes upon order submission." },
+            { title: "5. Cancellation & Refund Policy", body: "Orders may be cancelled with a full refund ONLY prior to Merchant acceptance. Once kitchen preparation begins, cancellations are non-refundable. Verified complaints regarding incorrect or damaged items will be credited to your Muncheez Wallet." },
+            { title: "6. Zero Tolerance Conduct Code", body: "We enforce a strict zero-tolerance policy against physical, verbal, or written abuse towards our riders, partner staff, or support agents. Violators will face immediate permanent account termination." },
+            { title: "7. Intellectual Property Rights", body: "All software, logos, trademarks, brand identity, and design assets are the exclusive property of Muncheez Technologies Ltd. Unauthorized reproduction or scraping is strictly prohibited." },
+            { title: "8. Limitation of Liability", body: "To the maximum extent permitted under Kenyan law, Muncheez Technologies Ltd. shall not be liable for indirect, incidental, or consequential damages resulting from service interruptions or third-party partner performance." },
+            { title: "9. Kenya Data Protection Act Compliance", body: "Your personal data is processed strictly in accordance with the Kenya Data Protection Act, 2019 and our Privacy Policy." },
+            { title: "10. Jurisdiction & Dispute Resolution", body: "These Terms are governed by the laws of the Republic of Kenya. Any legal disputes shall be submitted exclusively to courts sitting in Nairobi, Kenya." }
         ]
     },
 
-    // 3. THE UTILITY (Concierge Grid)
-    'faq': {
-        type: 'utility',
-        title: 'Q & A',
-        subtitle: 'Concierge Desk',
-        content: "Common questions about navigating the Muncheez experience.",
+    'privacy-policy': {
+        type: 'legal',
+        title: 'Privacy Policy',
+        subtitle: 'Data Integrity & Privacy Guarantees',
+        lastUpdated: '01.01.2026',
+        content: "Muncheez Technologies Ltd. is committed to absolute data protection in full compliance with the Kenya Data Protection Act, 2019 (ODPC). We respect your privacy as a fundamental right.",
         sections: [
-            { title: "How long does delivery take?", body: "Most orders arrive within 30-45 minutes. We prioritize speed and handled-with-care delivery to ensure your food arrives exactly as intended." },
-            { title: "What suburbs do you cover?", body: "We currently cover Westlands, Kilimani, Lavington, Kileleshwa, and the CBD, with expansion across the wider Nairobi area coming soon." },
-            { title: "Can I pay with M-Pesa?", body: "Absolutely. M-Pesa is integrated deeply into our platform for a seamless, secure, and fast checkout experience. We also support card payments." },
-            { title: "How do I become a partner?", body: "Navigate to our 'Partner With Us' section in the footer. Fill in your details, and our Collective team will reach out." }
+            { title: "1. Information We Collect", body: "We collect data essential for order execution: (a) Identity Data: Full name, phone number, email; (b) Location Data: Delivery coordinates and saved addresses; (c) Transaction Data: M-Pesa receipt IDs and order logs; (d) Telemetry: App usage to optimize delivery routes." },
+            { title: "2. Purpose of Data Processing", body: "We process your information to: (a) Dispatch orders to merchants and riders; (b) Process automated M-Pesa payments; (c) Deliver real-time order status updates; (d) Prevent fraudulent activity and secure accounts." },
+            { title: "3. Legal Basis for Processing", body: "Under the Kenya Data Protection Act, 2019, our processing is lawful based on: (a) Performance of a Contract; (b) Legal Obligations (KRA tax compliance); (c) Legitimate Security Interests; (d) User Consent." },
+            { title: "4. Third-Party Data Sharing", body: "We NEVER sell your personal data. Data is shared exclusively with: (a) Selected Merchants (to prepare your meal); (b) Delivery Riders (active delivery coordinates); (c) Payment Gateway Partners (Safaricom M-Pesa); (d) Law enforcement upon valid legal order." },
+            { title: "5. Data Storage & Localization", body: "Muncheez complies with statutory data residency regulations. Your data is stored securely using enterprise encryption standards (TLS 1.3, AES-256) with restricted authorization protocols." },
+            { title: "6. User Rights (ODPC Rights)", body: "Under the Data Protection Act, you possess the right to: (a) Access your personal record; (b) Request correction of inaccuracies; (c) Request data erasure ('Right to be Forgotten'); (d) Restrict or object to processing. Contact privacy@muncheez.com to submit requests." },
+            { title: "7. Data Retention Schedule", body: "Financial transaction records are maintained for 7 years to meet Kenyan statutory tax requirements. Non-essential usage telemetry is purged after 12 months." },
+            { title: "8. Protection of Minors", body: "Muncheez services are restricted to individuals aged 18 and above. We do not knowingly harvest data from minors." },
+            { title: "9. Updates to Policy", body: "Any modifications to this Privacy Policy will be published on this page with an updated timestamp." },
+            { title: "10. Data Protection Officer Contact", body: "Direct all inquiries regarding data protection to dpo@muncheez.com or our headquarters in Westlands, Nairobi." }
         ]
     },
+
+    'cookie-policy': {
+        type: 'legal',
+        title: 'Cookie Policy',
+        subtitle: 'Digital Tracking & Preference Transparency',
+        lastUpdated: '01.01.2026',
+        content: "This policy details how Muncheez Technologies Ltd. uses cookies, local storage, and web beacons to deliver a high-speed, secure browsing experience.",
+        sections: [
+            { title: "1. Essential Operational Cookies", body: "Necessary for key site capabilities including user authentication, session state preservation, M-Pesa checkout flows, and cart persistence. These cannot be toggled off." },
+            { title: "2. Performance & Analytics Cookies", body: "Used to collect anonymized telemetry on load speeds, popular merchant views, and technical error logs to continuously elevate app performance." },
+            { title: "3. Preference Cookies", body: "Store your neighborhood selection, default delivery instructions, and visual interface settings for seamless return visits." },
+            { title: "4. Managing Cookie Preferences", body: "You can modify cookie permissions at any time through our interactive Cookie Banner or directly via your web browser settings." }
+        ]
+    },
+
     'contact-us': {
-        type: 'utility',
+        type: 'contact',
         title: 'Contact Us',
-        subtitle: 'Direct Line',
-        content: "Based in the heart of Nairobi. We're always listening.",
+        subtitle: 'Direct Line to Nairobi HQ',
+        content: "Have a question, feedback, or enterprise partnership inquiry? Our team in Westlands is always standing by.",
         contact: [
-            { type: "Email", value: "hello@muncheez.com", icon: Mail },
-            { type: "Phone", value: "+254 700 000 000", icon: Phone },
-            { type: "HQ", value: "Westlands, Nairobi, KE", icon: MapPin }
+            { type: "Customer Support Email", value: "hello@muncheez.com", subtext: "Average response within 2 hours" },
+            { type: "Support Hotline", value: "+254 700 000 000", subtext: "Available 24/7 for active orders" },
+            { type: "Nairobi Headquarters", value: "Westlands, Nairobi, Kenya", subtext: "Muncheez Technologies Ltd." }
         ]
     },
-    'help-center': {
-        type: 'utility',
-        title: 'Help Center',
-        subtitle: 'Support',
-        content: "Need assistance? Browse our FAQs or get in touch directly.",
+
+    'faq': {
+        type: 'faq',
+        title: 'Frequently Asked Questions',
+        subtitle: 'Quick Knowledge Base',
+        content: "Clear, instant answers regarding delivery speeds, M-Pesa checkout, merchant quality, and rider safety.",
         sections: [
-            { title: "Where is my order?", body: "You can track your order in real-time via the 'Orders' tab in the app. If you need further assistance, please contact support." },
-            { title: "I have a problem with my food.", body: "We take quality seriously. If your order is incorrect or unsatisfactory, please use the 'Report Issue' button on the order details page or call us immediately." },
-            { title: "Payment issues?", body: "If a payment failed but you were charged, the reversal usually happens automatically within 24 hours. If not, contact us with your transaction reference." }
+            { title: "What areas in Nairobi do you deliver to?", body: "We currently serve Westlands, Kilimani, Lavington, Kileleshwa, Parklands, CBD, Upper Hill, and Karen—with rapid expansion across wider Nairobi underway." },
+            { title: "How long does delivery take?", body: "Our average fulfillment window is 30 to 45 minutes. Our dispatch engine dynamically routes riders based on live traffic patterns to ensure food arrives hot and fresh." },
+            { title: "How does M-Pesa payment work on Muncheez?", body: "At checkout, enter your M-Pesa phone number and tap 'Pay Now'. An automated M-Pesa STK prompt will appear on your phone asking for your PIN. Payment confirms instantly." },
+            { title: "What if my food arrives cold or damaged?", body: "We take quality seriously. Open your order details page in the app and tap 'Report Issue' within 15 minutes of delivery. Our support team will verify and process an instant wallet refund." },
+            { title: "How do I become a merchant partner?", body: "We welcome exceptional kitchens! Click 'Partner With Us' in the footer or visit /partner/signup to submit your establishment for our curation review." },
+            { title: "How do riders join the Muncheez fleet?", body: "Riders can register at /courier/signup. Candidates undergo background verification, vehicle safety checks, and customer service training prior to activation." }
+        ]
+    },
+
+    'help-center': {
+        type: 'help',
+        title: 'Help Center & Support Desk',
+        subtitle: 'Concierge Desk 24/7',
+        content: "Need assistance with an ongoing order, payment receipt, or account question? We are here to help.",
+        sections: [
+            { title: "Active Order Support", body: "Track your courier in real-time on your active order screen. For instant driver communication or address modifications, call our dispatch hotline." },
+            { title: "M-Pesa & Payment Inquiries", body: "If your M-Pesa payment was deducted but your order status failed to update, please allow 3 minutes for automated reconciliation or submit your Safaricom transaction code." },
+            { title: "Account & Security", body: "You can update your delivery addresses, contact details, and security credentials directly inside your Account settings." }
         ]
     }
 };
 
-
-// --- LAYOUT 1: LEGAL ARCHIVES (Split Screen Sticky) ---
+// --- LAYOUT 1: LEGAL ARCHIVES (Terms, Privacy, Cookie Policy) ---
 function LegalLayout({ page }: { page: PageData }) {
     const [activeSection, setActiveSection] = useState(0);
     const navigate = useNavigate();
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen">
-            {/* Left Column: Sticky Title & Nav */}
-            <div className="lg:w-1/3 pt-12 lg:pt-24 px-6 lg:px-12 pb-12 lg:h-screen lg:sticky lg:top-0 flex flex-col justify-start border-r border-white/5">
-                {/* Back Button - Original Style */}
-                <div className="mb-12">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-[#4A90E2] hover:text-white transition-all group"
-                    >
-                        <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                        Back
-                    </button>
-                </div>
-
-                <div>
-                    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[10px] font-bold text-[#4A90E2] uppercase tracking-[0.4em] mb-6 block">
-                        {page.subtitle}
-                    </motion.span>
-                    <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-5xl lg:text-7xl font-heading font-extralight tracking-tighter mb-8 text-white leading-[0.9]">
-                        {page.title.split(" ").map((word, i) => (
-                            <span key={i} className="block">{word}</span>
-                        ))}
-                    </motion.h1>
-                    <p className="text-white/40 text-xs font-mono tracking-widest mb-12">
-                        LAST UPDATED: <span className="text-white">{page.lastUpdated}</span>
-                    </p>
-                </div>
-
-                {/* Table of Contents (Desktop Only) */}
-                <div className="hidden lg:block space-y-4 overflow-y-auto max-h-[40vh] pr-4 custom-scrollbar mt-auto">
-                    {page.sections?.map((section, i) => (
-                        <button
-                            key={i}
-                            onClick={() => document.getElementById(`section-${i}`)?.scrollIntoView({ behavior: 'smooth' })}
-                            className={`text-left text-xs uppercase tracking-widest transition-colors block w-full truncate ${activeSection === i ? 'text-white font-bold' : 'text-white/30 hover:text-white/60'}`}
-                        >
-                            {section.title}
-                        </button>
-                    ))}
-                </div>
+        <div className="max-w-7xl mx-auto px-6 md:px-8 pt-32 pb-32">
+            <div className="mb-12">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-white/70 hover:text-white transition-all group cursor-pointer"
+                >
+                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                    Back
+                </button>
             </div>
 
-            {/* Right Column: Scrollable Content */}
-            <div className="lg:w-2/3 pt-12 lg:pt-40 px-6 lg:px-20 pb-40">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mb-24">
-                    <p className="text-xl md:text-2xl text-white/80 font-serif italic font-light leading-relaxed">
-                        {page.content}
-                    </p>
-                </motion.div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+                {/* Left Column: Title & Table of Contents */}
+                <div className="lg:col-span-5 lg:sticky lg:top-32 flex flex-col justify-between">
+                    <div>
+                        <span className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.4em] mb-4 block">
+                            {page.subtitle}
+                        </span>
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-heading font-light tracking-tighter mb-6 text-white leading-none">
+                            {page.title}<span className="text-[#D4AF37]">.</span>
+                        </h1>
+                        <p className="text-white/70 text-xs font-mono tracking-widest mb-8 uppercase">
+                            LAST UPDATED: <span className="text-white font-bold">{page.lastUpdated}</span>
+                        </p>
+                        <p className="text-white/90 text-base font-light leading-relaxed mb-8 border-l border-white/30 pl-4">
+                            {page.content}
+                        </p>
+                    </div>
 
-                <div className="space-y-20">
+                    {/* Desktop Table of Contents */}
+                    <div className="hidden lg:block space-y-3 overflow-y-auto max-h-[35vh] pr-4 custom-scrollbar border-t border-white/20 pt-6">
+                        <span className="text-[9px] font-bold text-white/50 uppercase tracking-[0.3em] block mb-2">Sections</span>
+                        {page.sections?.map((section, i) => (
+                            <button
+                                key={i}
+                                onClick={() => document.getElementById(`section-${i}`)?.scrollIntoView({ behavior: 'smooth' })}
+                                className={`text-left text-xs uppercase tracking-widest transition-all block w-full truncate py-1 cursor-pointer ${activeSection === i ? 'text-[#D4AF37] font-bold pl-2 border-l-2 border-[#D4AF37]' : 'text-white/60 hover:text-white'}`}
+                            >
+                                {section.title}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Right Column: Clean Editorial Content Body (No Boxed Padding / Cards) */}
+                <div className="lg:col-span-7 space-y-12">
                     {page.sections?.map((section, i) => (
                         <motion.div
                             key={i}
                             id={`section-${i}`}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 16 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ margin: "-20% 0px -20% 0px" }}
+                            viewport={{ margin: "-10% 0px -10% 0px" }}
                             onViewportEnter={() => setActiveSection(i)}
-                            className="group"
+                            className="border-t border-white/20 pt-8 text-left"
                         >
-                            <div className="flex items-start gap-4 mb-6">
-                                <span className="text-[#4A90E2] font-mono text-sm mt-1">0{i + 1}</span>
-                                <h2 className="text-2xl font-heading font-light tracking-tight text-white group-hover:text-[#4A90E2] transition-colors">
+                            <div className="flex items-start gap-4 mb-4">
+                                <span className="text-[#D4AF37] font-mono text-xs font-bold mt-1">0{i + 1}</span>
+                                <h2 className="text-2xl font-heading font-light tracking-tight text-white">
                                     {section.title}
                                 </h2>
                             </div>
-                            <div className="pl-8 md:pl-10 text-sm md:text-base text-white/50 leading-loose font-light border-l border-white/5 group-hover:border-white/10 transition-colors">
+                            <div className="pl-8 text-base text-white/90 leading-relaxed font-light">
                                 {Array.isArray(section.body) ? (
-                                    <ul className="space-y-2">
-                                        {section.body.map((item, j) => <li key={j}>{item}</li>)}
+                                    <ul className="space-y-3">
+                                        {section.body.map((item, j) => <li key={j}>&bull; {item}</li>)}
                                     </ul>
                                 ) : (
                                     <p>{section.body}</p>
@@ -182,236 +193,306 @@ function LegalLayout({ page }: { page: PageData }) {
                             </div>
                         </motion.div>
                     ))}
+                    <div className="border-t border-white/20" />
                 </div>
             </div>
         </div>
     );
 }
 
-// --- LAYOUT 2: THE NARRATIVE (Magazine Magazine) ---
-function NarrativeLayout({ page }: { page: PageData }) {
-    const isTeam = page.title === 'The Collective';
+// --- LAYOUT 2: CONTACT US PAGE (UNBOXED, NO PADDING CARDS, PURE CLASSY EDITORIAL) ---
+function ContactLayout({ page }: { page: PageData }) {
     const navigate = useNavigate();
+    const [submitted, setSubmitted] = useState(false);
+    const [formData, setFormData] = useState({ name: '', email: '', category: 'General Inquiry', message: '' });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubmitted(true);
+    };
 
     return (
-        <div className="pt-12 lg:pt-24 pb-20 px-6 md:px-12 max-w-[1400px] mx-auto">
-            {/* Back Button - Original Style */}
-            <div className="mb-16">
+        <div className="max-w-5xl mx-auto px-6 md:px-8 pt-32 pb-32">
+            <div className="mb-12">
                 <button
                     onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-[#4A90E2] hover:text-white transition-all group"
+                    className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-white/70 hover:text-white transition-all group cursor-pointer"
                 >
                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                     Back
                 </button>
             </div>
 
-            {/* Magazine Header */}
-            <div className={`${isTeam ? 'mb-16' : 'mb-32'} text-center`}>
-                {!isTeam && (
-                    <motion.span initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="inline-block text-[10px] font-bold text-[#4A90E2] uppercase tracking-[0.4em] mb-8">
-                        {page.subtitle}
-                    </motion.span>
-                )}
-                <motion.h1 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-7xl md:text-9xl font-heading font-extralight tracking-tighter text-white mb-12">
-                    {page.title}
-                </motion.h1>
-                <div className="h-[1px] w-24 bg-white/20 mx-auto" />
-            </div>
-
-            {/* Content Zigzag */}
-            {!isTeam && page.sections && (
-                <div className="space-y-32">
-                    {page.sections.map((section, i) => (
-                        <div key={i} className={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-24 items-center`}>
-                            <motion.div initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="flex-1">
-                                <h2 className="text-4xl md:text-5xl font-heading font-light tracking-tight text-white mb-8">
-                                    {section.title}
-                                </h2>
-                                <p className="text-lg md:text-xl text-white/60 font-light leading-relaxed font-serif">
-                                    {section.body}
-                                </p>
-                            </motion.div>
-                            <div className="flex-1 w-full relative">
-                                {/* Placeholder for Image - using abstract colored div for now */}
-                                <motion.div
-                                    initial={{ scale: 0.9, opacity: 0 }}
-                                    whileInView={{ scale: 1, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                    className="aspect-[4/5] bg-white/[0.03] border border-white/5 rounded-none relative overflow-hidden group"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#4A90E2]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                                    {/* Texture */}
-                                    <div className="absolute inset-0 opacity-[0.05] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-                                    <div className="absolute bottom-6 left-6 right-6">
-                                        <p className="text-[10px] font-mono uppercase tracking-widest text-white/40">Fig. {i + 1}</p>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* Team Grid (Dean & Kris Featured Executive Layout) */}
-            {isTeam && page.team && (
-                <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-20 max-w-5xl mx-auto">
-                        {page.team.map((member, i) => (
-                            <motion.div
-                                key={member.name}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: i * 0.15 }}
-                                className="group relative bg-white/[0.02] border border-white/10 rounded-3xl p-8 md:p-12 hover:border-[#4A90E2]/50 hover:bg-white/[0.04] transition-all duration-500 flex flex-col justify-between overflow-hidden"
-                            >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#4A90E2]/10 to-transparent rounded-bl-full pointer-events-none group-hover:scale-125 transition-transform duration-700" />
-                                
-                                <div>
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xl font-bold font-mono text-[#4A90E2] group-hover:bg-[#4A90E2] group-hover:text-white transition-all duration-500">
-                                            {member.name.split(' ')[0][0]}{member.name.split(' ')[1]?.[0] || ''}
-                                        </div>
-                                        <span className="text-[10px] font-bold uppercase tracking-[0.3em] px-3.5 py-1.5 rounded-full bg-white/5 text-white/60 border border-white/10">
-                                            Executive
-                                        </span>
-                                    </div>
-
-                                    <h3 className="text-4xl md:text-5xl font-heading font-light text-white tracking-tight mb-3 group-hover:text-[#4A90E2] transition-colors duration-300">
-                                        {member.name}
-                                    </h3>
-                                    <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-6">
-                                        {member.role}
-                                    </p>
-                                    <p className="text-sm md:text-base text-white/60 font-serif leading-relaxed font-light">
-                                        {member.bio}
-                                    </p>
-                                </div>
-
-                                <div className="pt-8 mt-8 border-t border-white/5 flex items-center justify-between text-[10px] uppercase font-mono tracking-widest text-white/30">
-                                    <span>Muncheez Leadership</span>
-                                    <span>Nairobi, KE</span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center max-w-3xl mx-auto border-t border-white/10 pt-16"
-                    >
-                        <p className="text-lg md:text-2xl font-serif italic font-light text-white/70 leading-relaxed mb-4">
-                            "{page.content}"
-                        </p>
-                        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#4A90E2]">
-                            Muncheez Leadership
-                        </span>
-                    </motion.div>
-                </>
-            )}
-        </div>
-    );
-}
-
-// --- LAYOUT 3: UTILITY (The Concierge) ---
-function UtilityLayout({ page }: { page: PageData }) {
-    const isFAQ = page.title === 'Q & A';
-    const navigate = useNavigate();
-
-    return (
-        <div className="min-h-screen pt-12 lg:pt-24 px-6 md:px-12 flex flex-col items-center relative">
-            {/* Back Button - Original Style absolute positioned for center layout */}
-            <div className="absolute top-12 lg:top-24 left-6 lg:left-12">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-[#4A90E2] hover:text-white transition-all group"
-                >
-                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                    Back
-                </button>
-            </div>
-
-            <div className="text-center mb-24 max-w-2xl mt-24">
-                <span className="text-[10px] font-bold text-[#4A90E2] uppercase tracking-[0.4em] mb-6 block">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+                <span className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.4em] mb-4 block">
                     {page.subtitle}
                 </span>
-                <h1 className="text-6xl md:text-8xl font-heading font-extralight tracking-tighter text-white mb-8">
-                    {page.title}
+                <h1 className="text-6xl sm:text-7xl md:text-8xl font-heading font-light tracking-tighter text-white mb-6 leading-none">
+                    {page.title}<span className="text-[#D4AF37]">.</span>
                 </h1>
-                <p className="text-lg text-white/50 font-light">{page.content}</p>
+                <p className="text-base md:text-lg text-white/90 font-light max-w-xl mx-auto">{page.content}</p>
             </div>
 
-            {/* FAQ Accordion */}
-            {isFAQ && page.sections && (
-                <div className="max-w-3xl w-full space-y-4">
-                    {page.sections.map((section, i) => (
-                        <FAQItem key={i} title={section.title} body={section.body as string} />
-                    ))}
-                </div>
-            )}
+            {/* Direct Contact Info — Unboxed Editorial Dividers */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24 border-t border-b border-white/20 py-12">
+                {page.contact?.map((item, i) => (
+                    <div key={i} className="text-left">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-white/60 block mb-2">{item.type}</span>
+                        <h3 className="text-2xl font-heading font-light text-white mb-2">{item.value}</h3>
+                        <p className="text-xs font-light text-white/70">{item.subtext}</p>
+                    </div>
+                ))}
+            </div>
 
-            {/* Contact Grid */}
-            {!isFAQ && page.contact && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-                    {page.contact.map((item, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 + (i * 0.1) }}
-                            className="aspect-square flex flex-col items-center justify-center border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] transition-colors group cursor-pointer"
+            {/* Contact Form — Unboxed Editorial Bottom-Line Fields */}
+            <div className="max-w-2xl mx-auto text-left">
+                <h2 className="text-3xl md:text-4xl font-heading font-light text-white mb-2">Send a Message<span className="text-[#D4AF37]">.</span></h2>
+                <p className="text-xs text-white/60 mb-12 uppercase tracking-widest font-mono">Direct transmission to support operations</p>
+
+                {submitted ? (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 border-t border-white/20">
+                        <CheckCircle2 size={48} className="text-white mb-6" />
+                        <h3 className="text-3xl font-heading font-light text-white mb-3">Message Received.</h3>
+                        <p className="text-base text-white/90 max-w-md mb-8 font-light leading-relaxed">
+                            Thank you for reaching out. A Muncheez concierge specialist will respond to <span className="font-mono text-white font-bold">{formData.email}</span> within 2 hours.
+                        </p>
+                        <button
+                            onClick={() => setSubmitted(false)}
+                            className="text-xs font-bold uppercase tracking-widest text-white underline hover:text-white/80 transition-all cursor-pointer"
                         >
-                            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-[#4A90E2] mb-8 group-hover:scale-110 transition-transform">
-                                <item.icon size={28} strokeWidth={1} />
+                            Send Another Message &rarr;
+                        </button>
+                    </motion.div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="space-y-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="border-b border-white/30 py-2">
+                                <label className="block text-[10px] font-mono uppercase tracking-widest text-white/70 mb-2">Your Name</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    placeholder="Amani Mwangi"
+                                    className="w-full bg-transparent text-lg text-white placeholder:text-white/40 focus:outline-none"
+                                />
                             </div>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-3">{item.type}</span>
-                            <span className="text-lg font-heading text-white tracking-wide">{item.value}</span>
-                        </motion.div>
-                    ))}
-                </div>
-            )}
+                            <div className="border-b border-white/30 py-2">
+                                <label className="block text-[10px] font-mono uppercase tracking-widest text-white/70 mb-2">Email Address</label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    placeholder="amani@example.com"
+                                    className="w-full bg-transparent text-lg text-white placeholder:text-white/40 focus:outline-none"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="border-b border-white/30 py-2">
+                            <label className="block text-[10px] font-mono uppercase tracking-widest text-white/70 mb-2">Topic Category</label>
+                            <select
+                                value={formData.category}
+                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                className="w-full bg-transparent text-lg text-white focus:outline-none cursor-pointer"
+                            >
+                                <option value="General Inquiry" className="bg-[#4A90E2]">General Inquiry</option>
+                                <option value="Active Order Support" className="bg-[#4A90E2]">Active Order Support</option>
+                                <option value="Merchant Partnership" className="bg-[#4A90E2]">Merchant Partnership</option>
+                                <option value="Rider Fleet Application" className="bg-[#4A90E2]">Rider Fleet Application</option>
+                                <option value="Feedback & Suggestions" className="bg-[#4A90E2]">Feedback & Suggestions</option>
+                            </select>
+                        </div>
+
+                        <div className="border-b border-white/30 py-2">
+                            <label className="block text-[10px] font-mono uppercase tracking-widest text-white/70 mb-2">Your Message</label>
+                            <textarea
+                                required
+                                rows={4}
+                                value={formData.message}
+                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                placeholder="How can we assist you today?"
+                                className="w-full bg-transparent text-lg text-white placeholder:text-white/40 focus:outline-none resize-none"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full py-5 text-center text-xs font-bold uppercase tracking-[0.3em] text-black bg-white hover:bg-[#D4AF37] hover:text-white transition-all cursor-pointer shadow-xl"
+                        >
+                            Transmit Message &rarr;
+                        </button>
+                    </form>
+                )}
+            </div>
         </div>
     );
 }
 
-function FAQItem({ title, body }: { title: string, body: string }) {
-    const [isOpen, setIsOpen] = useState(false);
+// --- LAYOUT 3: FAQ PAGE (UNBOXED EDITORIAL) ---
+function FAQLayout({ page }: { page: PageData }) {
+    const navigate = useNavigate();
+    const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredSections = page.sections?.filter(s =>
+        s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (typeof s.body === 'string' && s.body.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
     return (
-        <div className="border-b border-white/10">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full py-8 flex items-center justify-between text-left group"
-            >
-                <span className="text-xl md:text-2xl font-heading font-light text-white group-hover:text-[#4A90E2] transition-colors tracking-tight">
-                    {title}
+        <div className="max-w-4xl mx-auto px-6 md:px-8 pt-32 pb-32">
+            <div className="mb-12">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-white/70 hover:text-white transition-all group cursor-pointer"
+                >
+                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                    Back
+                </button>
+            </div>
+
+            <div className="text-center max-w-3xl mx-auto mb-16">
+                <span className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.4em] mb-4 block">
+                    {page.subtitle}
                 </span>
-                <span className={`text-white/30 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                    <ChevronDown size={20} />
-                </span>
-            </button>
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                    >
-                        <div className="pb-8 text-white/50 font-light leading-relaxed pr-8">
-                            {body}
-                        </div>
-                    </motion.div>
+                <h1 className="text-6xl sm:text-7xl font-heading font-light tracking-tighter text-white mb-6 leading-none">
+                    {page.title}<span className="text-[#D4AF37]">.</span>
+                </h1>
+                <p className="text-base text-white/90 font-light mb-8">{page.content}</p>
+
+                {/* Clean Search Input */}
+                <div className="border-b border-white/30 py-2 max-w-md mx-auto">
+                    <input
+                        type="text"
+                        placeholder="Search questions (e.g. M-Pesa, delivery)..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-transparent text-base text-white placeholder:text-white/40 focus:outline-none text-center"
+                    />
+                </div>
+            </div>
+
+            {/* Accordion List — Clean Border Dividers, No Boxes */}
+            <div className="border-t border-white/20">
+                {filteredSections && filteredSections.length > 0 ? (
+                    filteredSections.map((item, i) => {
+                        const isOpen = openIndex === i;
+                        return (
+                            <div key={i} className="border-b border-white/20">
+                                <button
+                                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                                    className="w-full py-8 text-left flex items-center justify-between gap-4 group cursor-pointer"
+                                >
+                                    <span className="text-xl md:text-2xl font-heading font-light text-white group-hover:text-[#D4AF37] transition-colors">
+                                        {item.title}
+                                    </span>
+                                    <ChevronDown size={20} className={`text-white/70 transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-[#D4AF37]' : ''}`} />
+                                </button>
+
+                                <AnimatePresence>
+                                    {isOpen && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="pb-8 text-base text-white/90 font-light leading-relaxed pr-8"
+                                        >
+                                            {item.body}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        );
+                    })
+                ) : (
+                    <div className="text-center py-16">
+                        <HelpCircle size={40} className="text-white/50 mx-auto mb-4" />
+                        <p className="text-sm text-white/80">No questions matched your search query.</p>
+                    </div>
                 )}
-            </AnimatePresence>
+            </div>
+
+            {/* Footer Prompt */}
+            <div className="mt-20 text-center border-t border-white/20 pt-12">
+                <h3 className="text-2xl font-heading font-light text-white mb-2">Still need assistance?</h3>
+                <p className="text-xs text-white/70 mb-8 uppercase tracking-widest font-mono">Our Nairobi support team is available 24/7</p>
+                <Link
+                    to="/legal/contact-us"
+                    className="inline-block py-4 px-8 text-xs font-bold uppercase tracking-[0.3em] text-black bg-white hover:bg-[#D4AF37] hover:text-white transition-all shadow-lg"
+                >
+                    Contact Concierge &rarr;
+                </Link>
+            </div>
         </div>
     );
 }
 
-// --- MAIN COMPONENT ---
+// --- LAYOUT 4: HELP CENTER (UNBOXED EDITORIAL) ---
+function HelpLayout({ page }: { page: PageData }) {
+    const navigate = useNavigate();
+
+    return (
+        <div className="max-w-5xl mx-auto px-6 md:px-8 pt-32 pb-32">
+            <div className="mb-12">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.4em] text-white/70 hover:text-white transition-all group cursor-pointer"
+                >
+                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                    Back
+                </button>
+            </div>
+
+            <div className="text-center max-w-3xl mx-auto mb-16">
+                <span className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.4em] mb-4 block">
+                    {page.subtitle}
+                </span>
+                <h1 className="text-6xl sm:text-7xl font-heading font-light tracking-tighter text-white mb-6 leading-none">
+                    {page.title}<span className="text-[#D4AF37]">.</span>
+                </h1>
+                <p className="text-base text-white/90 font-light">{page.content}</p>
+            </div>
+
+            {/* Quick Action Grid — Unboxed Dividers */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 border-t border-b border-white/20 py-12 text-left">
+                <Link to="/stores" className="group">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block mb-2">01 / Telemetry</span>
+                    <h3 className="text-2xl font-heading font-light text-white mb-2 group-hover:text-[#D4AF37] transition-colors">Track Active Order &rarr;</h3>
+                    <p className="text-xs text-white/70 font-light leading-relaxed">View real-time GPS telemetry and driver status for your current order.</p>
+                </Link>
+
+                <Link to="/legal/contact-us" className="group">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block mb-2">02 / Issues</span>
+                    <h3 className="text-2xl font-heading font-light text-white mb-2 group-hover:text-[#D4AF37] transition-colors">Report Order Issue &rarr;</h3>
+                    <p className="text-xs text-white/70 font-light leading-relaxed">Food missing or unsatisfactory? Submit a quick report for instant review.</p>
+                </Link>
+
+                <Link to="/legal/faq" className="group">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block mb-2">03 / Answers</span>
+                    <h3 className="text-2xl font-heading font-light text-white mb-2 group-hover:text-[#D4AF37] transition-colors">Browse FAQ Library &rarr;</h3>
+                    <p className="text-xs text-white/70 font-light leading-relaxed">Instant answers regarding M-Pesa, delivery boundaries, and refund policies.</p>
+                </Link>
+            </div>
+
+            {/* Structured Help Topics */}
+            <div className="space-y-8 text-left">
+                <h2 className="text-3xl font-heading font-light text-white mb-6">Core Support Topics<span className="text-[#D4AF37]">.</span></h2>
+                {page.sections?.map((sec, i) => (
+                    <div key={i} className="border-t border-white/20 pt-6">
+                        <h3 className="text-xl font-heading font-light text-white mb-2">{sec.title}</h3>
+                        <p className="text-base text-white/90 font-light leading-relaxed">{sec.body}</p>
+                    </div>
+                ))}
+                <div className="border-t border-white/20" />
+            </div>
+        </div>
+    );
+}
+
+// --- MAIN LEGAL PAGE CONTAINER ---
 export default function LegalPage() {
     const { type, slug } = useParams<{ type?: string; slug?: string }>();
     const pageKey = type || slug || '';
@@ -421,25 +502,37 @@ export default function LegalPage() {
         window.scrollTo(0, 0);
     }, [pageKey]);
 
-    if (!page) return <div className="h-screen bg-black flex items-center justify-center text-white">Not Found</div>;
+    if (!page) {
+        return (
+            <div className="min-h-screen bg-[#4A90E2] text-white flex flex-col justify-between">
+                <Navbar />
+                <div className="text-center py-40">
+                    <h1 className="text-4xl font-heading text-white mb-4">Page Not Found</h1>
+                    <p className="text-sm text-white/80 mb-8">The requested legal or support document does not exist.</p>
+                    <Link to="/" className="bg-white text-black font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-xl">
+                        Return Home
+                    </Link>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-black text-white relative">
-            {/* Global Noise */}
-            <div className="absolute inset-0 z-[5] opacity-[0.015] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat fixed" />
+        <div className="min-h-screen bg-[#4A90E2] text-white relative selection:bg-white selection:text-black">
+            <Navbar />
 
-            {/* NOTE: Fixed back button removed. Back button is now integrated into individual layouts. */}
+            {/* Subtle background noise overlay */}
+            <div className="absolute inset-0 z-[1] opacity-[0.05] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat fixed" />
 
             <div className="relative z-10 text-white">
                 {page.type === 'legal' && <LegalLayout page={page} />}
-                {page.type === 'narrative' && <NarrativeLayout page={page} />}
-                {page.type === 'utility' && <UtilityLayout page={page} />}
+                {page.type === 'contact' && <ContactLayout page={page} />}
+                {page.type === 'faq' && <FAQLayout page={page} />}
+                {page.type === 'help' && <HelpLayout page={page} />}
             </div>
 
-            {/* Simple Footer for Legal Pages */}
-            <div className="border-t border-white/5 py-12 text-center text-[10px] uppercase tracking-[0.3em] text-white/20 relative z-10">
-                <p>© 2026 Muncheez Technologies Ltd. All Rights Reserved.</p>
-            </div>
+            <Footer />
         </div>
     );
 }
