@@ -1540,6 +1540,25 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
 
+---
+
+## [2026-09-15] Courier Login & Signup Local Image Asset Integration
+
+### Prompt / Request:
+> "i have added a new image for the courier signup and login page. use that same image for both sections"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Courier Auth Editorial Image Update (`src/pages/courier/Login.tsx` & `src/pages/courier/Signup.tsx`)**:
+   - Imported local asset `courierloginndsignup.jpg` from `src/assets/images/courierloginndsignup.jpg`.
+   - Replaced external Unsplash URLs with `courierloginndsignup.jpg` across both Courier Login and Courier Signup desktop editorial panels (`lg:block lg:w-1/2`).
+2. **Verification & Git Synchronization**:
+   - Ran `npx tsc --noEmit`: 0 errors.
+   - Staged, committed, and pushed changes to GitHub repository (`main`).
+
+### Status:
+- **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
+
+
 
 
 

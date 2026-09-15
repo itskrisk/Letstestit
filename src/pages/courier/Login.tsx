@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Loader2, Bike } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import courierImg from '../../assets/images/courierloginndsignup.jpg';
 
 export default function CourierLogin() {
     const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function CourierLogin() {
             {/* Left Side: Editorial Image (Desktop Only) */}
             <div className="hidden lg:block lg:w-1/2 relative">
                 <img
-                    src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=2000"
+                    src={courierImg}
                     alt="Courier Fleet"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
