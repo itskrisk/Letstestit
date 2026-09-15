@@ -15,8 +15,8 @@ const collections = [
         description: "Artisan coffee, flaky pastries, and the city’s most famous hidden bakeries.",
         image: morningDewImg,
         icon: Heart,
-        span: "lg:col-span-8 lg:row-span-2",
-        aspect: "aspect-[4/3] lg:aspect-auto lg:h-full"
+        span: "lg:col-span-8",
+        aspect: "aspect-[4/3] lg:h-[420px]"
     },
     {
         id: "02",
@@ -25,8 +25,8 @@ const collections = [
         description: "The absolute best of local food carts—unfiltered flavors that define the city.",
         image: streetKingsImg,
         icon: Utensils,
-        span: "lg:col-span-4 lg:row-span-2",
-        aspect: "aspect-[4/5] lg:aspect-auto lg:h-full"
+        span: "lg:col-span-4",
+        aspect: "aspect-[4/5] lg:h-[420px]"
     },
     {
         id: "03",
@@ -36,7 +36,7 @@ const collections = [
         image: kulaFitiImg,
         icon: Flame,
         span: "lg:col-span-4",
-        aspect: "aspect-[4/5] lg:h-[400px]"
+        aspect: "aspect-[4/5] lg:h-[420px]"
     },
     {
         id: "04",
@@ -46,7 +46,7 @@ const collections = [
         image: theVaultImg,
         icon: Globe,
         span: "lg:col-span-8",
-        aspect: "aspect-[4/3] lg:h-[400px]"
+        aspect: "aspect-[4/3] lg:h-[420px]"
     }
 ];
 

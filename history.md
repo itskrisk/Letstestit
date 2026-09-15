@@ -1520,6 +1520,27 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 ### Status:
 - **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
 
+---
+
+## [2026-09-15] Desktop Collection Card Grid Adjustments & Customer Login Asset Fix
+
+### Prompt / Request:
+> "the morning dew and streetking image card for DESKTOP VERSION ONLY ARE WAY TOO BIG AND FEEL OUT OF PLACE. OTHER RESPONSIVE VERSIONS ARE FINE BUT THIS ONE IS NOT. FIX IT, quickly, its a quick thing, also the image in the login section of the customer, only the login, does nto work. i added an image for you to use in the assets folder. called customerloginpic.jpg. use it"
+
+### Actions Taken & Working Solutions Implemented:
+1. **Desktop Collection Grid Height Fix (`src/components/Collections.tsx`)**:
+   - Removed `lg:row-span-2` from "Morning Dew" and "Street Kings" cards which were causing them to stretch across two full rows vertically on desktop screens.
+   - Standardized desktop container heights across all collection items (`lg:h-[420px]`) while preserving mobile aspect ratios (`aspect-[4/3]` / `aspect-[4/5]`) and original horizontal swipe behavior.
+2. **Customer Login Image Asset Fix (`src/pages/customer/Login.tsx`)**:
+   - Imported local asset `customerloginpic.jpg` from `src/assets/images/customerloginpic.jpg`.
+   - Replaced the external Unsplash fallback URL with `customerloginpic.jpg` in the customer login editorial panel (`lg:block lg:w-1/2`).
+3. **Verification**:
+   - Ran `npx tsc --noEmit`: 0 errors.
+
+### Status:
+- **COMPLETED & VERIFIED WITH 0 TYPESCRIPT ERRORS**.
+
+
 
 
 

@@ -3,6 +3,7 @@ import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import customerLoginImg from '../../assets/images/customerloginpic.jpg';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -49,8 +50,8 @@ export default function Login() {
             {/* Left Side: Editorial Image (Desktop Only) */}
             <div className="hidden lg:block lg:w-1/2 relative">
                 <img
-                    src="https://images.unsplash.com/photo-1549466600-019313cf2010?q=80&w=2000"
-                    alt="Nairobi Lifestyle"
+                    src={customerLoginImg}
+                    alt="Customer Login"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/20" />
