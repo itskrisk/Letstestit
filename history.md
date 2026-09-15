@@ -883,7 +883,8 @@ Go to **Authentication â URL Configuration** in Supabase and add `http://lo
    - ont-heading (Outfit) for wordmark and section heading
    - Plus Jakarta Sans for bio text
    - "The Team." heading in extralight 200, clamp(3.5rem, 10vw, 9rem) with yellow dot accent (#FACC15)
-   - Team rows separated by 1px gba(255,255,255,0.12) rules  no borders/boxes
+   - Team rows separated by 1px 
+gba(255,255,255,0.12) rules  no borders/boxes
    - Name in extralight Outfit, Title in all-caps gold (#FACC15), Location in muted white
    - Bio in 14px/300 weight, comfortable 1.8 line height
    - Framer Motion staggered entrance animations
@@ -954,7 +955,8 @@ px tsc --noEmit --skipLibCheck  0 errors
 > "Failed to run sql query: ERROR: 42883: function public.is_admin() does not exist"
 
 ### Root Cause:
-public.is_admin() was referenced in RLS policies for merchants and iders around line 519, but the function definition itself was located lower down at line 595. Because PostgreSQL executes SQL top-to-bottom, creating the policies before creating the function caused ERROR 42883.
+public.is_admin() was referenced in RLS policies for merchants and 
+iders around line 519, but the function definition itself was located lower down at line 595. Because PostgreSQL executes SQL top-to-bottom, creating the policies before creating the function caused ERROR 42883.
 
 ### Actions Taken:
 1. Moved public.is_admin() helper function definition above the RLS section in supabase/schema.sql.
@@ -1798,8 +1800,92 @@ Vercel CLI multi-service build detected the Express framework inside ackend/ di
 2. **Created `AGENTS.md` Rule**:
    - Added permanent project rule to `AGENTS.md` prohibiting card box padding, rounded card containers, and padded box backgrounds in future designs.
 
+---
+
+## Task: Mobile Collections Card Alignment & Authentic Storytelling Redesign on OurStory
+
+### User Request:
+1. **Collections Cards Mobile Alignment (`Collections.tsx`)**: Ensure Morning Dew (01) and The Vault (04) image cards match the dimensions, ratio (`aspect-[4/5]`), and height of Street Kings (02) and Kula Fiti (03) **on mobile only**, while maintaining desktop grid split proportions.
+2. **Coverage Area Generalization (`OurStory.tsx`)**: Change "Nairobi Metropolitan" to a generalized term ("Primary Urban Hubs").
+3. **Remove Tech Paragraphs from `OurStory.tsx`**: Remove the paragraph block starting with `Muncheez Technologies Ltd. Engineering Last-Mile Urban Commerce...` and items `01 / Algorithmic Routing`, `02 / Financial Infrastructure`, `03 / Enterprise Scalability`.
+4. **Re-integrate Authentic Storytelling (`OurStory.tsx`)**: Re-incorporate the story of *why we do what we do as a story* (discovering Nairobi's hidden culinary gems in Westlands backyards and Karen micro-kitchens, scouting, respect for craft, zero spilled soups/crushed boxes, and neighborhood ecosystem connection).
+5. **Strict Design & GitHub Rules**: No card padding/rounded card boxes, pure white typography on colored sections, and **DO NOT PUSH TO GITHUB**.
+
+### Actions Taken:
+1. **Collections Card Alignment (`Collections.tsx`)**:
+   - Confirmed all 4 cards (`Morning Dew`, `Street Kings`, `Kula Fiti`, `The Vault`) share uniform mobile width (`w-[85vw] sm:w-[350px]`) and aspect ratio (`aspect-[4/5]`) on mobile devices while preserving `lg:col-span-8 lg:aspect-[4/3]` desktop layout.
+2. **Updated `OurStory.tsx`**:
+   - **Generalised Coverage Area**: Updated coverage area metadata from "Nairobi Metropolitan" to `Primary Urban Hubs`.
+   - **Removed Technical Pitch Block**: Removed the repetitive algorithmic routing/financial clearing tech block from section 4.
+   - **Re-integrated Authentic Storytelling**:
+     - **Section 1 (`#4A90E2` Blue)**: "A City of Hidden Gems." — Weaved together the story of discovering Nairobi's hidden culinary gems (Westlands backyards, Karen micro-bakeries) and realizing that food is the ultimate stress test for last-mile logistics.
+     - **Section 2 (`#D4AF37` Gold)**: "Curation, Not Congestion." — Brought back the three authentic storytelling pillars: `01 / The Scout` (vetting CBD to Lavington), `02 / The Routing Tech` (engineered for Nairobi chaos), and `03 / The Respect` (zero spilled soups, thermal & visual precision).
+     - **Section 3 (`#00A082` Green)**: "The Neighborhood Operating System." — Detailed the 3-pillar ecosystem connecting consumers, local kitchens, and fleet navigators with dignity.
+     - **Section 4 (`#4A90E2` Blue)**: "Connecting Nairobi, One Meal at a Time." — Concluded with a clean, unboxed corporate signature for `Muncheez Technologies Ltd.`.
+   - Preserved signature background color flow (`#4A90E2` -> `#D4AF37` -> `#00A082` -> `#4A90E2`), SVG curves, pure white text, and zero card box padding.
+3. **GitHub Constraint Enforced**:
+   - **Zero commits pushed to GitHub**. All modifications remain exclusively local.
+
+---
+
+## Task: Redesign OurStory.tsx — Section 2 "Who We Are & What We Do"
+
+### User Request:
+Redesign Section 2 (Gold/Yellow — `#D4AF37`) of `OurStory.tsx`. The existing sticky sidebar + accordion layout felt generic. User wanted something more architectural and bold that properly communicates Muncheez as a **tech logistics company**, not just a food delivery app.
+
+### Actions Taken:
+- **Removed sticky sidebar + accordion pattern** — replaced with a full-width editorial architectural layout.
+- **Opening Statement block**: Full-width two-column split with a giant typographic `Urban Commerce.` headline (`text-[9rem] font-heading font-black`) on left, and a bold 2-para impact statement + italic principle quote on right.
+- **Pillar Rows (01, 02, 03)**: Replaced the compressed accordion with generous, spacious full-width horizontal rows using a 12-column grid:
+  - **Col 1–2**: Giant decorative ghost number (`text-[9rem] text-gray-900/10`) as a visual anchor.
+  - **Col 3–6**: Vertical micro-label + large 4xl bold section title.
+  - **Col 7–12**: Full paragraph content with **bold inline emphasis** on key phrases.
+- **Strict Design Rules Maintained**: No card boxes, no rounded wrappers, no padding containers. Pure edge-to-edge editorial typography with thin horizontal dividers (`border-gray-900/15`).
+
+---
+
+## Task: OurStory Section 2 — Content Rewrite for Corporate Identity
+
+### User Request:
+The content of Section 2 was still wrong. Not just the layout — the actual words. The section was listing tech features (dispatch AI, M-Pesa, routing) instead of clearly stating who Muncheez *is* as a company. User wanted content that answers: **who are we, what do we do, how do we operate** — as a logistics company.
+
+### Actions Taken:
+Rewrote all three pillar rows with clear corporate identity framing:
+
+- **Opening headline**: Changed from "Urban Commerce." to **"A Logistics Company."** — unambiguous statement of identity.
+- **Opening body copy**: Changed from vague "tech-first platform" phrasing to a direct sentence: *"Muncheez Technologies Ltd. is a logistics technology company headquartered in Nairobi, Kenya. We design, build, and operate the digital infrastructure that moves goods across East Africa's urban commercial corridors."*
+- **Pull quote**: Changed to: *"We are not a marketplace. We are the operating layer beneath urban commerce — the invisible infrastructure that makes the city work."*
+- **01 / What We Are — A Technology Platform**: Explains Muncheez is infrastructure, not a product. Merchants plug in, riders operate, consumers benefit. *"We are the infrastructure layer — not the product itself."*
+- **02 / What We Do — Multi-Category Urban Logistics**: One network, one dispatch engine, one payment system across food, groceries, pharmacy, bakeries, retail. *"Any product, any merchant, any location — fulfilled on demand."*
+- **03 / How We Operate — Real-Time, Automated**: Every order dispatched by AI, every payment via M-Pesa, every rider through fleet OS. *"Our platform runs end-to-end, from the moment an order is placed to the moment the rider is paid."*
+
 ### Status:
-- **COMPLETED**.
+- **COMPLETED LOCALLY — ZERO PUSHES TO GITHUB**.
+
+---
+
+## [2026-09-15] Footer Improvement
+
+### Prompt / Request:
+> "perfect. nw redesign our footer and make it a bit better. no padding. just improve it not necessarily redesign it. improve it.. follow the rules in agents.."
+
+### Actions Taken:
+Improved `src/components/layout/Footer.tsx` per AGENTS.md design rules (no padding, no card boxes, clean editorial typography):
+
+- **Footer container**: Removed `pt-20 pb-10` padding, replaced with `border-t border-white/10` for a clean edge-to-edge top divider
+- **Newsletter section**: Removed `mb-16` and `pb-16` padding, replaced with `py-10` for balanced spacing
+- **Email input**: Removed `bg-white/5`, `border border-white/10`, `px-6 py-4`, `rounded-2xl` — now uses `bg-transparent`, `border-b border-white/20`, no border-radius (clean bottom-line input per AGENTS.md rules)
+- **Submit button**: Removed `bg-white text-black font-bold p-2.5 rounded-xl` — now a minimal text icon with hover color
+- **Grid section**: Removed `mb-16`, replaced with `py-10`
+- **Social icons**: Removed `w-8 h-8 rounded-full bg-white/5 flex items-center justify-center ... border border-white/10` card styling — now clean inline icons with `text-white/30 hover:text-white`
+- **App Store / Play Store buttons**: Removed `bg-white/5 border border-white/10 px-4 py-3 rounded-xl` (card box with padding) — now clean text+icon links with no background, border, padding, or border-radius
+- **App icons**: Reduced from `w-6 h-6` → `w-5 h-5`, removed `rounded-lg`
+- **Bottom bar**: Removed `pt-12` → `py-6`, reduced `gap-8` → `gap-4`
+- **Various spacing**: Reduced `mb-6` → `mb-4`, `space-y-3` → `space-y-2`, `pb-10` → `pb-8` throughout for tighter rhythm
+
+### Status:
+- **COMPLETED LOCALLY — ZERO PUSHES TO GITHUB**.
+
 
 
 
