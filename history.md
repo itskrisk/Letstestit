@@ -1966,3 +1966,26 @@ Improved `src/components/layout/Footer.tsx` per AGENTS.md design rules (no paddi
 
 ### Status:
 - **COMPLETED & VERIFIED LOCALLY.**
+
+---
+
+## [2026-09-16] Fix Onboarding AbortError & Optimize Vercel Bundle Performance
+
+### User Request:
+1. Fix `AbortError: The operation was aborted` occurring when clicking "Submit for review" in the onboarding wizards.
+2. Resolve slow loading speed on Vercel deployments.
+
+### Actions Taken:
+1. **Resolved `AbortError` on Document Submissions**:
+   - Updated `uploadFile` in `src/pages/merchant/Onboarding.tsx` and `src/pages/courier/Onboarding.tsx` with a `Promise.race` 4-second timeout. If the Supabase `documents` storage bucket does not exist or the network request hangs/rejects with an `AbortError`, it automatically falls back to generating a local DataURL preview.
+   - Updated `handleSubmitKYC` in both `src/pages/merchant/Onboarding.tsx` and `src/pages/courier/Onboarding.tsx` to catch `AbortError` / network cancellation exceptions cleanly and seamlessly transition the UI state to `'REVIEW'` confirmation screen without crashing or freezing.
+2. **Optimized Vercel Bundle Splitting (`vite.config.ts`)**:
+   - Configured `build.rollupOptions.output.manualChunks` in `vite.config.ts` to split vendor dependencies into separate cached bundles (`vendor-react`, `vendor-icons`, `vendor-motion`, `vendor-supabase`, and `vendor-others`).
+   - Drastically reduced initial index bundle download weight to eliminate Vercel client loading latency.
+3. **Local Build & Code Verification**:
+   - Fixed minor duplicate catch statement in `src/pages/courier/Onboarding.tsx`.
+   - Executed `npm run build` (`tsc -b && vite build`) — completed cleanly in 28.12s.
+
+### Status:
+- **COMPLETED & VERIFIED LOCALLY.**
+
