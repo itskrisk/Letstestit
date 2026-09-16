@@ -80,7 +80,7 @@ export default function CourierLogin() {
                                 <Bike size={20} className="text-[#D4AF37]" />
                             </div>
                             <span className="font-heading font-bold text-2xl tracking-tighter text-gray-900">
-                                FleetOS<span className="text-[#D4AF37]">.</span>
+                                FleetOS<span className="text-[#4A90E2]">.</span>
                             </span>
                         </Link>
                     </div>

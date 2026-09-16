@@ -1933,3 +1933,36 @@ Improved `src/components/layout/Footer.tsx` per AGENTS.md design rules (no paddi
 
 ### Status:
 - **COMPLETED & VERIFIED LOCALLY.**
+
+---
+
+## [2026-09-16] Onboarding Wizard Redesign & Logo Dot Standardization
+
+### User Request:
+1. Remove card container padding and rounded boxes on onboarding wizards (`MerchantOnboarding.tsx` and `CourierOnboarding.tsx`).
+2. Redesign both onboarding wizards strictly per `AGENTS.md` rules (no card boxes/padding, edge-to-edge dividers, transparent bottom-line input fields, pure black text).
+3. Update the logo dot at the end of `Muncheez.` / `PartnerOS.` / `FleetOS.` in the top header/navbar of Merchant and Rider Login & Signup to **BLUE** (`#4A90E2`).
+
+### Actions Taken:
+1. **Redesigned Merchant Onboarding (`src/pages/merchant/Onboarding.tsx`)**:
+   - Removed all `bg-white p-8 rounded-3xl border border-gray-100 shadow-xl` container box wrappers.
+   - Applied clean unboxed editorial typography with edge-to-edge horizontal dividers (`border-b border-black/15`).
+   - Converted input fields & textareas to transparent bottom-line inputs (`w-full py-3.5 px-0 bg-transparent border-b border-black/30 text-black focus:border-black rounded-none`).
+   - Set all typography to pure black (`text-black`).
+   - Updated header logo dot to blue (`text-[#4A90E2]`).
+2. **Redesigned Courier Onboarding (`src/pages/courier/Onboarding.tsx`)**:
+   - Removed card boxes & container padding.
+   - Applied edge-to-edge unboxed dividing lines and clean step indicators.
+   - Converted inputs to transparent bottom-line fields.
+   - Set all copy & headers to pure black text (`text-black`).
+   - Updated header logo dot to blue (`text-[#4A90E2]`).
+3. **Standardized Logo Dot Color to Blue (`text-[#4A90E2]`)**:
+   - Updated `src/pages/merchant/PartnerLogin.tsx`
+   - Updated `src/pages/merchant/PartnerSignup.tsx`
+   - Updated `src/pages/courier/Login.tsx`
+   - Updated `src/pages/courier/Signup.tsx`
+4. **Build & Push Verification**:
+   - Ran `npm run build` (`tsc -b && vite build`) — succeeded with 0 errors in 27.67s.
+
+### Status:
+- **COMPLETED & VERIFIED LOCALLY.**

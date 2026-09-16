@@ -200,37 +200,39 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] font-sans flex flex-col">
+        <div className="min-h-screen bg-white font-sans flex flex-col text-black">
             {/* Top Bar */}
-            <div className="bg-white border-b border-gray-100 py-6 px-8 flex justify-between items-center sticky top-0 z-50 shadow-sm">
-                <div className="flex items-center gap-3">
+            <div className="bg-white border-b border-black/10 py-5 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+                <div className="flex items-center gap-4">
                     <span className="font-heading font-black text-2xl tracking-tighter text-black">
-                        Muncheez<span className="text-[#D4AF37]">.</span>
+                        Muncheez<span className="text-[#4A90E2]">.</span>
                     </span>
-                    <span className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase tracking-widest rounded-full">
-                        Muncheez Partner Setup
+                    <span className="text-[10px] font-black uppercase tracking-[0.25em] text-black/60 border-l border-black/15 pl-4 hidden sm:inline">
+                        Partner Setup
                     </span>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="flex items-center gap-2">
+                {/* Progress Indicator */}
+                <div className="flex items-center gap-6 text-xs font-black tracking-widest uppercase text-black">
                     {['BUSINESS', 'FINANCE', 'DOCUMENTS', 'REVIEW'].map((step, i) => (
                         <div
                             key={step}
-                            className={`h-1.5 w-10 rounded-full transition-all duration-300 ${['BUSINESS', 'FINANCE', 'DOCUMENTS', 'REVIEW'].indexOf(currentStep) >= i
-                                    ? 'bg-[#D4AF37]'
-                                    : 'bg-gray-200'
+                            className={`pb-1 border-b-2 transition-all ${['BUSINESS', 'FINANCE', 'DOCUMENTS', 'REVIEW'].indexOf(currentStep) >= i
+                                    ? 'border-black text-black'
+                                    : 'border-transparent text-black/30'
                                 }`}
-                        />
+                        >
+                            0{i + 1}
+                        </div>
                     ))}
                 </div>
             </div>
 
             {/* Main Section */}
-            <main className="flex-1 max-w-3xl mx-auto w-full p-6 md:p-10 flex flex-col justify-center">
+            <main className="flex-1 max-w-4xl mx-auto w-full px-6 md:px-12 py-10 flex flex-col justify-center">
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold flex items-center gap-3">
-                        <AlertCircle size={20} />
+                    <div className="mb-8 py-4 px-0 border-b border-red-600 text-red-600 text-xs font-black uppercase tracking-widest flex items-center gap-3">
+                        <AlertCircle size={18} />
                         <span>{error}</span>
                     </div>
                 )}
@@ -243,21 +245,22 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
-                            className="space-y-8"
+                            className="space-y-10"
                         >
-                            <div>
-                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
-                                    Store & Category Details
+                            <div className="border-b border-black/15 pb-8">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/50 block mb-2">Step 01 of 04</span>
+                                <h1 className="text-3xl md:text-5xl font-heading font-black text-black tracking-tight uppercase">
+                                    Store & Category Details.
                                 </h1>
-                                <p className="text-gray-500 mt-2">
-                                    Provide your legal business details, store branch address, and operating category.
+                                <p className="text-black text-sm font-medium mt-3 leading-relaxed">
+                                    Provide your legal business credentials, store branch address, and operating category.
                                 </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
+                            <div className="space-y-8">
                                 {/* Type Selector */}
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block mb-3">
+                                    <label className="text-xs font-black uppercase tracking-widest text-black block mb-4">
                                         Store Operating Category
                                     </label>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -269,9 +272,9 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                                 type="button"
                                                 key={t}
                                                 onClick={() => updateBusiness('type', t)}
-                                                className={`py-3 px-3 text-xs font-bold uppercase tracking-wider rounded-xl border text-center transition-all ${businessData.type === t
-                                                        ? 'bg-black text-white border-black shadow-md'
-                                                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                                                className={`py-3 px-4 text-xs font-black uppercase tracking-widest text-center transition-all rounded-none border ${businessData.type === t
+                                                        ? 'bg-black text-white border-black'
+                                                        : 'bg-transparent text-black border-black/20 hover:border-black'
                                                     }`}
                                             >
                                                 {t}
@@ -280,9 +283,9 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                     </div>
                                 </div>
 
-                                <div className="space-y-4">
+                                <div className="space-y-8 pt-4">
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                        <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                             Store / Business Name
                                         </label>
                                         <input
@@ -290,13 +293,13 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                             placeholder="e.g. Swahili Plate Restaurant"
                                             value={businessData.businessName}
                                             onChange={e => updateBusiness('businessName', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                            className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-medium text-black placeholder-black/30 text-base transition-all rounded-none"
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                                 City / Sub-County Area
                                             </label>
                                             <input
@@ -304,11 +307,11 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                                 placeholder="e.g. Westlands, Nairobi"
                                                 value={businessData.address}
                                                 onChange={e => updateBusiness('address', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-medium text-black placeholder-black/30 text-base transition-all rounded-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                                 Building / Branch Name
                                             </label>
                                             <input
@@ -316,14 +319,14 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                                 placeholder="e.g. Westgate Mall, 1st Floor"
                                                 value={businessData.buildingBranch}
                                                 onChange={e => updateBusiness('buildingBranch', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-medium text-black placeholder-black/30 text-base transition-all rounded-none"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                                 Operating Hours
                                             </label>
                                             <input
@@ -331,11 +334,11 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                                 placeholder="e.g. 08:00 AM - 10:00 PM"
                                                 value={businessData.hours}
                                                 onChange={e => updateBusiness('hours', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-medium text-black placeholder-black/30 text-base transition-all rounded-none"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                            <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                                 Dispatch Contact Phone
                                             </label>
                                             <input
@@ -343,26 +346,26 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                                 placeholder="e.g. 0712 345 678"
                                                 value={businessData.phone}
                                                 onChange={e => updateBusiness('phone', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-medium text-black placeholder-black/30 text-base transition-all rounded-none"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                        <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                             Store Description
                                         </label>
                                         <textarea
                                             placeholder="Authentic coastal cuisine, fresh seafood & natural fruit juices..."
                                             value={businessData.description}
                                             onChange={e => updateBusiness('description', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-medium h-24 resize-none transition-all"
+                                            className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-medium text-black placeholder-black/30 text-base transition-all rounded-none resize-none h-24"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex justify-end">
+                            <div className="flex justify-end pt-6 border-t border-black/10">
                                 <button
                                     onClick={() => {
                                         if (!businessData.businessName.trim() || !businessData.address.trim()) {
@@ -371,7 +374,7 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                         }
                                         setCurrentStep('FINANCE');
                                     }}
-                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-black transition-all flex items-center gap-2 shadow-lg"
+                                    className="px-10 py-4 bg-black text-white text-xs font-black uppercase tracking-widest hover:bg-black/80 transition-all rounded-none flex items-center gap-3"
                                 >
                                     Continue to Financial & Tax Setup <ChevronRight size={16} />
                                 </button>
@@ -386,29 +389,27 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
-                            className="space-y-8"
+                            className="space-y-10"
                         >
-                            <div>
-                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
-                                    Financial & Tax Settlement
+                            <div className="border-b border-black/15 pb-8">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/50 block mb-2">Step 02 of 04</span>
+                                <h1 className="text-3xl md:text-5xl font-heading font-black text-black tracking-tight uppercase">
+                                    Financial & Tax Settlement.
                                 </h1>
-                                <p className="text-gray-500 mt-2">
+                                <p className="text-black text-sm font-medium mt-3 leading-relaxed">
                                     Enter your settlement M-Pesa Till number and KRA PIN for tax compliance.
                                 </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
-                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3">
-                                    <Smartphone className="text-[#D4AF37] shrink-0" size={24} />
-                                    <div className="text-xs text-amber-900">
-                                        <p className="font-bold uppercase tracking-wider">Direct M-Pesa Settlement</p>
-                                        <p className="text-amber-700 mt-0.5">Earnings are settled directly into your registered M-Pesa Till / Paybill number.</p>
-                                    </div>
+                            <div className="space-y-8">
+                                <div className="py-4 border-l-2 border-black pl-4">
+                                    <p className="text-xs font-black uppercase tracking-widest text-black">Direct M-Pesa Settlement</p>
+                                    <p className="text-black text-xs mt-1">Earnings are settled directly into your registered M-Pesa Till / Paybill number.</p>
                                 </div>
 
-                                <div className="space-y-4">
+                                <div className="space-y-8">
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                        <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                             M-Pesa Till / Paybill Number
                                         </label>
                                         <input
@@ -416,12 +417,12 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                             placeholder="e.g. 882910"
                                             value={financeData.mpesaTill}
                                             onChange={e => updateFinance('mpesaTill', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-mono font-bold transition-all"
+                                            className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-mono font-black text-black placeholder-black/30 text-base transition-all rounded-none"
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
+                                        <label className="text-xs font-black uppercase tracking-widest text-black block mb-2">
                                             KRA PIN Number
                                         </label>
                                         <input
@@ -429,16 +430,16 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                             placeholder="e.g. A019283746Z"
                                             value={financeData.kraPin}
                                             onChange={e => updateFinance('kraPin', e.target.value)}
-                                            className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#D4AF37] focus:bg-white outline-none font-mono font-bold uppercase transition-all"
+                                            className="w-full py-3.5 px-0 bg-transparent border-b border-black/30 focus:border-black outline-none font-mono font-black text-black uppercase placeholder-black/30 text-base transition-all rounded-none"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center pt-6 border-t border-black/10">
                                 <button
                                     onClick={() => setCurrentStep('BUSINESS')}
-                                    className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+                                    className="px-6 py-3 border-b border-black text-black text-xs font-black uppercase tracking-widest hover:border-black/50 transition-all flex items-center gap-2 rounded-none"
                                 >
                                     <ChevronLeft size={16} /> Back
                                 </button>
@@ -450,7 +451,7 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                         }
                                         setCurrentStep('DOCUMENTS');
                                     }}
-                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-black transition-all flex items-center gap-2 shadow-lg"
+                                    className="px-10 py-4 bg-black text-white text-xs font-black uppercase tracking-widest hover:bg-black/80 transition-all rounded-none flex items-center gap-3"
                                 >
                                     Continue to Compliance Documents <ChevronRight size={16} />
                                 </button>
@@ -465,29 +466,30 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
-                            className="space-y-8"
+                            className="space-y-10"
                         >
-                            <div>
-                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
-                                    Upload Verification Documents
+                            <div className="border-b border-black/15 pb-8">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/50 block mb-2">Step 03 of 04</span>
+                                <h1 className="text-3xl md:text-5xl font-heading font-black text-black tracking-tight uppercase">
+                                    Upload Verification Documents.
                                 </h1>
-                                <p className="text-gray-500 mt-2">
+                                <p className="text-black text-sm font-medium mt-3 leading-relaxed">
                                     Submit clear photos or PDFs of your Single Business Permit, KRA PIN, and Health Permit.
                                 </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
+                            <div className="space-y-8">
                                 {/* Single Business Permit */}
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-black block mb-3">
                                         Single Business Permit (County Government)
                                     </label>
-                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#D4AF37] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                        <Building2 className="text-[#D4AF37] mb-1.5" size={26} />
-                                        <span className="text-xs font-bold text-gray-700">
-                                            {documents.businessPermitFile ? documents.businessPermitFile.name : 'Click to select Single Business Permit'}
+                                    <label className="flex flex-col items-center justify-center py-6 px-4 border border-dashed border-black/30 hover:border-black cursor-pointer bg-transparent transition-all text-black rounded-none">
+                                        <Building2 className="text-black mb-2" size={24} />
+                                        <span className="text-xs font-black uppercase tracking-widest text-black">
+                                            {documents.businessPermitFile ? documents.businessPermitFile.name : 'Select Single Business Permit'}
                                         </span>
-                                        <span className="text-[10px] text-gray-400 mt-1">PNG, JPG, or PDF up to 5MB</span>
+                                        <span className="text-[10px] font-bold text-black/50 mt-1 uppercase tracking-wider">PNG, JPG, or PDF up to 5MB</span>
                                         <input
                                             type="file"
                                             accept="image/*,.pdf"
@@ -499,15 +501,15 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
 
                                 {/* KRA PIN Certificate */}
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-black block mb-3">
                                         KRA PIN Certificate
                                     </label>
-                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#D4AF37] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                        <Upload className="text-[#D4AF37] mb-1.5" size={26} />
-                                        <span className="text-xs font-bold text-gray-700">
-                                            {documents.kraPinFile ? documents.kraPinFile.name : 'Click to select KRA Certificate'}
+                                    <label className="flex flex-col items-center justify-center py-6 px-4 border border-dashed border-black/30 hover:border-black cursor-pointer bg-transparent transition-all text-black rounded-none">
+                                        <Upload className="text-black mb-2" size={24} />
+                                        <span className="text-xs font-black uppercase tracking-widest text-black">
+                                            {documents.kraPinFile ? documents.kraPinFile.name : 'Select KRA Certificate'}
                                         </span>
-                                        <span className="text-[10px] text-gray-400 mt-1">PNG, JPG, or PDF up to 5MB</span>
+                                        <span className="text-[10px] font-bold text-black/50 mt-1 uppercase tracking-wider">PNG, JPG, or PDF up to 5MB</span>
                                         <input
                                             type="file"
                                             accept="image/*,.pdf"
@@ -519,15 +521,15 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
 
                                 {/* Health Permit */}
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-black block mb-3">
                                         County Food & Health Hygiene Permit
                                     </label>
-                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#D4AF37] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                        <FileText className="text-[#D4AF37] mb-1.5" size={26} />
-                                        <span className="text-xs font-bold text-gray-700">
-                                            {documents.healthPermitFile ? documents.healthPermitFile.name : 'Click to select Health Permit'}
+                                    <label className="flex flex-col items-center justify-center py-6 px-4 border border-dashed border-black/30 hover:border-black cursor-pointer bg-transparent transition-all text-black rounded-none">
+                                        <FileText className="text-black mb-2" size={24} />
+                                        <span className="text-xs font-black uppercase tracking-widest text-black">
+                                            {documents.healthPermitFile ? documents.healthPermitFile.name : 'Select Health Permit'}
                                         </span>
-                                        <span className="text-[10px] text-gray-400 mt-1">PNG, JPG, or PDF up to 5MB</span>
+                                        <span className="text-[10px] font-bold text-black/50 mt-1 uppercase tracking-wider">PNG, JPG, or PDF up to 5MB</span>
                                         <input
                                             type="file"
                                             accept="image/*,.pdf"
@@ -538,20 +540,20 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                                 </div>
                             </div>
 
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center pt-6 border-t border-black/10">
                                 <button
                                     onClick={() => setCurrentStep('FINANCE')}
-                                    className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+                                    className="px-6 py-3 border-b border-black text-black text-xs font-black uppercase tracking-widest hover:border-black/50 transition-all flex items-center gap-2 rounded-none"
                                 >
                                     <ChevronLeft size={16} /> Back
                                 </button>
                                 <button
                                     onClick={handleSubmitKYC}
                                     disabled={loading}
-                                    className="px-8 py-4 bg-[#D4AF37] text-black font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#c49f27] transition-all flex items-center gap-2 shadow-lg disabled:opacity-50"
+                                    className="px-10 py-4 bg-black text-white text-xs font-black uppercase tracking-widest hover:bg-black/80 transition-all rounded-none flex items-center gap-3 disabled:opacity-50"
                                 >
                                     {loading ? (
-                                        <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     ) : (
                                         <>
                                             Submit Store For Review <CheckCircle2 size={18} />
@@ -566,26 +568,29 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                     {currentStep === 'REVIEW' && (
                         <motion.div
                             key="review"
-                            initial={{ opacity: 0, scale: 0.95 }}
+                            initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white p-10 md:p-12 rounded-3xl shadow-xl text-center max-w-lg mx-auto border-t-4 border-[#D4AF37]"
+                            className="text-left max-w-xl mx-auto py-12 space-y-6"
                         >
-                            <div className="w-20 h-20 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 mb-6">
-                                <CheckCircle2 size={40} />
+                            <div className="w-16 h-16 border-2 border-black flex items-center justify-center text-black mb-6">
+                                <CheckCircle2 size={32} />
                             </div>
-                            <h2 className="text-3xl font-heading font-black text-gray-900 mb-3">
-                                Application Submitted!
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/50 block">Step 04 of 04</span>
+                            <h2 className="text-3xl md:text-4xl font-heading font-black text-black uppercase tracking-tight">
+                                Application Submitted.
                             </h2>
-                            <p className="text-gray-500 text-sm leading-relaxed mb-8">
-                                Your store details and documents have been submitted to Muncheez Admin for review.
+                            <p className="text-black text-sm font-medium leading-relaxed">
+                                Your store details and compliance documents have been submitted to Muncheez Operations.
                             </p>
 
-                            <button
-                                onClick={() => navigate('/partner/dashboard')}
-                                className="w-full py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#D4AF37] hover:text-black transition-all shadow-lg"
-                            >
-                                View Application Status
-                            </button>
+                            <div className="pt-6 border-t border-black/15">
+                                <button
+                                    onClick={() => navigate('/partner/dashboard')}
+                                    className="w-full py-4 bg-black text-white font-black uppercase tracking-widest text-xs hover:bg-black/80 transition-all rounded-none"
+                                >
+                                    View Application Status
+                                </button>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

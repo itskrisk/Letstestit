@@ -122,7 +122,7 @@ export default function PartnerSignup() {
                     <div className="flex items-center justify-between mb-8">
                         <Link to="/" className="inline-block">
                             <span className="font-heading font-bold text-3xl tracking-tighter text-gray-900">
-                                Muncheez<span className="text-[#D4AF37]">.</span>
+                                Muncheez<span className="text-[#4A90E2]">.</span>
                             </span>
                         </Link>
                         <span className="px-3 py-1 bg-amber-50 text-[#D4AF37] border border-amber-200 text-[10px] font-bold uppercase tracking-widest rounded-full">

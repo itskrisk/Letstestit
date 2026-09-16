@@ -123,7 +123,7 @@ export default function CourierSignup() {
                                 <Bike size={18} className="text-[#39B54A]" />
                             </div>
                             <span className="font-heading font-bold text-3xl tracking-tighter text-gray-900">
-                                Muncheez<span className="text-[#39B54A]">.</span>
+                                Muncheez<span className="text-[#4A90E2]">.</span>
                             </span>
                         </Link>
                         <span className="px-3 py-1 bg-emerald-50 text-[#39B54A] border border-emerald-200 text-[10px] font-bold uppercase tracking-widest rounded-full">
