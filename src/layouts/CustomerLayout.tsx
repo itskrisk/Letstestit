@@ -11,9 +11,6 @@ const PORTAL_LINKS: Record<string, { label: string; path: string }> = {
 export default function CustomerLayout() {
     const { user, profile, loading, signOut } = useAuth();
 
-    // Still loading auth state — don't flash anything yet
-    if (loading) return null;
-
     const roles = profile?.roles || (profile?.role ? [profile.role] : []);
     const isCustomer = roles.includes('customer');
     const primaryRole = roles[0] || profile?.role || 'user';
@@ -24,7 +21,6 @@ export default function CustomerLayout() {
         } catch (e) {
             console.error('Sign out error:', e);
         } finally {
-            // Preserve cookie preferences, remove app-specific items
             const cookiePrefs = localStorage.getItem('muncheez_cookie_preferences');
             localStorage.removeItem('accessToken');
             localStorage.removeItem('muncheez_admin_master');
@@ -41,8 +37,8 @@ export default function CustomerLayout() {
         }
     };
 
-    // If user is logged in but NOT a customer — show a hard wall
-    if (user && profile && !isCustomer) {
+    // Only show wrong-portal wall AFTER auth has fully resolved
+    if (!loading && user && profile && !isCustomer) {
         const portal = PORTAL_LINKS[primaryRole];
         return (
             <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
@@ -77,6 +73,6 @@ export default function CustomerLayout() {
         );
     }
 
-    // Customer or not logged in — pass through normally
+    // Always render — auth loads in background without blocking the page
     return <Outlet />;
 }

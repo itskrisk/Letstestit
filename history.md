@@ -2007,3 +2007,43 @@ In commit `ab1a517`, `build.target: 'esnext'` was added to `vite.config.ts` as p
 ### Status:
 - **COMPLETED & VERIFIED LOCALLY.**
 
+---
+
+## [2026-09-16] Fix Desktop White Screen, Redesign Auth Pages & Inline Wrong-Portal Errors
+
+### User Request:
+1. Fix Vercel desktop white screen (mobile worked, desktop showed blank page).
+2. Redesign merchant and rider signup/login pages per AGENTS.md (no padding, no card boxes, bottom-line inputs, clean spacing, pure black text).
+3. Advise on replacing the "wrong portal" overlay system with inline error messages at login.
+
+### Root Cause of White Screen:
+- `src/layouts/CustomerLayout.tsx` had `if (loading) return null;` at the top of the component.
+- On **desktop** cold-start (Vercel), Supabase auth session hydration is slower than mobile because no session is pre-cached in the browser and network round-trips are longer. This caused `loading` to remain `true` for a visible duration, returning `null` and rendering a completely white/blank page.
+- On **mobile**, a previous session was cached in browser storage, so `loading` resolved almost immediately.
+
+### Actions Taken:
+1. **Fixed Desktop White Screen (`src/layouts/CustomerLayout.tsx`)**:
+   - Removed `if (loading) return null;` — the page now **always renders immediately**.
+   - The wrong-portal wall is now guarded by `if (!loading && user && profile && !isCustomer)` — it only activates after auth has fully resolved, preventing false blocks during initial load.
+2. **Redesigned Merchant Login (`src/pages/merchant/PartnerLogin.tsx`)**:
+   - Removed rounded card containers, padded boxes, and shadow wrappers entirely.
+   - Applied clean edge-to-edge editorial layout with bottom-line inputs (`border-b border-black/20`).
+   - Set all text to pure black (`text-black`). Logo dot remains blue (`text-[#4A90E2]`).
+   - Button is a clean underline-style bottom-border text button — no filled box.
+   - Added **inline wrong-portal detection**: after `signIn()`, a `useEffect` checks the user's role. If the role is `courier` or `customer`, it shows an inline amber-border notice with a direct link to the correct portal — no overlay, no redirect.
+3. **Redesigned Merchant Signup (`src/pages/merchant/PartnerSignup.tsx`)**:
+   - Same editorial treatment — no card boxes, bottom-line inputs, decent spacing, black text.
+4. **Redesigned Courier Login (`src/pages/courier/Login.tsx`)**:
+   - Same clean unboxed layout.
+   - Inline wrong-portal detection: if signed-in user is `merchant` or `customer`, amber inline notice with portal link.
+5. **Redesigned Courier Signup (`src/pages/courier/Signup.tsx`)**:
+   - Same editorial treatment — no card boxes, bottom-line inputs, proportional spacing, black text.
+
+### Advisory on Wrong-Portal System:
+- **Recommendation: YES — inline error is strictly better.** It's contextual (shown at the form), not disruptive (no full-page overlay), and immediately actionable (clickable link to correct portal). Implemented in both login pages.
+
+### Build Verification:
+- Ran `npm run build` (`tsc -b && vite build`) — compiled cleanly in 42.55s. Zero TypeScript errors.
+
+### Status:
+- **COMPLETED & VERIFIED LOCALLY.**
