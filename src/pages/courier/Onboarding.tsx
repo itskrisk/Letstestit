@@ -29,10 +29,8 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Transport Mode
     const [transportMode, setTransportMode] = useState<TransportMode>('Motorbike (Boda)');
 
-    // Vehicle & Contact Details
     const [courierDetails, setCourierDetails] = useState({
         make: '',
         model: '',
@@ -42,14 +40,12 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
         emergencyPhone: ''
     });
 
-    // Safety Gear Checklists
     const [gearCheck, setGearCheck] = useState({
         hasHelmet: true,
         hasThermalBag: true,
         hasVest: true
     });
 
-    // Documents
     const [documents, setDocuments] = useState<{
         photoFile: File | null;
         idDocFile: File | null;
@@ -80,7 +76,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
             const fileExt = file.name.split('.').pop();
             const fileName = `${path}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-            const { error: uploadError } = await supabase.storage
+            const { error: uploadError } = await supabase
                 .from('documents')
                 .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
@@ -192,7 +188,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
     return (
         <div className="min-h-screen bg-[#FDFBF7] font-sans flex flex-col">
             {/* Top Bar */}
-            <div className="bg-white border-b border-gray-100 py-6 px-8 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+            <div className="bg-white border-b border-gray-100 py-6 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50">
                 <div className="flex items-center gap-3">
                     <span className="font-heading font-black text-2xl tracking-tighter text-black">
                         Muncheez<span className="text-[#39B54A]">.</span>
@@ -217,35 +213,35 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                 </div>
             </div>
 
-            {/* Main Section */}
-            <main className="flex-1 max-w-3xl mx-auto w-full p-6 md:p-10 flex flex-col justify-center">
+            {/* Main Content */}
+            <main className="flex-1 max-w-3xl mx-auto w-full px-6 md:px-10">
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold flex items-center gap-3">
+                    <div className="mt-6 mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-semibold flex items-center gap-3">
                         <AlertCircle size={20} />
                         <span>{error}</span>
                     </div>
                 )}
 
                 <AnimatePresence mode="wait">
-                    {/* STEP 1: TRANSPORT MODE SELECTION */}
+                    {/* STEP 1: TRANSPORT MODE */}
                     {currentStep === 'MODE' && (
                         <motion.div
                             key="mode"
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
-                            className="space-y-8"
+                            className="py-10 border-b border-gray-100"
                         >
-                            <div>
+                            <div className="mb-10">
                                 <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
                                     Choose Your Transport Mode
                                 </h1>
                                 <p className="text-gray-500 mt-2">
-                                    Select how you will deliver. Document requirements dynamically adapt to your choice.
+                                    Select how you will deliver. Document requirements adapt to your choice.
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-4">
                                 {[
                                     { mode: 'On Foot (Walker)', icon: Footprints, desc: 'Deliver within CBD & short radii. No vehicle required!' },
                                     { mode: 'Bicycle', icon: Bike, desc: 'Eco-friendly, fast city delivery with helmet & thermal bag.' },
@@ -259,12 +255,12 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                         <div
                                             key={item.mode}
                                             onClick={() => setTransportMode(item.mode as TransportMode)}
-                                            className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex items-start gap-4 ${isSelected
-                                                    ? 'border-[#39B54A] bg-[#39B54A]/5 shadow-md'
-                                                    : 'border-gray-100 bg-white hover:border-gray-200'
+                                            className={`cursor-pointer transition-all flex items-start gap-4 py-5 border-t ${isSelected
+                                                    ? 'border-[#39B54A]'
+                                                    : 'border-gray-100 hover:border-gray-200'
                                                 }`}
                                         >
-                                            <div className={`p-3 rounded-2xl ${isSelected ? 'bg-[#39B54A] text-white' : 'bg-gray-100 text-gray-600'}`}>
+                                            <div className={`p-3 rounded-2xl shrink-0 ${isSelected ? 'bg-[#39B54A] text-white' : 'bg-gray-100 text-gray-600'}`}>
                                                 <IconComponent size={22} />
                                             </div>
                                             <div className="flex-1">
@@ -276,10 +272,10 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                 })}
                             </div>
 
-                            <div className="flex justify-end">
+                            <div className="flex justify-end mt-10">
                                 <button
                                     onClick={() => setCurrentStep('DETAILS')}
-                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#39B54A] transition-all flex items-center gap-2 shadow-lg"
+                                    className="group flex items-center gap-2 text-sm font-bold text-white bg-gray-900 hover:bg-[#39B54A] transition-all uppercase tracking-widest py-4 px-8"
                                 >
                                     Continue to Details <ChevronRight size={16} />
                                 </button>
@@ -294,9 +290,9 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
-                            className="space-y-8"
+                            className="py-10 border-b border-gray-100"
                         >
-                            <div>
+                            <div className="mb-10">
                                 <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
                                     Transport & Safety Details
                                 </h1>
@@ -305,14 +301,14 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                 </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
-                                {/* Vehicle Specs (If Motorized / Bike) */}
+                            <div className="space-y-6">
+                                {/* Vehicle Specs (If Motorized) */}
                                 {isMotorized && (
-                                    <div className="space-y-4">
-                                        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                                    <div className="border-t border-gray-100 pt-6">
+                                        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
                                             Vehicle Information ({transportMode})
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div>
                                                 <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
                                                     Vehicle Make
@@ -322,7 +318,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                                     placeholder="e.g. Honda / Boxer"
                                                     value={courierDetails.make}
                                                     onChange={e => updateDetails('make', e.target.value)}
-                                                    className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#39B54A] focus:bg-white outline-none font-medium transition-all"
+                                                    className="w-full bg-transparent border-b border-gray-200 focus:border-[#39B54A] focus:bg-transparent outline-none font-medium transition-all text-sm py-3"
                                                 />
                                             </div>
                                             <div>
@@ -334,7 +330,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                                     placeholder="e.g. CB125"
                                                     value={courierDetails.model}
                                                     onChange={e => updateDetails('model', e.target.value)}
-                                                    className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#39B54A] focus:bg-white outline-none font-medium transition-all"
+                                                    className="w-full bg-transparent border-b border-gray-200 focus:border-[#39B54A] focus:bg-transparent outline-none font-medium transition-all text-sm py-3"
                                                 />
                                             </div>
                                             <div>
@@ -346,7 +342,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                                     placeholder="e.g. KDH 882X"
                                                     value={courierDetails.plate}
                                                     onChange={e => updateDetails('plate', e.target.value)}
-                                                    className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#39B54A] focus:bg-white outline-none font-mono font-bold uppercase transition-all"
+                                                    className="w-full bg-transparent border-b border-gray-200 focus:border-[#39B54A] focus:bg-transparent outline-none font-mono font-bold uppercase transition-all text-sm py-3"
                                                 />
                                             </div>
                                         </div>
@@ -354,12 +350,12 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                 )}
 
                                 {/* Emergency Contact */}
-                                <div className="space-y-4 pt-2 border-t border-gray-100">
-                                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                                <div className="border-t border-gray-100 pt-6">
+                                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2 mb-4">
                                         <PhoneCall size={14} className="text-[#39B54A]" />
                                         Emergency Contact (Mandatory for Courier Safety)
                                     </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div>
                                             <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-1.5">
                                                 Contact Name
@@ -369,7 +365,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                                 placeholder="e.g. John Omwamba"
                                                 value={courierDetails.emergencyName}
                                                 onChange={e => updateDetails('emergencyName', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#39B54A] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full bg-transparent border-b border-gray-200 focus:border-[#39B54A] focus:bg-transparent outline-none font-medium transition-all text-sm py-3"
                                             />
                                         </div>
                                         <div>
@@ -381,7 +377,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                                 placeholder="e.g. Brother / Spouse"
                                                 value={courierDetails.emergencyRelation}
                                                 onChange={e => updateDetails('emergencyRelation', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#39B54A] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full bg-transparent border-b border-gray-200 focus:border-[#39B54A] focus:bg-transparent outline-none font-medium transition-all text-sm py-3"
                                             />
                                         </div>
                                         <div>
@@ -393,15 +389,15 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                                 placeholder="e.g. 0712 998 877"
                                                 value={courierDetails.emergencyPhone}
                                                 onChange={e => updateDetails('emergencyPhone', e.target.value)}
-                                                className="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#39B54A] focus:bg-white outline-none font-medium transition-all"
+                                                className="w-full bg-transparent border-b border-gray-200 focus:border-[#39B54A] focus:bg-transparent outline-none font-medium transition-all text-sm py-3"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Safety Gear Checklist */}
-                                <div className="space-y-3 pt-2 border-t border-gray-100">
-                                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                                <div className="border-t border-gray-100 pt-6">
+                                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
                                         Mandatory Delivery Equipment
                                     </h3>
                                     {[
@@ -414,17 +410,16 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                             <div
                                                 key={item.key}
                                                 onClick={() => toggleGear(item.key as keyof typeof gearCheck)}
-                                                className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${isChecked
-                                                        ? 'border-[#39B54A] bg-[#39B54A]/5'
-                                                        : 'border-gray-100 hover:border-gray-200 bg-gray-50'
+                                                className={`cursor-pointer transition-all flex items-center justify-between py-4 border-t ${isChecked
+                                                        ? 'border-[#39B54A]'
+                                                        : 'border-gray-100 hover:border-gray-200'
                                                     }`}
                                             >
                                                 <div>
                                                     <h4 className="font-bold text-gray-900 text-sm">{item.label}</h4>
                                                     <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
                                                 </div>
-                                                <div className={`w-6 h-6 rounded-xl flex items-center justify-center transition-all ${isChecked ? 'bg-[#39B54A] text-white' : 'bg-gray-200 text-transparent'
-                                                    }`}>
+                                                <div className={`w-6 h-6 rounded-xl flex items-center justify-center transition-all ${isChecked ? 'bg-[#39B54A] text-white' : 'bg-gray-200 text-transparent'}`}>
                                                     <Check size={14} />
                                                 </div>
                                             </div>
@@ -433,10 +428,10 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                 </div>
                             </div>
 
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center mt-10">
                                 <button
                                     onClick={() => setCurrentStep('MODE')}
-                                    className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+                                    className="group flex items-center gap-2 text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs"
                                 >
                                     <ChevronLeft size={16} /> Back
                                 </button>
@@ -452,7 +447,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                         }
                                         setCurrentStep('DOCUMENTS');
                                     }}
-                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#39B54A] transition-all flex items-center gap-2 shadow-lg"
+                                    className="group flex items-center gap-2 text-sm font-bold text-white bg-gray-900 hover:bg-[#39B54A] transition-all uppercase tracking-widest py-4 px-8"
                                 >
                                     Continue to Documents <ChevronRight size={16} />
                                 </button>
@@ -460,16 +455,16 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                         </motion.div>
                     )}
 
-                    {/* STEP 3: DOCUMENT UPLOADS (DYNAMIC BY TRANSPORT MODE) */}
+                    {/* STEP 3: DOCUMENT UPLOADS */}
                     {currentStep === 'DOCUMENTS' && (
                         <motion.div
                             key="documents"
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -15 }}
-                            className="space-y-8"
+                            className="py-10 border-b border-gray-100"
                         >
-                            <div>
+                            <div className="mb-10">
                                 <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
                                     Identity & Transport Verification
                                 </h1>
@@ -478,13 +473,13 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                 </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl space-y-6">
-                                {/* Profile Photo / Selfie */}
-                                <div>
+                            <div className="space-y-6">
+                                {/* Profile Photo */}
+                                <div className="border-t border-gray-100 pt-6">
                                     <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
                                         Profile Photo / Clear Selfie (Required for Customer Trust)
                                     </label>
-                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] cursor-pointer bg-transparent transition-all">
                                         <UserCheck className="text-[#39B54A] mb-1.5" size={24} />
                                         <span className="text-xs font-bold text-gray-700">
                                             {documents.photoFile ? documents.photoFile.name : 'Click to upload clear profile selfie'}
@@ -498,15 +493,15 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                     </label>
                                 </div>
 
-                                {/* National ID Card */}
-                                <div>
+                                {/* ID Document */}
+                                <div className="border-t border-gray-100 pt-6">
                                     <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
-                                        National Identity Card / Passport (Front/Back)
+                                        National ID / Passport
                                     </label>
-                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                        <Upload className="text-[#39B54A] mb-1.5" size={24} />
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] cursor-pointer bg-transparent transition-all">
+                                        <FileText className="text-[#39B54A] mb-1.5" size={24} />
                                         <span className="text-xs font-bold text-gray-700">
-                                            {documents.idDocFile ? documents.idDocFile.name : 'Click to select National ID'}
+                                            {documents.idDocFile ? documents.idDocFile.name : 'Click to upload ID document'}
                                         </span>
                                         <input
                                             type="file"
@@ -517,117 +512,148 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                                     </label>
                                 </div>
 
-                                {/* Motorized Vehicle Documents (Only for Motorbike / Car / Scooter) */}
+                                {/* License */}
+                                <div className="border-t border-gray-100 pt-6">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                        Driving License
+                                    </label>
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] cursor-pointer bg-transparent transition-all">
+                                        <FileText className="text-[#39B54A] mb-1.5" size={24} />
+                                        <span className="text-xs font-bold text-gray-700">
+                                            {documents.licenseFile ? documents.licenseFile.name : 'Click to upload license'}
+                                        </span>
+                                        <input
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            className="hidden"
+                                            onChange={e => setDocuments(prev => ({ ...prev, licenseFile: e.target.files?.[0] || null }))}
+                                        />
+                                    </label>
+                                </div>
+
+                                {/* Logbook */}
                                 {isMotorized && (
-                                    <>
-                                        {/* Driving License */}
-                                        <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
-                                                Valid Driving License
-                                            </label>
-                                            <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                                <FileText className="text-[#39B54A] mb-1.5" size={24} />
-                                                <span className="text-xs font-bold text-gray-700">
-                                                    {documents.licenseFile ? documents.licenseFile.name : 'Click to select Driving License'}
-                                                </span>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*,.pdf"
-                                                    className="hidden"
-                                                    onChange={e => setDocuments(prev => ({ ...prev, licenseFile: e.target.files?.[0] || null }))}
-                                                />
-                                            </label>
-                                        </div>
-
-                                        {/* Logbook / Sales Agreement */}
-                                        <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
-                                                Vehicle Logbook / Proof of Ownership
-                                            </label>
-                                            <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                                <FileText className="text-[#39B54A] mb-1.5" size={24} />
-                                                <span className="text-xs font-bold text-gray-700">
-                                                    {documents.logbookFile ? documents.logbookFile.name : 'Click to select Vehicle Logbook'}
-                                                </span>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*,.pdf"
-                                                    className="hidden"
-                                                    onChange={e => setDocuments(prev => ({ ...prev, logbookFile: e.target.files?.[0] || null }))}
-                                                />
-                                            </label>
-                                        </div>
-
-                                        {/* Insurance Certificate */}
-                                        <div>
-                                            <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
-                                                Motor Vehicle Insurance Certificate
-                                            </label>
-                                            <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] rounded-2xl cursor-pointer bg-gray-50/50 transition-all">
-                                                <Shield className="text-[#39B54A] mb-1.5" size={24} />
-                                                <span className="text-xs font-bold text-gray-700">
-                                                    {documents.insuranceFile ? documents.insuranceFile.name : 'Click to select Insurance Certificate'}
-                                                </span>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*,.pdf"
-                                                    className="hidden"
-                                                    onChange={e => setDocuments(prev => ({ ...prev, insuranceFile: e.target.files?.[0] || null }))}
-                                                />
-                                            </label>
-                                        </div>
-                                    </>
+                                    <div className="border-t border-gray-100 pt-6">
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                            Vehicle Logbook
+                                        </label>
+                                        <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] cursor-pointer bg-transparent transition-all">
+                                            <FileText className="text-[#39B54A] mb-1.5" size={24} />
+                                            <span className="text-xs font-bold text-gray-700">
+                                                {documents.logbookFile ? documents.logbookFile.name : 'Click to upload logbook'}
+                                            </span>
+                                            <input
+                                                type="file"
+                                                accept="image/*,.pdf"
+                                                className="hidden"
+                                                onChange={e => setDocuments(prev => ({ ...prev, logbookFile: e.target.files?.[0] || null }))}
+                                            />
+                                        </label>
+                                    </div>
                                 )}
+
+                                {/* Insurance */}
+                                <div className="border-t border-gray-100 pt-6">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-700 block mb-2">
+                                        Insurance Certificate
+                                    </label>
+                                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-200 hover:border-[#39B54A] cursor-pointer bg-transparent transition-all">
+                                        <Shield className="text-[#39B54A] mb-1.5" size={24} />
+                                        <span className="text-xs font-bold text-gray-700">
+                                            {documents.insuranceFile ? documents.insuranceFile.name : 'Click to upload insurance'}
+                                        </span>
+                                        <input
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            className="hidden"
+                                            onChange={e => setDocuments(prev => ({ ...prev, insuranceFile: e.target.files?.[0] || null }))}
+                                        />
+                                    </label>
+                                </div>
                             </div>
 
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center mt-10">
                                 <button
                                     onClick={() => setCurrentStep('DETAILS')}
-                                    className="text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs flex items-center gap-2"
+                                    className="group flex items-center gap-2 text-gray-400 hover:text-black font-bold uppercase tracking-widest text-xs"
                                 >
                                     <ChevronLeft size={16} /> Back
                                 </button>
                                 <button
-                                    onClick={handleSubmitKYC}
+                                    onClick={() => {
+                                        if (!documents.photoFile || !documents.idDocFile) {
+                                            setError('Profile photo and ID document are required.');
+                                            return;
+                                        }
+                                        handleSubmitKYC();
+                                    }}
                                     disabled={loading}
-                                    className="px-8 py-4 bg-[#39B54A] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#2fa03f] transition-all flex items-center gap-2 shadow-lg disabled:opacity-50"
+                                    className="group flex items-center gap-2 text-sm font-bold text-white bg-gray-900 hover:bg-[#39B54A] hover:text-black transition-all uppercase tracking-widest py-4 px-8 disabled:opacity-50"
                                 >
                                     {loading ? (
-                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        <>Submitting...</>
                                     ) : (
-                                        <>
-                                            Submit Application For Review <CheckCircle2 size={18} />
-                                        </>
+                                        <>Complete Setup <CheckCircle2 size={16} /></>
                                     )}
                                 </button>
                             </div>
                         </motion.div>
                     )}
 
-                    {/* STEP 4: REVIEW CONFIRMATION */}
+                    {/* STEP 4: REVIEW */}
                     {currentStep === 'REVIEW' && (
                         <motion.div
                             key="review"
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white p-10 md:p-12 rounded-3xl shadow-xl text-center max-w-lg mx-auto border-t-4 border-[#39B54A]"
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            className="py-10 border-b border-gray-100"
                         >
-                            <div className="w-20 h-20 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 mb-6">
-                                <CheckCircle2 size={40} />
+                            <div className="mb-10">
+                                <div className="w-16 h-16 bg-[#39B54A]/10 rounded-full flex items-center justify-center mb-6">
+                                    <CheckCircle2 className="text-[#39B54A]" size={32} />
+                                </div>
+                                <h1 className="text-3xl md:text-4xl font-heading font-black text-gray-900 tracking-tight">
+                                    All Set.
+                                </h1>
+                                <p className="text-gray-500 mt-2">
+                                    Your details have been submitted. Our team will review your application within 24-48 hours.
+                                </p>
                             </div>
-                            <h2 className="text-3xl font-heading font-black text-gray-900 mb-3">
-                                Application Submitted!
-                            </h2>
-                            <p className="text-gray-500 text-sm leading-relaxed mb-8">
-                                Your courier verification details and documents have been submitted to Muncheez Fleet Admin for review.
-                            </p>
 
-                            <button
-                                onClick={() => navigate('/courier/dashboard')}
-                                className="w-full py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#39B54A] hover:text-white transition-all shadow-lg"
-                            >
-                                View Application Status
-                            </button>
+                            <div className="space-y-4">
+                                <div className="border-t border-gray-100 pt-4">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Transport Mode</p>
+                                    <p className="text-sm text-gray-900">{transportMode}</p>
+                                </div>
+                                {isMotorized && (
+                                    <>
+                                        <div className="border-t border-gray-100 pt-4">
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Vehicle</p>
+                                            <p className="text-sm text-gray-900">{courierDetails.make || '—'} {courierDetails.model || ''} {courierDetails.plate || '—'}</p>
+                                        </div>
+                                        <div className="border-t border-gray-100 pt-4">
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Emergency Contact</p>
+                                            <p className="text-sm text-gray-900">{courierDetails.emergencyName || '—'} ({courierDetails.emergencyRelation || '—'})</p>
+                                        </div>
+                                    </>
+                                )}
+                                <div className="border-t border-gray-100 pt-4">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Documents</p>
+                                    <p className="text-sm text-gray-900">
+                                        {[documents.photoFile && 'Profile Photo', documents.idDocFile && 'ID', documents.licenseFile && 'License', documents.logbookFile && 'Logbook', documents.insuranceFile && 'Insurance'].filter(Boolean).join(', ') || 'None'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end mt-10">
+                                <button
+                                    onClick={() => navigate('/courier')}
+                                    className="group flex items-center gap-2 text-sm font-bold text-white bg-gray-900 hover:bg-[#39B54A] hover:text-black transition-all uppercase tracking-widest py-4 px-8"
+                                >
+                                    Go to Dashboard <ChevronRight size={16} />
+                                </button>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

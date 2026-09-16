@@ -70,8 +70,8 @@ export default function PartnerSignup() {
                 }
             }
 
-            navigate('/partner/login', {
-                state: { message: 'Account created! Please log in to complete your store profile.' }
+            navigate('/auth/verify-email', {
+                state: { email: email.trim(), message: 'Account created! Please check your inbox to verify your email before logging in.' }
             });
         } catch (err: any) {
             let message = err.message || 'An error occurred during signup';
