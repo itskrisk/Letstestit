@@ -47,10 +47,12 @@ export const authApi = {
     };
   },
 
-  signupMerchant: async (data: { email: string; password: string; name: string; phone?: string }) => {
+  signupMerchant: async (data: { email: string; password: string; name: string; phone?: string; business_name?: string; business_type?: string }) => {
     const result = await authService.signUp(data.email, data.password, {
       full_name: data.name,
       phone: data.phone,
+      business_name: data.business_name,
+      business_type: data.business_type,
       role: 'merchant'
     });
     return {

@@ -139,6 +139,8 @@ export const authService = {
     phone?: string;
     role?: string;
     merchant_type?: string;
+    business_name?: string;
+    business_type?: string;
     vehicle_type?: string;
     vehicle_make?: string;
     vehicle_model?: string;

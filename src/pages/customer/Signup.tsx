@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Loader2, AlertTriangle, LogOut } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Loader2, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import customerLoginImg from '../../assets/images/customerloginpic.jpg';
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -13,15 +14,17 @@ export default function Signup() {
     const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [portalHint, setPortalHint] = useState<{ message: string; link: string; label: string } | null>(null);
     const [addingRole, setAddingRole] = useState(false);
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setPortalHint(null);
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setError("Passwords do not match.");
             setLoading(false);
             return;
         }
@@ -50,35 +53,38 @@ export default function Signup() {
                 return;
             }
         } catch (err: any) {
-            let message = err.message || 'An error occurred during signup';
-            if (message.toLowerCase().includes('rate limit')) {
+            let message = err.message || 'An error occurred during signup.';
+            if (message.toLowerCase().includes('already registered') || message.toLowerCase().includes('already exists') || message.toLowerCase().includes('email in use')) {
+                setPortalHint({
+                    message: 'An account with this email already exists.',
+                    link: '/login',
+                    label: 'Sign in to your account'
+                });
+            } else if (message.toLowerCase().includes('rate limit')) {
                 message = "Email rate limit reached. Please wait a while before trying again, or use a different email.";
-            } else if (message.toLowerCase().includes('already registered') || message.toLowerCase().includes('already has the')) {
-                message = message; // Keep the detailed one-email-one-role message
+                setError(message);
+            } else {
+                setError(message);
             }
-            setError(message);
         } finally {
             setLoading(false);
             setAddingRole(false);
         }
     };
 
-    // ── Active Session Guard ─────────────────────────────────────
+    // Active Session Guard — Clean Editorial Design (No Card Boxes)
     if (!authLoading && user) {
         const roles = profile?.roles || (profile?.role ? [profile.role] : []);
         const hasCustomerRole = roles.includes('customer');
 
         if (hasCustomerRole) {
-            // Already a customer — redirect to stores
             navigate('/stores', { replace: true });
             return null;
         }
 
-        // User is logged in but doesn't have customer role yet
-        // Show option to add customer role to their existing account
         const currentRole = roles[0] || profile?.role || 'user';
         const portalMap: Record<string, { label: string; path: string }> = {
-            merchant: { label: 'Partner Dashboard', path: '/partner' },
+            merchant: { label: 'Merchant Portal', path: '/partner' },
             courier: { label: 'Courier Terminal', path: '/courier' },
             admin: { label: 'Admin Console', path: '/admin' },
         };
@@ -86,41 +92,39 @@ export default function Signup() {
 
         return (
             <div className="min-h-screen bg-white flex items-center justify-center p-8">
-                <div className="max-w-md w-full text-center">
-                    <Link to="/" className="flex justify-center mb-10">
+                <div className="max-w-md w-full border-b border-black/10 pb-8">
+                    <Link to="/" className="inline-block mb-8">
                         <span className="font-heading font-bold text-3xl tracking-tighter text-gray-900">
                             Muncheez<span className="text-[#4A90E2]">.</span>
                         </span>
                     </Link>
-                    <div className="w-16 h-16 bg-amber-50 border border-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <AlertTriangle size={28} className="text-amber-500" />
-                    </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 mb-2">Add Customer Access</h1>
+                    <h1 className="text-3xl font-heading font-light text-gray-900 tracking-tight mb-3">Add Customer Access</h1>
                     <p className="text-sm text-gray-500 mb-2">
-                        You are logged in as <strong className="text-gray-800">{user.email}</strong>
+                        Logged in as <strong className="text-gray-900">{user.email}</strong>
                     </p>
-                    <p className="text-xs text-gray-400 mb-8">
-                        Your account currently has the <strong className="capitalize">{currentRole}</strong> role. You can add Customer access to your existing account.
+                    <p className="text-xs text-gray-400 mb-8 leading-relaxed">
+                        Your account has the <strong className="capitalize text-gray-700">{currentRole}</strong> role. You can add Customer access to your account or switch to your existing portal.
                     </p>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-4">
                         <button
                             onClick={handleSignup}
                             disabled={loading || addingRole}
-                            className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-gray-900 text-white text-sm font-bold rounded-2xl hover:bg-[#4A90E2] transition-all uppercase tracking-widest disabled:opacity-50"
+                            className="group w-full flex justify-between items-center py-5 px-8 rounded-2xl text-sm font-bold text-white bg-gray-900 hover:bg-[#4A90E2] disabled:bg-gray-400 uppercase tracking-widest transition-all"
                         >
-                            {addingRole ? 'Adding Access...' : 'Add Customer Access'}
+                            <span>{addingRole ? 'Adding Access...' : 'Add Customer Access'}</span>
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                         {currentPortal && (
-                            <button
-                                onClick={() => navigate(currentPortal.path)}
-                                className="w-full py-4 px-6 border border-gray-200 text-gray-600 text-sm font-bold rounded-2xl hover:bg-gray-50 transition-all uppercase tracking-widest"
+                            <Link
+                                to={currentPortal.path}
+                                className="w-full text-center py-4 border-b border-gray-200 text-xs font-bold uppercase tracking-widest text-gray-900 hover:text-[#4A90E2] transition-colors"
                             >
-                                Go to {currentPortal.label}
-                            </button>
+                                Go to {currentPortal.label} →
+                            </Link>
                         )}
                         <button
                             onClick={async () => { await signOut(); }}
-                            className="w-full py-4 px-6 border border-gray-200 text-gray-500 text-sm font-bold rounded-2xl hover:border-gray-400 hover:text-gray-800 transition-all flex items-center gap-2 justify-center"
+                            className="w-full text-center py-3 text-xs font-bold uppercase tracking-widest text-red-600 hover:text-red-700 transition-colors flex items-center gap-2 justify-center"
                         >
                             <LogOut size={14} />
                             Sign Out
@@ -136,8 +140,8 @@ export default function Signup() {
             {/* Left Side: Editorial Image (Desktop Only) */}
             <div className="hidden lg:block lg:w-1/2 relative">
                 <img
-                    src="https://images.unsplash.com/photo-1547496502-affa22d38842?q=80&w=2000"
-                    alt="Nairobi Lifestyle"
+                    src={customerLoginImg}
+                    alt="Customer Signup"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/20" />
@@ -154,7 +158,7 @@ export default function Signup() {
             </div>
 
             {/* Right Side: Auth Form */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 lg:px-24 py-12 relative">
+            <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 lg:px-24 py-12 relative overflow-y-auto">
                 {/* Logo & Header */}
                 <div className="mb-12 relative">
                     <Link
@@ -184,12 +188,20 @@ export default function Signup() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
-                    className="max-w-md"
+                    className="max-w-md w-full"
                 >
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                            <p className="text-xs font-bold text-red-600 tracking-tight">{error}</p>
+                    {portalHint && (
+                        <div className="mb-6 border-b border-amber-400 pb-4">
+                            <p className="text-xs text-amber-700 font-medium mb-2">{portalHint.message}</p>
+                            <Link to={portalHint.link} className="text-[10px] font-bold uppercase tracking-widest text-black underline underline-offset-2 hover:text-black/50 transition-colors">
+                                {portalHint.label} →
+                            </Link>
+                        </div>
+                    )}
+
+                    {error && !portalHint && (
+                        <div className="mb-6 border-b border-red-500 pb-3">
+                            <p className="text-xs text-red-600 font-medium">{error}</p>
                         </div>
                     )}
 
@@ -199,6 +211,7 @@ export default function Signup() {
                                 Full Name
                             </label>
                             <input
+                                id="customer-name"
                                 type="text"
                                 required
                                 value={fullName}
@@ -213,6 +226,7 @@ export default function Signup() {
                                 Email Address
                             </label>
                             <input
+                                id="customer-signup-email"
                                 type="email"
                                 required
                                 value={email}
@@ -227,6 +241,7 @@ export default function Signup() {
                                 Password
                             </label>
                             <input
+                                id="customer-signup-password"
                                 type="password"
                                 required
                                 value={password}
@@ -241,6 +256,7 @@ export default function Signup() {
                                 Confirm Password
                             </label>
                             <input
+                                id="customer-signup-confirm-password"
                                 type="password"
                                 required
                                 value={confirmPassword}

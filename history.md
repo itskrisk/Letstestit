@@ -2047,3 +2047,39 @@ In commit `ab1a517`, `build.target: 'esnext'` was added to `vite.config.ts` as p
 
 ### Status:
 - **COMPLETED & VERIFIED LOCALLY.**
+
+---
+
+## [2026-09-16] Unify Auth Design Across Customer, Merchant & Rider + Implement Inline Portal & Email-in-Use Error Handling
+
+### User Request:
+1. Implement inline portal/email-in-use error detection across Rider, Customer, and Merchant login AND signup pages.
+2. Match Customer, Merchant, and Rider signup and login pages to the exact Customer auth layout and design aesthetics.
+
+### Actions Taken:
+1. **Unified Customer Login (`src/pages/customer/Login.tsx`)**:
+   - Added automatic post-auth role checking. If a user logs into Customer login with a `merchant` or `courier` account, displays an inline amber notice (`This email is registered as a merchant/courier account. Go to Merchant Portal / Courier Terminal →`).
+   - Replaced boxed red card with clean unboxed underline error notice adhering to AGENTS.md.
+2. **Unified Customer Signup (`src/pages/customer/Signup.tsx`)**:
+   - Implemented inline duplicate email detection (`This email is already in use...`).
+   - Redesigned active session guard to be clean, unboxed, and editorial (no card boxes or shaded containers).
+3. **Unified Merchant Login (`src/pages/merchant/PartnerLogin.tsx`)**:
+   - Styled to match Customer Login exactly (split screen with `merchantloginpic.jpg`, bottom-line input fields, rounded-2xl submit button with arrow icon, dark typography, portal switcher).
+   - Added inline wrong-portal detection for `courier` and `customer` accounts.
+4. **Unified Merchant Signup (`src/pages/merchant/PartnerSignup.tsx`)**:
+   - Styled to match Customer Signup split screen (`merchantsignup.jpg`).
+   - Updated `signupMerchant` signature in `src/lib/api.ts` and `src/lib/supabaseService.ts` to accept `business_name` and `business_type`.
+   - Added inline duplicate email error detection.
+5. **Unified Rider Login (`src/pages/courier/Login.tsx`)**:
+   - Styled to match Customer Login split screen (`courierloginndsignup.jpg`).
+   - Added inline wrong-portal detection for `merchant` and `customer` accounts.
+6. **Unified Rider Signup (`src/pages/courier/Signup.tsx`)**:
+   - Styled to match Customer Signup split screen (`courierloginndsignup.jpg`).
+   - Added inline duplicate email error detection.
+
+### Build Verification:
+- Ran `npm run build` (`tsc -b && vite build`) — succeeded cleanly in 12.54s with zero TypeScript errors.
+
+### Status:
+- **COMPLETED & VERIFIED LOCALLY.**
+

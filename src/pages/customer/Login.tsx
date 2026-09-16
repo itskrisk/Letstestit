@@ -13,14 +13,30 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [portalHint, setPortalHint] = useState<{ message: string; link: string; label: string } | null>(null);
 
     // Get destination from router state or default to /stores
     const from = (location.state as any)?.from?.pathname || "/stores";
 
     // Auto-redirect if already authenticated as customer
     useEffect(() => {
-        if (!authLoading && user && profile?.roles?.includes('customer')) {
-            navigate(from, { replace: true });
+        if (!authLoading && user && profile) {
+            const roles: string[] = profile.roles || (profile.role ? [profile.role] : []);
+            if (roles.includes('customer')) {
+                navigate(from, { replace: true });
+            } else if (roles.includes('merchant')) {
+                setPortalHint({
+                    message: 'This email is registered as a merchant account.',
+                    link: '/partner/login',
+                    label: 'Go to Merchant Portal'
+                });
+            } else if (roles.includes('courier')) {
+                setPortalHint({
+                    message: 'This email is registered as a courier account.',
+                    link: '/courier/login',
+                    label: 'Go to Courier Terminal'
+                });
+            }
         }
     }, [authLoading, user, profile, navigate, from]);
 
@@ -28,6 +44,7 @@ export default function Login() {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setPortalHint(null);
 
         try {
             const { error: loginError } = await signIn(email, password);
@@ -36,8 +53,6 @@ export default function Login() {
                 setError(loginError);
                 return;
             }
-
-            navigate(from, { replace: true });
         } catch (err: any) {
             setError(err.message || 'Incorrect email or password.');
         } finally {
@@ -98,14 +113,21 @@ export default function Login() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
-                    className="max-w-md"
+                    className="max-w-md w-full"
                 >
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-50 rounded-xl border border-red-100 flex flex-col gap-3">
-                            <div className="flex items-center gap-3">
-                                <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                                <p className="text-xs font-bold text-red-600 tracking-tight">{error}</p>
-                            </div>
+                    {/* Portal mismatch inline notice */}
+                    {portalHint && (
+                        <div className="mb-6 border-b border-amber-400 pb-4">
+                            <p className="text-xs text-amber-700 font-medium mb-2">{portalHint.message}</p>
+                            <Link to={portalHint.link} className="text-[10px] font-bold uppercase tracking-widest text-black underline underline-offset-2 hover:text-black/50 transition-colors">
+                                {portalHint.label} →
+                            </Link>
+                        </div>
+                    )}
+
+                    {error && !portalHint && (
+                        <div className="mb-6 border-b border-red-500 pb-3">
+                            <p className="text-xs text-red-600 font-medium">{error}</p>
                         </div>
                     )}
 
@@ -115,6 +137,7 @@ export default function Login() {
                                 Email Address
                             </label>
                             <input
+                                id="customer-email"
                                 type="email"
                                 required
                                 value={email}
@@ -134,6 +157,7 @@ export default function Login() {
                                 </Link>
                             </div>
                             <input
+                                id="customer-password"
                                 type="password"
                                 required
                                 value={password}
