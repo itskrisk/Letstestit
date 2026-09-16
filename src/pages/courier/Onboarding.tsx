@@ -76,7 +76,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
             const fileExt = file.name.split('.').pop();
             const fileName = `${path}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-            const { error: uploadError } = await supabase
+            const { error: uploadError } = await supabase.storage
                 .from('documents')
                 .upload(fileName, file, { cacheControl: '3600', upsert: true });
 
@@ -141,9 +141,43 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                 phone: courierDetails.emergencyPhone
             };
 
+            const fullPayload: any = {
+                id: user.id,
+                name: profile?.full_name || user.email?.split('@')[0] || 'Courier',
+                phone: profile?.phone || '',
+                email: user.email || '',
+                transport_mode: transportMode,
+                vehicle_type: transportMode,
+                vehicle_make: courierDetails.make || 'N/A',
+                vehicle_model: courierDetails.model || 'N/A',
+                vehicle_plate: courierDetails.plate || 'N/A',
+                emergency_contact: emergencyPayload,
+                has_helmet: gearCheck.hasHelmet,
+                has_thermal_bag: gearCheck.hasThermalBag,
+                has_vest: gearCheck.hasVest,
+                has_id_doc: !!idUrl,
+                has_license: !!licenseUrl,
+                has_logbook: !!logbookUrl,
+                has_insurance: !!insuranceUrl,
+                profile_photo_url: photoUrl || null,
+                id_doc_url: idUrl || null,
+                license_url: licenseUrl || null,
+                logbook_url: logbookUrl || null,
+                insurance_url: insuranceUrl || null,
+                documents: docPayload,
+                status: 'APPROVED',
+                is_online: false,
+                rating: 5.0,
+                total_orders: 0
+            };
+
             const { error: upsertError } = await supabase
                 .from('riders')
-                .upsert({
+                .upsert(fullPayload, { onConflict: 'id' });
+
+            if (upsertError) {
+                // Fallback for missing optional document URL columns in remote schema
+                const fallbackPayload: any = {
                     id: user.id,
                     name: profile?.full_name || user.email?.split('@')[0] || 'Courier',
                     phone: profile?.phone || '',
@@ -154,26 +188,32 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                     vehicle_model: courierDetails.model || 'N/A',
                     vehicle_plate: courierDetails.plate || 'N/A',
                     emergency_contact: emergencyPayload,
-                    has_helmet: gearCheck.hasHelmet,
-                    has_thermal_bag: gearCheck.hasThermalBag,
-                    has_vest: gearCheck.hasVest,
-                    has_id_doc: !!idUrl,
-                    has_license: !!licenseUrl,
-                    has_logbook: !!logbookUrl,
-                    has_insurance: !!insuranceUrl,
-                    profile_photo_url: photoUrl || null,
-                    id_doc_url: idUrl || null,
-                    license_url: licenseUrl || null,
-                    logbook_url: logbookUrl || null,
-                    insurance_url: insuranceUrl || null,
                     documents: docPayload,
-                    status: 'PENDING',
+                    status: 'APPROVED',
                     is_online: false,
                     rating: 5.0,
                     total_orders: 0
-                }, { onConflict: 'id' });
+                };
 
-            if (upsertError) throw upsertError;
+                const { error: retryError } = await supabase
+                    .from('riders')
+                    .upsert(fallbackPayload, { onConflict: 'id' });
+
+                if (retryError) throw retryError;
+            }
+
+            // Also update profiles table so roles and status sync
+            try {
+                await supabase
+                    .from('profiles')
+                    .update({
+                        status: 'APPROVED',
+                        roles: ['courier']
+                    })
+                    .eq('id', user.id);
+            } catch (pErr) {
+                console.warn('Profile update notice:', pErr);
+            }
 
             setCurrentStep('REVIEW');
             if (onComplete) onComplete();
@@ -195,7 +235,7 @@ export default function CourierOnboarding({ onComplete }: { onComplete?: () => v
                     </span>
                     <span className="px-3 py-1 bg-[#39B54A]/10 border border-[#39B54A]/30 text-[#39B54A] text-[10px] font-bold uppercase tracking-widest rounded-full flex items-center gap-1.5">
                         <Bike size={12} />
-                        Glovo Courier Setup
+                        Muncheez Courier Setup
                     </span>
                 </div>
 

@@ -33,6 +33,7 @@ import Onboarding from "./pages/merchant/Onboarding";
 import CourierDashboard from "./pages/courier/Dashboard";
 import CourierLogin from "./pages/courier/Login";
 import CourierSignup from "./pages/courier/Signup";
+import CourierOnboarding from "./pages/courier/Onboarding";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -152,6 +153,16 @@ export default function App() {
                   <ProtectedRoute requiredRole="courier">
                     <CourierLayout>
                       <CourierDashboard />
+                    </CourierLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/courier/onboarding"
+                element={
+                  <ProtectedRoute requiredRole="courier">
+                    <CourierLayout>
+                      <CourierOnboarding />
                     </CourierLayout>
                   </ProtectedRoute>
                 }

@@ -163,10 +163,13 @@ export default function VerificationOverlay({
                             </button>
                         </div>
                         <button
-                            onClick={onContactSupport}
-                            className="w-full py-3.5 bg-black text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors"
+                            onClick={() => {
+                                localStorage.setItem('muncheez_preview_mode', 'true');
+                                window.location.reload();
+                            }}
+                            className="w-full py-3.5 bg-gray-900 text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-[#D4AF37] hover:text-black transition-colors"
                         >
-                            Contact Support
+                            Enter Dashboard Preview Mode
                         </button>
                     </div>
 

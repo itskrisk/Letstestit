@@ -198,16 +198,19 @@ export default function RiderDashboard() {
         }
     }, [currentRider, supabaseRider]);
 
+    // Allow preview mode or approved couriers to access dashboard
+    const isPreview = localStorage.getItem('muncheez_preview_mode') === 'true';
+
     // Show pending / verification approval overlay if rider is not APPROVED
     const rawRiderStatus = supabaseRider?.status || profile?.status || currentRider?.status || 'PENDING';
-    const isNeedsCourierKYC = rawRiderStatus === 'ONBOARDING_REQUIRED' || (!supabaseRider?.vehicle_make && !supabaseRider?.vehicle_plate);
+    const isNeedsCourierKYC = !isPreview && (rawRiderStatus === 'ONBOARDING_REQUIRED' || (!supabaseRider?.vehicle_make && !supabaseRider?.vehicle_plate));
     if (isNeedsCourierKYC) {
         return <CourierOnboarding onComplete={() => window.location.reload()} />;
     }
 
-    // Show pending / verification approval overlay if rider is not APPROVED
+    // Show pending / verification approval overlay if rider is not APPROVED and not in preview mode
     const riderStatus = rawRiderStatus === 'VERIFICATION_PENDING' ? 'PENDING' : rawRiderStatus;
-    if (riderStatus !== 'APPROVED') {
+    if (riderStatus !== 'APPROVED' && !isPreview) {
         const overlayStatus = (riderStatus === 'PENDING' || riderStatus === 'UNDER_REVIEW' || riderStatus === 'REJECTED' || riderStatus === 'SUSPENDED') ? riderStatus : 'PENDING';
         return (
             <VerificationOverlay

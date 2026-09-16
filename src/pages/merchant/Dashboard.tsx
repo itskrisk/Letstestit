@@ -202,14 +202,17 @@ export default function MerchantDashboard() {
         );
     }
 
+    // Allow preview mode or approved merchants to access dashboard
+    const isPreview = localStorage.getItem('muncheez_preview_mode') === 'true';
+
     // If merchant status is ONBOARDING_REQUIRED or missing KYC details, show Onboarding Wizard
-    const isNeedsKYC = rawStatus === 'ONBOARDING_REQUIRED' || (!supabaseMerchant?.address && !supabaseMerchant?.mpesa_till);
+    const isNeedsKYC = !isPreview && (rawStatus === 'ONBOARDING_REQUIRED' || (!supabaseMerchant?.address && !supabaseMerchant?.mpesa_till));
     if (isNeedsKYC) {
         return <MerchantOnboarding onComplete={() => window.location.reload()} />;
     }
 
-    // Strict Blocking: If merchant is NOT approved, show the Waiting for Approval screen
-    if (!isApproved) {
+    // Strict Blocking: If merchant is NOT approved and not in preview mode, show the Waiting for Approval screen
+    if (!isApproved && !isPreview) {
         return (
             <VerificationOverlay
                 status={(merchantStatus === 'VERIFICATION_PENDING' ? 'PENDING' : merchantStatus) as 'PENDING' | 'UNDER_REVIEW' | 'REJECTED' | 'SUSPENDED'}

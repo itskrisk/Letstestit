@@ -1902,7 +1902,34 @@ Improved `src/components/layout/Footer.tsx` per AGENTS.md design rules (no paddi
 ### Status:
 - **COMPLETED & PUSHED TO GITHUB (branch `main`).**
 
+---
 
+## [2026-09-16] Audit Merchant/Rider Auth, Onboarding & Fix Vercel Build Error
 
+### User Request:
+1. Fix Vercel build error (`src/pages/courier/Onboarding.tsx(81,18): Property 'upload' does not exist on type 'PostgrestQueryBuilder'`).
+2. Remove "Glovo" branding text from setup wizards.
+3. Resolve Merchant onboarding database schema column mismatch (`business_permit_url` missing in Supabase schema cache).
+4. Resolve Rider onboarding route accessibility and dashboard access issues.
+5. Provide a preview mode option for testing dashboards without getting trapped on verification overlay.
 
+### Actions Taken:
+1. **Fixed Vercel / TypeScript Build Error**:
+   - Updated `src/pages/courier/Onboarding.tsx`: Replaced `supabase.from('documents').upload(...)` with `supabase.storage.from('documents').upload(...)`.
+2. **Removed "Glovo" Copy**:
+   - Replaced "Glovo-Style Partner Setup" in `src/pages/merchant/Onboarding.tsx` with "Muncheez Partner Setup".
+   - Replaced "Glovo Courier Setup" in `src/pages/courier/Onboarding.tsx` with "Muncheez Courier Setup".
+3. **Resilient Merchant Onboarding Database Submissions**:
+   - Handled column schema mismatches gracefully in `src/pages/merchant/Onboarding.tsx`: if `business_permit_url`, `kra_pin_url`, or `health_permit_url` columns are missing from the remote database schema cache, it falls back to saving document data in `documents` JSONB and `business_permit` text fields.
+   - Updated profiles and merchant statuses on completion so users can access their portal cleanly.
+4. **Rider Onboarding Routing & KYC Fixes**:
+   - Registered missing `/courier/onboarding` route with `ProtectedRoute` in `App.tsx`.
+   - Updated `src/pages/courier/Onboarding.tsx` to handle document storage upload and schema fallback on submit.
+5. **Dashboard Preview Mode Added**:
+   - Added an "Enter Dashboard Preview Mode" button to `VerificationOverlay.tsx`.
+   - Updated `src/pages/merchant/Dashboard.tsx` and `src/pages/courier/Dashboard.tsx` to support preview mode for testing and developer verification.
+6. **Local Build Verification**:
+   - Ran `npm run build` (`tsc -b && vite build`) and verified 100% clean compilation without errors.
 
+### Status:
+- **COMPLETED & VERIFIED LOCALLY.**

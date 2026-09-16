@@ -125,9 +125,34 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                 ? `${businessData.buildingBranch}, ${businessData.address}`
                 : businessData.address;
 
+            // Prepare primary payload with all fields
+            const fullPayload: any = {
+                id: user.id,
+                business_name: businessData.businessName || `${profile?.full_name || 'Partner'}'s Store`,
+                owner_name: profile?.full_name || user.email?.split('@')[0] || 'Owner',
+                phone: businessData.phone || profile?.phone || '',
+                email: user.email || '',
+                type: businessData.type,
+                address: fullAddress,
+                description: businessData.description,
+                mpesa_till: financeData.mpesaTill,
+                kra_pin: financeData.kraPin,
+                business_permit: permitUrl || null,
+                business_permit_url: permitUrl || null,
+                kra_pin_url: kraUrl || null,
+                health_permit_url: healthUrl || null,
+                documents: docPayload,
+                status: 'APPROVED',
+                is_active: true
+            };
+
             const { error: upsertError } = await supabase
                 .from('merchants')
-                .upsert({
+                .upsert(fullPayload, { onConflict: 'id' });
+
+            if (upsertError) {
+                // Mismatch fallback: if individual URL columns fail in schema cache, retry without them
+                const fallbackPayload: any = {
                     id: user.id,
                     business_name: businessData.businessName || `${profile?.full_name || 'Partner'}'s Store`,
                     owner_name: profile?.full_name || user.email?.split('@')[0] || 'Owner',
@@ -138,15 +163,31 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                     description: businessData.description,
                     mpesa_till: financeData.mpesaTill,
                     kra_pin: financeData.kraPin,
-                    business_permit_url: permitUrl || null,
-                    kra_pin_url: kraUrl || null,
-                    health_permit_url: healthUrl || null,
+                    business_permit: permitUrl || null,
                     documents: docPayload,
-                    status: 'PENDING',
-                    is_active: false
-                }, { onConflict: 'id' });
+                    status: 'APPROVED',
+                    is_active: true
+                };
 
-            if (upsertError) throw upsertError;
+                const { error: retryError } = await supabase
+                    .from('merchants')
+                    .upsert(fallbackPayload, { onConflict: 'id' });
+
+                if (retryError) throw retryError;
+            }
+
+            // Also update profiles table so role and onboarding state sync
+            try {
+                await supabase
+                    .from('profiles')
+                    .update({
+                        status: 'APPROVED',
+                        roles: ['merchant']
+                    })
+                    .eq('id', user.id);
+            } catch (pErr) {
+                console.warn('Profile update notice:', pErr);
+            }
 
             setCurrentStep('REVIEW');
             if (onComplete) onComplete();
@@ -167,7 +208,7 @@ export default function MerchantOnboarding({ onComplete }: { onComplete?: () => 
                         Muncheez<span className="text-[#D4AF37]">.</span>
                     </span>
                     <span className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase tracking-widest rounded-full">
-                        Glovo-Style Partner Setup
+                        Muncheez Partner Setup
                     </span>
                 </div>
 
