@@ -1936,6 +1936,24 @@ Improved `src/components/layout/Footer.tsx` per AGENTS.md design rules (no paddi
 
 ---
 
+## [2026-09-16] Fix Vercel Deployment Break — Remove `esnext` Build Target
+
+### User Request:
+> "the desktop version of our deployment on vercel is broken, i am not able to load anything. find out the reason. some changes have been made recently so check history.md and see what could be the issue"
+
+### Root Cause:
+In commit `ab1a517`, `build.target: 'esnext'` was added to `vite.config.ts` as part of the Vercel bundle optimization. The `esnext` target instructs Vite to generate code using the latest ECMAScript features, which are **not supported** by Vercel's deployment infrastructure. This causes the build to produce output that cannot be loaded by browsers, resulting in a completely broken deployment.
+
+### Actions Taken:
+1. **Identified Root Cause**: Reviewed `history.md` and `vite.config.ts` from recent commits. Found `build.target: 'esnext'` added in the most recent commit.
+2. **Fixed `vite.config.ts`**: Changed `build.target: 'esnext'` → `build.target: 'es2020'` which is compatible with Vercel's infrastructure and all modern browsers.
+3. **Local Build Verification**: Ran `npm run build` — completed successfully with 0 errors.
+
+### Status:
+- **COMPLETED & VERIFIED LOCALLY.**
+
+---
+
 ## [2026-09-16] Onboarding Wizard Redesign & Logo Dot Standardization
 
 ### User Request:

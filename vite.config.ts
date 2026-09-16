@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'esnext',
+    target: 'es2020',
     cssCodeSplit: true,
     rollupOptions: {
       output: {
